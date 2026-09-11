@@ -1,0 +1,75 @@
+# Visual Studio
+
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Build output
+
+Debug/
+Release/
+x64/
+x86/
+ARM/
+ARM64/
+
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+
+# Per-project build directories
+
+**/Debug/
+**/Release/
+**/x64/
+**/x86/
+
+# Visual C++ intermediate files
+
+*.obj
+*.pch
+*.pdb
+*.idb
+*.ilk
+*.ipch
+*.tlog
+*.lastbuildstate
+*.recipe
+*.log
+
+# Compiled binaries
+
+*.exe
+*.dll
+*.lib
+*.exp
+
+# IntelliSense / code analysis
+
+*.VC.db
+*.VC.VC.opendb
+ipch/
+
+# Test / profiling output
+
+TestResults/
+*.coverage
+*.coveragexml
+
+# Temporary files
+
+*.tmp
+*.temp
+*.bak
+*.orig
+*~
+Thumbs.db
+.DS_Store
+
+# Environment / local configuration
+
+.env
+.env.*
