@@ -6,10 +6,18 @@
 #include "imgui_impl_dx11.h"
 #include "imgui_internal.h"
 
+#include "Appearance.h"
 #include "Application.h"
+#include "Creature.h"
+#include "Skeleton.h"
 #include "GenomePanel.h"
 #include "ImGuiWindowScope.h"
+#include "Part.h"
 #include "PreviewPanel.h"
+#include "TextureCache.h"
+#include "TextureLoader.h"
+
+using namespace Creature;
 
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(
     HWND hWnd,
@@ -117,7 +125,10 @@ bool CApp::CreateDeviceD3D()
         &featureLevel,
         m_deviceContext.GetAddressOf());
 
-    return SUCCEEDED(hr);
+    if (FAILED(hr) || !m_device) return false;
+
+    m_textureCache = std::make_shared<CTextureCache>(m_device.Get());
+    return true;
 }
 
 bool CApp::CreateRenderTarget()
@@ -173,10 +184,24 @@ bool CApp::InitializeImGui()
     return true;
 }
 
+void CApp::InitializeCreature()
+{
+    auto& skelton = m_creature.GetSkeleton();
+    const PartId bodyId = skelton.AddPart("Body");
+    const PartId headId = skelton.AddPart("Head", bodyId);
+
+    m_creature.GetAppearance().SetTexture(
+        bodyId,
+        L"assets/body.png");
+
+    m_creature.GetAppearance().SetTexture(
+        headId,
+        L"assets/head.png");
+}
+
 int CApp::Run()
 {
     MSG msg{};
-
 
 
     while (msg.message != WM_QUIT)
@@ -251,7 +276,7 @@ void CApp::Render()
         ImGuiDockNodeFlags_None);
 
     CGenomePanel::Draw(m_genome);
-    CPreviewPanel::Draw(m_genome);
+    CPreviewPanel::Draw(m_genome, m_textureCache);
 
     ImGui::Render();
 

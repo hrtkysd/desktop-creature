@@ -1,12 +1,21 @@
 #pragma once
 
 #include "Part.h"
+#include "PartAppearance.h"
+
+#include <filesystem>
+#include <vector>
 
 namespace Creature
 {
-    struct Appearance
+    class Appearance
     {
-        PartId partId = INVALID_PART_ID;
-        std::string strTexturePath;
+    public:
+        void SetTexture(PartId partId, const std::filesystem::path& path);
+
+        const PartAppearance* FindByPartId(PartId partId) const;
+
+    private:
+        std::vector<PartAppearance> m_vecPart;
     };
 }

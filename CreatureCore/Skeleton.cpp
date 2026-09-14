@@ -39,9 +39,25 @@ const Creature::Part* Creature::CSkeleton::FindPartById(PartId id) const
     return FindPart(m_vecPart, [id](const Creature::Part& part) { return part.id == id; });
 }
 
-PartId Creature::CSkeleton::FindPartIdByName(const std::string_view& name) const
+PartId Creature::CSkeleton::AddPart(const std::string_view name, PartId parentId)
+{
+    if (parentId != INVALID_PART_ID && !FindPartById(parentId))
+    {
+        return INVALID_PART_ID;
+    }
+
+    Part part{};
+    part.id = m_nextPartId++;
+    part.strName = name;
+    part.parentId = parentId;
+
+    m_vecPart.emplace_back(std::move(part));
+
+    return m_vecPart.back().id;
+}
+
+PartId Creature::CSkeleton::FindPartIdByName(const std::string_view name) const
 {
     const auto findPart = FindPartByName(name);
     return findPart ? findPart->id : INVALID_PART_ID;
 }
-

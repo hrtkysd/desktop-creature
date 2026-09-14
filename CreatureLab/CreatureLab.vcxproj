@@ -104,10 +104,10 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)CreatureCore;$(SolutionDir)third_party\imgui;
-$(SolutionDir)third_party\imgui\backends;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)CreatureCore;$(SolutionDir)Renderer;$(SolutionDir)third_party\imgui;$(SolutionDir)third_party\imgui\backends</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -123,10 +123,10 @@ $(SolutionDir)third_party\imgui\backends;</AdditionalIncludeDirectories>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)CreatureCore;$(SolutionDir)third_party\imgui;
-$(SolutionDir)third_party\imgui\backends;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)CreatureCore;$(SolutionDir)Renderer;$(SolutionDir)third_party\imgui;$(SolutionDir)third_party\imgui\backends</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -192,6 +192,9 @@ $(SolutionDir)third_party\imgui\backends;</AdditionalIncludeDirectories>
   <ItemGroup>
     <ProjectReference Include="..\CreatureCore\CreatureCore.vcxproj">
       <Project>{b98ee4d3-696d-4f09-a913-eb07d21b34c1}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Renderer\Renderer.vcxproj">
+      <Project>{2c2120c9-9b05-4ba5-a012-b0e0e0850058}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

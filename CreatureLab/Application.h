@@ -1,6 +1,9 @@
 #pragma once
 
+#include "Creature.h"
 #include "Genome.h"
+
+class CTextureCache;
 
 class CApp final
 {
@@ -20,6 +23,7 @@ private:
     bool CreateDeviceD3D();
     bool CreateRenderTarget();
     bool InitializeImGui();
+    void InitializeCreature();
 
     void CleanupRenderTarget();
     void Shutdown();
@@ -48,6 +52,9 @@ private:
     Microsoft::WRL::ComPtr<ID3D11RenderTargetView> m_renderTargetView;
 
     Creature::Genome m_genome;
+    Creature::CCreature m_creature;
+
+    std::shared_ptr<CTextureCache> m_textureCache;
 
     bool m_bImGuiInitialized;
 };
