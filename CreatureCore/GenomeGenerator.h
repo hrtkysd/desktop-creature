@@ -2,7 +2,10 @@
 
 #include <cstdint>
 
-struct Genome;
+namespace Creature
+{
+    struct Genome;
+}
 
 class CGenomeGenerator
 {
@@ -10,5 +13,5 @@ private:
 	CGenomeGenerator() = delete;
 	~CGenomeGenerator() = delete;
 public:
-	static Genome Generate(uint32_t seed);
+	static Creature::Genome Generate(uint32_t seed);
 };

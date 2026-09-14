@@ -1,7 +1,10 @@
+#include "pch.h"
 #include "Genome.h"
 #include "GenomeGenerator.h"
 
 #include <random>
+
+using namespace Creature;
 
 namespace
 {

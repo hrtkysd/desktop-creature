@@ -1,6 +1,10 @@
+#include "pch.h"
 #include "Animation.h"
 #include "CreaturePose.h"
 #include <cmath>
+
+using namespace Creature;
+using namespace Animation;
 
 CAnimation::CAnimation()
     : m_pose(std::make_unique<CreaturePose>())
@@ -11,7 +15,7 @@ void CAnimation::Update(float deltaTime, AnimationState state, float velocityX)
 {
     m_time += deltaTime;
 
-    // –ˆƒtƒŒ[ƒ€‰Šúp¨‚É–ß‚·
+    // æ¯ãƒ•ãƒ¬ãƒ¼ãƒ åˆæœŸå§¿å‹¢ã«æˆ»ã™
     m_pose = std::make_unique<CreaturePose>();
 
     switch (state)
@@ -59,10 +63,15 @@ void CAnimation::Update(float deltaTime, AnimationState state, float velocityX)
     }
 
     case AnimationState::Sleep:
-        // Œã‚ÅÀ‘•
+        // å¾Œã§å®Ÿè£…
         break;
     }
 
     m_pose->blink =
         std::fmod(m_time, 4.0f) > 3.85f;
+}
+
+const Creature::CreaturePose& Creature::Animation::CAnimation::GetPose() const noexcept
+{
+    return *m_pose;
 }

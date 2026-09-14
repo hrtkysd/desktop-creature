@@ -13,7 +13,7 @@
 constexpr int CREATURE_WIDTH = 64;
 constexpr int CREATURE_HEIGHT = 64;
 
-CCreature g_creature(95647);
+Creature::CCreature g_creature(95647);
 CBehaviorController g_controller;
 
 
@@ -44,7 +44,7 @@ LRESULT CALLBACK WindowProc(
             (GetAsyncKeyState(VK_LBUTTON) & 0x8000) != 0;
 
         //
-        // ˆÓvŒˆ’è
+        // æ„æ€æ±ºå®š
         //
         g_controller.Update(
             g_creature,
@@ -53,12 +53,12 @@ LRESULT CALLBACK WindowProc(
         );
 
         //
-        // ÀÛ‚ÌˆÊ’uXV
+        // å®Ÿéš›ã®ä½ç½®æ›´æ–°
         //
         g_creature.Update(deltaTime);
 
         //
-        // Win32 Window‚Ö”½‰f
+        // Win32 Windowã¸åæ˜ 
         //
         SetWindowPos(
             hwnd,
@@ -87,7 +87,7 @@ LRESULT CALLBACK WindowProc(
         GetClientRect(hwnd, &client);
 
         //
-        // ColorKey‚Å“§–¾‚É‚È‚é”wŒi
+        // ColorKeyã§é€æ˜ã«ãªã‚‹èƒŒæ™¯
         //
         HBRUSH background =
             CreateSolidBrush(RGB(0, 0, 0));
@@ -112,7 +112,7 @@ LRESULT CALLBACK WindowProc(
     }
 
     case WM_NCHITTEST:
-        // ƒ}ƒEƒX‘€ì‚ğ”wŒã‚ÌƒAƒvƒŠ‚É’Ê‚·
+        // ãƒã‚¦ã‚¹æ“ä½œã‚’èƒŒå¾Œã®ã‚¢ãƒ—ãƒªã«é€šã™
         return HTTRANSPARENT;
 
     case WM_DESTROY:
@@ -182,7 +182,7 @@ int WINAPI wWinMain(
     SetTimer(
         hwnd,
         1,
-        16, // –ñ60fps
+        16, // ç´„60fps
         nullptr
     );
 

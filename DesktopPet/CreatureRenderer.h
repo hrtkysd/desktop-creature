@@ -2,8 +2,11 @@
 
 #include <Windows.h>
 
-struct Genome;
-struct CreaturePose;
+namespace Creature
+{
+    struct Genome;
+    struct CreaturePose;
+}
 
 class CCreatureRenderer
 {
@@ -14,6 +17,6 @@ public:
     static void Draw(
         HDC hdc,
         const RECT& client,
-        const Genome& genome,
-        const CreaturePose& pose);
+        const Creature::Genome& genome,
+        const Creature::CreaturePose& pose);
 };
