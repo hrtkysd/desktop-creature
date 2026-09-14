@@ -5,8 +5,8 @@
 namespace Creature
 {
     struct Genome;
-    struct Appearance;
 
+    class Appearance;
     class CSkeleton;
 
     class CCreature

@@ -53,11 +53,14 @@
     <ClInclude Include="PartPose.h">
       <Filter>Animation</Filter>
     </ClInclude>
-    <ClInclude Include="Appearance.h">
+    <ClInclude Include="PartAppearance.h">
       <Filter>Animation</Filter>
     </ClInclude>
     <ClInclude Include="Creature.h">
       <Filter>Creature</Filter>
+    </ClInclude>
+    <ClInclude Include="Appearance.h">
+      <Filter>Animation</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -73,6 +76,9 @@
     </ClCompile>
     <ClCompile Include="Creature.cpp">
       <Filter>Creature</Filter>
+    </ClCompile>
+    <ClCompile Include="Appearance.cpp">
+      <Filter>Animation</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

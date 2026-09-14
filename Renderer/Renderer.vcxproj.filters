@@ -10,11 +10,13 @@
     <ClCompile Include="pch.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="TextureLoader.cpp" />
+    <ClCompile Include="TextureCache.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="TextureLoader.h" />
     <ClInclude Include="ImageData.h" />
+    <ClInclude Include="TextureCache.h" />
   </ItemGroup>
 </Project>
