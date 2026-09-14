@@ -3,16 +3,27 @@
 #include "Transform2D.h"
 #include "Vec2.h"
 
+#include <cstddef>
+#include <cstdint>
 #include <string>
 
 namespace Creature
 {
+    using PartId = std::uint32_t;
+    using PartSlot = std::size_t;
+
+    inline constexpr PartId INVALID_PART_ID = std::numeric_limits<PartId>::max();
+
+    /**
+     * @brief Represents creature's part properties.
+     */
     struct Part
     {
-        std::string strName;    // parts name. ex): Leg, Tail....
-        int iParent = -1;       // parent parts in skelton, root=-1.
+        PartId id = INVALID_PART_ID; // Stable part identifier for this part.
+        std::string strName;    // parts name. e.g. "Leg", "Tail"....
+        PartId parentId = INVALID_PART_ID; // Parent part identifier.
 
-        Math::Transform2D bindTransform{}; // standard attitudes towards parents.
-        Math::Vec2 pivot{};     // rotate central position of texture.
+        Math::Transform2D bindTransform{}; // bind transform relative to the parent
+        Math::Vec2 pivot{};     // Pivot point used for rotation and scaling.
     };
 }

@@ -143,13 +143,14 @@
   <ItemGroup>
     <ClInclude Include="Animation.h" />
     <ClInclude Include="AnimationTrack.h" />
+    <ClInclude Include="Appearance.h" />
     <ClInclude Include="Creature.h" />
     <ClInclude Include="CreaturePose.h" />
     <ClInclude Include="Genome.h" />
     <ClInclude Include="GenomeGenerator.h" />
     <ClInclude Include="Part.h" />
     <ClInclude Include="pch.h" />
-    <ClInclude Include="Skelton.h" />
+    <ClInclude Include="Skeleton.h" />
     <ClInclude Include="Transform2D.h" />
     <ClInclude Include="Vec2.h" />
   </ItemGroup>
@@ -164,7 +165,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="Skelton.cpp" />
+    <ClCompile Include="Skeleton.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

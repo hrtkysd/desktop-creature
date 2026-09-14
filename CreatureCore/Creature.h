@@ -2,48 +2,36 @@
 
 #include <memory>
 
-enum class Direction : uint8_t
-{
-    Horizontal,
-    Vertical,
-    Both
-};
-
 namespace Creature
 {
-    namespace Animation
-    {
-        class CAnimation;
-        enum class AnimationState;
-    }
-
     struct Genome;
+    struct Appearance;
+
+    class CSkeleton;
 
     class CCreature
     {
     public:
-        explicit CCreature(uint32_t seed);
+        CCreature();
         ~CCreature();
+    
+        CCreature(const CCreature&) = delete;
+        CCreature& operator=(const CCreature&) = delete;
+
+        CCreature(CCreature&&) noexcept;
+        CCreature& operator=(CCreature&&) noexcept;
     public:
-        const Creature::Genome& GetGenome() const;
-        void SetVelocity(Direction dir, float velocity);
-        float GetVelocityX(Direction dir);
+        const Genome& GetGenome() const;
+        Genome& GetGenome();
 
-        float GetPositionX();
-        float GetPositionY();
-        const Animation::CAnimation& GetAnimation();
-        void SetAnimationState(Animation::AnimationState state);
-        void Update(float deltaTime);
+        const CSkeleton& GetSkeleton() const;
+        CSkeleton& GetSkeleton();
+
+        const Appearance& GetAppearance() const;
+        Appearance& GetAppearance();
+
     private:
-        std::unique_ptr<const Creature::Genome> m_genome;
-        std::unique_ptr<Creature::Animation::CAnimation> m_animation;
-
-        Animation::AnimationState m_animationState;
-
-        float m_posX = 0.0f;
-        float m_posY = 0.0f;
-
-        float m_velocityX = 0.0f;
-        float m_velocityY = 0.0f;
+        struct Impl;
+        std::unique_ptr<Impl> m_impl;
     };
 }

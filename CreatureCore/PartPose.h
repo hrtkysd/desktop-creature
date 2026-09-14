@@ -6,6 +6,9 @@ namespace Creature
 {
     namespace Animation
     {
+        /**
+         * @brief Represents per-part pose of creature at a specific point in time. 
+         */
         struct PartPose
         {
             Math::Transform2D transform{};
