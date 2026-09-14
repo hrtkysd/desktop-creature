@@ -1,27 +1,87 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="ソース ファイル">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-    <Filter Include="ヘッダー ファイル">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
-    </Filter>
     <Filter Include="リソース ファイル">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="third_party">
+      <UniqueIdentifier>{7dee1e95-c259-451a-aca0-9a6b6352b2c8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="third_party\backends">
+      <UniqueIdentifier>{c4b0793c-b8f5-4ceb-9723-8404d1895206}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Application">
+      <UniqueIdentifier>{87f70ddf-637e-4cb1-8101-1b12bfc6cdd4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Panel">
+      <UniqueIdentifier>{1aaa2255-ae1b-4236-a90f-a760e08b2d91}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Animation">
+      <UniqueIdentifier>{a1f9d0ca-a99b-413a-9487-5e66d68ac2b2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="pch.h">
-      <Filter>ヘッダー ファイル</Filter>
+    <ClInclude Include="..\third_party\imgui\backends\imgui_impl_dx11.h">
+      <Filter>third_party\backends</Filter>
+    </ClInclude>
+    <ClInclude Include="..\third_party\imgui\backends\imgui_impl_win32.h">
+      <Filter>third_party\backends</Filter>
+    </ClInclude>
+    <ClInclude Include="..\third_party\imgui\imconfig.h">
+      <Filter>third_party</Filter>
+    </ClInclude>
+    <ClInclude Include="..\third_party\imgui\imgui.h">
+      <Filter>third_party</Filter>
+    </ClInclude>
+    <ClInclude Include="..\third_party\imgui\imgui_internal.h">
+      <Filter>third_party</Filter>
+    </ClInclude>
+    <ClInclude Include="pch.h" />
+    <ClInclude Include="Application.h">
+      <Filter>Application</Filter>
+    </ClInclude>
+    <ClInclude Include="ImGuiWindowScope.h" />
+    <ClInclude Include="GenomePanel.h">
+      <Filter>Panel</Filter>
+    </ClInclude>
+    <ClInclude Include="PreviewPanel.h">
+      <Filter>Panel</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="pch.cpp">
-      <Filter>ソース ファイル</Filter>
+    <ClCompile Include="..\third_party\imgui\imgui.cpp">
+      <Filter>third_party</Filter>
+    </ClCompile>
+    <ClCompile Include="..\third_party\imgui\imgui_demo.cpp">
+      <Filter>third_party</Filter>
+    </ClCompile>
+    <ClCompile Include="..\third_party\imgui\imgui_draw.cpp">
+      <Filter>third_party</Filter>
+    </ClCompile>
+    <ClCompile Include="..\third_party\imgui\imgui_tables.cpp">
+      <Filter>third_party</Filter>
+    </ClCompile>
+    <ClCompile Include="..\third_party\imgui\imgui_widgets.cpp">
+      <Filter>third_party</Filter>
+    </ClCompile>
+    <ClCompile Include="..\third_party\imgui\backends\imgui_impl_dx11.cpp">
+      <Filter>third_party\backends</Filter>
+    </ClCompile>
+    <ClCompile Include="..\third_party\imgui\backends\imgui_impl_win32.cpp">
+      <Filter>third_party\backends</Filter>
+    </ClCompile>
+    <ClCompile Include="pch.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="Application.cpp">
+      <Filter>Application</Filter>
+    </ClCompile>
+    <ClCompile Include="ImGuiWindowScope.cpp" />
+    <ClCompile Include="GenomePanel.cpp">
+      <Filter>Panel</Filter>
+    </ClCompile>
+    <ClCompile Include="PreviewPanel.cpp">
+      <Filter>Panel</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

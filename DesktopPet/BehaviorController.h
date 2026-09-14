@@ -1,6 +1,9 @@
 #pragma once
 
-class CCreature;
+namespace Creature
+{
+    class CCreature;
+}
 
 struct InputState
 {
@@ -23,7 +26,7 @@ class CBehaviorController
 {
 public:
     void Update(
-        CCreature& creature,
+        Creature::CCreature& creature,
         const InputState& input,
         float deltaTime);
 

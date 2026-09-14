@@ -6,6 +6,9 @@
 #include <cmath>
 #include <cstdlib>
 
+using namespace Creature;
+using namespace Creature::Animation;
+
 namespace
 {
     float Distance(
@@ -40,7 +43,7 @@ void CBehaviorController::Update(
         std::sqrt(dx * dx + dy * dy);
 
     //
-    // ƒ}ƒEƒX‚É‚æ‚éŠ„‚è‚İ
+    // ãƒã‚¦ã‚¹ã«ã‚ˆã‚‹å‰²ã‚Šè¾¼ã¿
     //
     if (mouseDistance < 100.0f &&
         genome.mouseReaction == MouseReaction::Flee)
@@ -60,7 +63,7 @@ void CBehaviorController::Update(
             AnimationState::Idle);
 
         //
-        // 2•b‚­‚ç‚¢~‚Ü‚Á‚½‚ç•à‚­
+        // 2ç§’ãã‚‰ã„æ­¢ã¾ã£ãŸã‚‰æ­©ã
         //
         if (m_stateTime >= 2.0f)
         {
@@ -80,7 +83,7 @@ void CBehaviorController::Update(
             AnimationState::Walk);
 
         //
-        // 3•b•à‚¢‚½‚ç‹x‚Ş
+        // 3ç§’æ­©ã„ãŸã‚‰ä¼‘ã‚€
         //
         if (m_stateTime >= 3.0f)
         {
@@ -93,7 +96,7 @@ void CBehaviorController::Update(
     case BehaviorState::FleeMouse:
     {
         //
-        // ƒ}ƒEƒX‚Æ‹t•ûŒü‚É“¦‚°‚é
+        // ãƒã‚¦ã‚¹ã¨é€†æ–¹å‘ã«é€ƒã’ã‚‹
         //
         const float direction =
             input.mouseX < creature.GetPositionX()
@@ -108,7 +111,7 @@ void CBehaviorController::Update(
             AnimationState::Run);
 
         //
-        // \•ª—£‚ê‚½‚ç’Êíó‘Ô‚Ö
+        // ååˆ†é›¢ã‚ŒãŸã‚‰é€šå¸¸çŠ¶æ…‹ã¸
         //
         if (mouseDistance > 200.0f)
         {

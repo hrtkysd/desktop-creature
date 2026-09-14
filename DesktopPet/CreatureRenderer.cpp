@@ -5,6 +5,8 @@
 #include <cmath>
 #include <iterator>
 
+using namespace Creature;
+
 namespace 
 {
     int GetLegCount(Legs legs)
@@ -34,7 +36,7 @@ void CCreatureRenderer::Draw(HDC hdc, const RECT& client, const Genome& genome, 
         (client.bottom - client.top) * 0.5f;
 
     //
-    // Genomeã‚Ì‘ÌŠi
+    // Genomeä¸Šã®ä½“æ ¼
     //
     float bodyWidth = 44.0f * genome.scale;
     float bodyHeight = 38.0f * genome.scale;
@@ -58,7 +60,7 @@ void CCreatureRenderer::Draw(HDC hdc, const RECT& client, const Genome& genome, 
     }
 
     //
-    // Animation‚É‚æ‚é•ÏŒ`
+    // Animationã«ã‚ˆã‚‹å¤‰å½¢
     //
     bodyWidth *= pose.scaleX;
     bodyHeight *= pose.scaleY;
@@ -86,7 +88,7 @@ void CCreatureRenderer::Draw(HDC hdc, const RECT& client, const Genome& genome, 
             drawCenterY + bodyHeight * 0.5f);
 
     //
-    // ‚Æ‚è‚ ‚¦‚¸Seed‚©‚çŒÂ‘ÌF
+    // ã¨ã‚Šã‚ãˆãšSeedã‹ã‚‰å€‹ä½“è‰²
     //
     const BYTE red =
         static_cast<BYTE>(
@@ -117,7 +119,7 @@ void CCreatureRenderer::Draw(HDC hdc, const RECT& client, const Genome& genome, 
         SelectObject(hdc, outlinePen);
 
     //
-    // ‹r
+    // è„š
     //
     const int legCount =
         GetLegCount(genome.legs);
@@ -241,7 +243,7 @@ void CCreatureRenderer::Draw(HDC hdc, const RECT& client, const Genome& genome, 
                 - bodyHeight * 0.12f);
 
         //
-        // u‚«
+        // ç¬ã
         //
         if (pose.blink)
         {
@@ -274,7 +276,7 @@ void CCreatureRenderer::Draw(HDC hdc, const RECT& client, const Genome& genome, 
             eyeCenterY + EYE_H / 2);
 
         //
-        // •–Ú
+        // é»’ç›®
         //
         SelectObject(
             hdc,

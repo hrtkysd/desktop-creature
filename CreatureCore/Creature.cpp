@@ -1,8 +1,13 @@
+#include "pch.h"
+
 #include "Animation.h"
 #include "Creature.h"
 #include "CreaturePose.h"
 #include "Genome.h"
 #include "GenomeGenerator.h"
+
+using namespace Creature;
+using namespace Creature::Animation;
 
 CCreature::CCreature(uint32_t seed)
 	: m_genome(std::make_unique<Genome>(CGenomeGenerator::Generate(seed)))

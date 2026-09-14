@@ -1,14 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="ソース ファイル">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-    <Filter Include="ヘッダー ファイル">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
-    </Filter>
     <Filter Include="リソース ファイル">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
@@ -16,35 +8,14 @@
     <Filter Include="Creature">
       <UniqueIdentifier>{af643c33-313e-4327-b481-c9d8b5821ce9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Creature\Genome">
-      <UniqueIdentifier>{acdc3a7d-0a1f-433a-86e1-0024f2711307}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Creature\Genome\Generator">
-      <UniqueIdentifier>{fc0d905c-cd10-4f84-8a7c-e720d9ecec9b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Creature\Behavior">
       <UniqueIdentifier>{7515adcb-d7da-4bef-aaa8-54f744e8c44c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Creature\Animation">
-      <UniqueIdentifier>{24aff3a3-0804-4b9a-ae9c-dabb3cae4c18}</UniqueIdentifier>
     </Filter>
     <Filter Include="Render">
       <UniqueIdentifier>{7adcfe67-5f91-4c97-aa12-d41db13e45be}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="GenomeGenerator.cpp">
-      <Filter>Creature\Genome\Generator</Filter>
-    </ClCompile>
-    <ClCompile Include="Creature.cpp">
-      <Filter>Creature</Filter>
-    </ClCompile>
-    <ClCompile Include="Animation.cpp">
-      <Filter>Creature\Animation</Filter>
-    </ClCompile>
     <ClCompile Include="BehaviorController.cpp">
       <Filter>Creature\Behavior</Filter>
     </ClCompile>
@@ -52,30 +23,13 @@
       <Filter>Render</Filter>
     </ClCompile>
     <ClCompile Include="CreatureRenderer.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>Render</Filter>
     </ClCompile>
+    <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="GenomeGenerator.h">
-      <Filter>Creature\Genome\Generator</Filter>
-    </ClInclude>
-    <ClInclude Include="Genome.h">
-      <Filter>Creature\Genome</Filter>
-    </ClInclude>
-    <ClInclude Include="Features.h">
-      <Filter>Creature</Filter>
-    </ClInclude>
-    <ClInclude Include="Creature.h">
-      <Filter>Creature</Filter>
-    </ClInclude>
     <ClInclude Include="BehaviorController.h">
       <Filter>Creature\Behavior</Filter>
-    </ClInclude>
-    <ClInclude Include="CreaturePose.h">
-      <Filter>Creature</Filter>
-    </ClInclude>
-    <ClInclude Include="Animation.h">
-      <Filter>Creature\Animation</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
