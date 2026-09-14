@@ -177,6 +177,8 @@ int CApp::Run()
 {
     MSG msg{};
 
+
+
     while (msg.message != WM_QUIT)
     {
         while (PeekMessageW(
