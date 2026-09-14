@@ -7,7 +7,8 @@
 
 namespace Creature
 {
-    namespace Animation {
+    namespace Animation
+    {
         enum class AnimationProperty
         {
             PositionX,

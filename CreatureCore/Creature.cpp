@@ -1,76 +1,53 @@
 #include "pch.h"
-
-#include "Animation.h"
+#include "Appearance.h"
 #include "Creature.h"
-#include "CreaturePose.h"
 #include "Genome.h"
-#include "GenomeGenerator.h"
+#include "Skeleton.h"
 
 using namespace Creature;
-using namespace Creature::Animation;
 
-CCreature::CCreature(uint32_t seed)
-	: m_genome(std::make_unique<Genome>(CGenomeGenerator::Generate(seed)))
-	, m_animation(std::make_unique<CAnimation>())
+struct CCreature::Impl
 {
-}
+    Genome genome{};
+    Appearance appearance{};
+    CSkeleton skelton;
+};
+
+CCreature::CCreature()
+    : m_impl(std::make_unique<Impl>())
+{}
 
 CCreature::~CCreature() = default;
 
+CCreature::CCreature(CCreature&&) noexcept = default;
+CCreature& CCreature::operator=(CCreature&&) noexcept = default;
+
 const Genome& CCreature::GetGenome() const
 {
-	return *m_genome;
+    return m_impl->genome;
 }
 
-void CCreature::SetVelocity(Direction dir, float velocity)
+Genome& CCreature::GetGenome()
 {
-	switch (dir)
-	{
-	case Direction::Horizontal:
-		m_velocityX = velocity;
-		break;
-	case Direction::Vertical:
-		m_velocityY = velocity;
-		break;
-	case Direction::Both:
-		m_velocityX = velocity;
-		m_velocityY = velocity;
-		break;
-	}
+    return m_impl->genome;
 }
 
-float CCreature::GetVelocityX(Direction dir)
+const CSkeleton& CCreature::GetSkeleton() const
 {
-	return m_velocityX;
+    return m_impl->skelton;
 }
 
-float CCreature::GetPositionX()
+CSkeleton& CCreature::GetSkeleton()
 {
-	return m_posX;
+    return m_impl->skelton;
 }
 
-float CCreature::GetPositionY()
+const Appearance& CCreature::GetAppearance() const
 {
-	return m_posY;
+    return m_impl->appearance;
 }
 
-const CAnimation& CCreature::GetAnimation()
+Appearance& CCreature::GetAppearance()
 {
-	return *m_animation;
-}
-
-void CCreature::SetAnimationState(AnimationState state)
-{
-	m_animationState = state;
-}
-
-void CCreature::Update(float deltaTime)
-{
-	m_posX += m_velocityX * deltaTime;
-	m_posY += m_velocityY * deltaTime;
-	m_animation->Update(
-		deltaTime,
-		m_animationState,
-		m_velocityX
-	);
+    return m_impl->appearance;
 }

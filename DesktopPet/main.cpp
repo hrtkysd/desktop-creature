@@ -13,7 +13,7 @@
 constexpr int CREATURE_WIDTH = 64;
 constexpr int CREATURE_HEIGHT = 64;
 
-Creature::CCreature g_creature(95647);
+//Creature::CCreature g_creature(95647);
 CBehaviorController g_controller;
 
 
@@ -46,21 +46,21 @@ LRESULT CALLBACK WindowProc(
         //
         // 意思決定
         //
-        g_controller.Update(
-            g_creature,
-            input,
-            deltaTime
-        );
+        //g_controller.Update(
+        //    g_creature,
+        //    input,
+        //    deltaTime
+        //);
 
         //
         // 実際の位置更新
         //
-        g_creature.Update(deltaTime);
+        //g_creature.Update(deltaTime);
 
         //
         // Win32 Windowへ反映
         //
-        SetWindowPos(
+    /*    SetWindowPos(
             hwnd,
             HWND_TOPMOST,
             static_cast<int>(g_creature.GetPositionX()),
@@ -68,7 +68,7 @@ LRESULT CALLBACK WindowProc(
             CREATURE_WIDTH,
             CREATURE_HEIGHT,
             SWP_NOACTIVATE
-        );
+        );*/
 
         InvalidateRect(
             hwnd,
@@ -99,12 +99,12 @@ LRESULT CALLBACK WindowProc(
 
         DeleteObject(background);
 
-        const auto& pose =
+   /*     const auto& pose =
             g_creature
             .GetAnimation()
             .GetPose();
 
-        CCreatureRenderer::Draw(hdc, client, g_creature.GetGenome(), pose);
+        CCreatureRenderer::Draw(hdc, client, g_creature.GetGenome(), pose);*/
 
         EndPaint(hwnd, &ps);
 

@@ -25,9 +25,6 @@
     <ClInclude Include="Animation.h">
       <Filter>Animation</Filter>
     </ClInclude>
-    <ClInclude Include="Creature.h">
-      <Filter>Creature</Filter>
-    </ClInclude>
     <ClInclude Include="GenomeGenerator.h">
       <Filter>Generator</Filter>
     </ClInclude>
@@ -41,7 +38,7 @@
     <ClInclude Include="Transform2D.h">
       <Filter>Math</Filter>
     </ClInclude>
-    <ClInclude Include="Skelton.h">
+    <ClInclude Include="Skeleton.h">
       <Filter>Creature</Filter>
     </ClInclude>
     <ClInclude Include="AnimationTrack.h">
@@ -56,19 +53,25 @@
     <ClInclude Include="PartPose.h">
       <Filter>Animation</Filter>
     </ClInclude>
+    <ClInclude Include="Appearance.h">
+      <Filter>Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="Creature.h">
+      <Filter>Creature</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Animation.cpp">
       <Filter>Animation</Filter>
     </ClCompile>
-    <ClCompile Include="Creature.cpp">
-      <Filter>Creature</Filter>
-    </ClCompile>
     <ClCompile Include="GenomeGenerator.cpp">
       <Filter>Generator</Filter>
     </ClCompile>
     <ClCompile Include="pch.cpp" />
-    <ClCompile Include="Skelton.cpp">
+    <ClCompile Include="Skeleton.cpp">
+      <Filter>Creature</Filter>
+    </ClCompile>
+    <ClCompile Include="Creature.cpp">
       <Filter>Creature</Filter>
     </ClCompile>
   </ItemGroup>
