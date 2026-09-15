@@ -35,6 +35,7 @@ CApp::CApp()
     : m_hWnd(nullptr)
     , m_hInstance(nullptr)
     , m_bImGuiInitialized(false)
+    , m_previewPanel(std::make_unique<CPreviewPanel>())
 {
 }
 
@@ -49,6 +50,7 @@ bool CApp::Initialize(
     if (!CreateMainWindow(hInstance, nCmdShow)) return false;
     if (!CreateDeviceD3D()) return false;
     if (!CreateRenderTarget()) return false;
+    InitializeCreature();
     if (!InitializeImGui()) return false;
 
     return true;
@@ -187,16 +189,12 @@ bool CApp::InitializeImGui()
 void CApp::InitializeCreature()
 {
     auto& skelton = m_creature.GetSkeleton();
-    const PartId bodyId = skelton.AddPart("Body");
-    const PartId headId = skelton.AddPart("Head", bodyId);
+    const auto bodyId = skelton.AddPart("Body");
+    const auto headId = skelton.AddPart("Head", bodyId);
 
-    m_creature.GetAppearance().SetTexture(
-        bodyId,
-        L"assets/body.png");
-
-    m_creature.GetAppearance().SetTexture(
-        headId,
-        L"assets/head.png");
+    auto& appearance = m_creature.GetAppearance();
+    appearance.SetTexture(bodyId, L"assets/body.png");
+    appearance.SetTexture(headId, L"assets/head.png");
 }
 
 int CApp::Run()
@@ -276,7 +274,7 @@ void CApp::Render()
         ImGuiDockNodeFlags_None);
 
     CGenomePanel::Draw(m_genome);
-    CPreviewPanel::Draw(m_genome, m_textureCache);
+    m_previewPanel->Draw(m_creature, *m_textureCache);
 
     ImGui::Render();
 

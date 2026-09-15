@@ -6,15 +6,33 @@ using namespace Creature;
 namespace
 {
     template <typename Predicate>
+    Creature::Part* FindPart(
+        std::vector<Creature::Part>& parts,
+        Predicate predicate)
+    {
+        const auto it = std::find_if(
+            parts.begin(),
+            parts.end(),
+            predicate);
+
+        return it != parts.end()
+            ? &(*it)
+            : nullptr;
+    }
+
+    template <typename Predicate>
     const Creature::Part* FindPart(
         const std::vector<Creature::Part>& parts,
         Predicate predicate)
     {
-        const auto itFound = std::find_if(parts.cbegin(), parts.cend(), predicate);
+        const auto it = std::find_if(
+            parts.cbegin(),
+            parts.cend(),
+            predicate);
 
-        if (itFound == parts.cend()) return nullptr;
-
-        return &(*itFound);
+        return it != parts.cend()
+            ? &(*it)
+            : nullptr;
     }
 }
 
@@ -28,9 +46,20 @@ std::vector<Part>& Creature::CSkeleton::Parts() noexcept
     return m_vecPart;
 }
 
+Part* Creature::CSkeleton::FindPartByName(std::string_view name)
+{
+    return FindPart(m_vecPart, [name](const Creature::Part& part) { return std::string_view(part.strName) == name; });
+}
+
 const Creature::Part* Creature::CSkeleton::FindPartByName(const std::string_view name) const
 {
     return FindPart(m_vecPart, [name](const Creature::Part& part){ return std::string_view(part.strName) == name; });
+}
+
+Part* Creature::CSkeleton::FindPartById(PartId id)
+{
+    if (id == INVALID_PART_ID) return nullptr;
+    return FindPart(m_vecPart, [id](const Creature::Part& part) { return part.id == id; });
 }
 
 const Creature::Part* Creature::CSkeleton::FindPartById(PartId id) const

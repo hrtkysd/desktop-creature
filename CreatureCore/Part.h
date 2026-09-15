@@ -23,7 +23,7 @@ namespace Creature
         std::string strName;    // parts name. e.g. "Leg", "Tail"....
         PartId parentId = INVALID_PART_ID; // Parent part identifier.
 
-        Math::Transform2D bindTransform{}; // bind transform relative to the parent
+        Math::CTransform2D bindTransform{}; // bind transform relative to the parent
         Math::Vec2 pivot{};     // Pivot point used for rotation and scaling.
     };
 }

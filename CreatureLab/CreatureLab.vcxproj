@@ -147,6 +147,7 @@
     <ClInclude Include="ImGuiWindowScope.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="PreviewPanel.h" />
+    <ClInclude Include="PreviewState.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\third_party\imgui\backends\imgui_impl_dx11.cpp">
