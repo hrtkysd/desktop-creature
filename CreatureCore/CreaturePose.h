@@ -12,11 +12,11 @@ namespace Creature
      */
     struct CreaturePose
     {
-        Math::Transform2D rootTransform {}; // Root transform applied to the entire creature.
+        Math::CTransform2D rootTransform {}; // Root transform applied to the entire creature.
         Math::Vec2 eyeOffset {}; // Offset applied to the eyes for gaze movement.
 
         bool blink = false; // Indicates whether the creature is currently blinking.
 
-        std::vector<Math::Transform2D> vecPartTransform; // Per-part transforms corresponding to the skeleton part indices.
+        std::vector<Math::CTransform2D> vecPartTransform; // Per-part transforms corresponding to the skeleton part indices.
     };
 }

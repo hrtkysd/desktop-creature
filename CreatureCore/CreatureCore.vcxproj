@@ -151,6 +151,8 @@
     <ClInclude Include="GenomeGenerator.h" />
     <ClInclude Include="Part.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="RectCorner.h" />
+    <ClInclude Include="TransformRect.h" />
     <ClInclude Include="Skeleton.h" />
     <ClInclude Include="Transform2D.h" />
     <ClInclude Include="Vec2.h" />
@@ -161,12 +163,16 @@
     <ClCompile Include="Creature.cpp" />
     <ClCompile Include="GenomeGenerator.cpp" />
     <ClInclude Include="PartPose.h" />
+    <ClInclude Include="Matrix3x2.h" />
+    <ClCompile Include="Matrix3x2.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Transform2D.cpp" />
+    <ClCompile Include="TransformRect.cpp" />
     <ClCompile Include="Skeleton.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

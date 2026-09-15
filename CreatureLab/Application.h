@@ -4,6 +4,7 @@
 #include "Genome.h"
 
 class CTextureCache;
+class CPreviewPanel;
 
 class CApp final
 {
@@ -56,5 +57,6 @@ private:
 
     std::shared_ptr<CTextureCache> m_textureCache;
 
+    std::unique_ptr<CPreviewPanel> m_previewPanel;
     bool m_bImGuiInitialized;
 };

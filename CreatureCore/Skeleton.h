@@ -13,7 +13,10 @@ namespace Creature
         const std::vector<Part>& Parts() const noexcept;
         std::vector<Part>& Parts() noexcept;
 
-        const Part* FindPartByName(const std::string_view name) const;
+        Part* FindPartByName(std::string_view name);
+        const Part* FindPartByName(std::string_view name) const;
+
+        Part* FindPartById(PartId id);
         const Part* FindPartById(PartId id) const;
 
         PartId FindPartIdByName(const std::string_view name) const;
