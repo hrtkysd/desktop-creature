@@ -3,6 +3,9 @@
 #include "Creature.h"
 #include "Genome.h"
 
+#include <filesystem>
+#include <windef.h>
+
 class CTextureCache;
 class CPreviewPanel;
 
@@ -30,6 +33,7 @@ private:
     void Shutdown();
 
     void Render();
+    void DrawMenuBar();
 
     LRESULT HandleMessage(
         HWND hWnd,
@@ -58,5 +62,6 @@ private:
     std::shared_ptr<CTextureCache> m_textureCache;
 
     std::unique_ptr<CPreviewPanel> m_previewPanel;
+    std::filesystem::path m_creatureFilePath;
     bool m_bImGuiInitialized;
 };

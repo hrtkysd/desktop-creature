@@ -22,6 +22,8 @@ namespace Creature
         PartId FindPartIdByName(const std::string_view name) const;
 
         PartId AddPart(const std::string_view name, PartId parentId = INVALID_PART_ID);
+        PartId AddPart(Part&& part);
+        bool AddPartWithId(Part&& part);
     private:
 
         std::vector<Part> m_vecPart;

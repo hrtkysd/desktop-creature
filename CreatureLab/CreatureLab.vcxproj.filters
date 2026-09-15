@@ -23,6 +23,9 @@
     <Filter Include="Panel\Preview">
       <UniqueIdentifier>{1cb3b404-80df-4409-a006-c046c619db58}</UniqueIdentifier>
     </Filter>
+    <Filter Include="misc">
+      <UniqueIdentifier>{1068c082-61c5-4286-bd31-5ba8d6d50048}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\third_party\imgui\backends\imgui_impl_dx11.h">
@@ -44,7 +47,6 @@
     <ClInclude Include="Application.h">
       <Filter>Application</Filter>
     </ClInclude>
-    <ClInclude Include="ImGuiWindowScope.h" />
     <ClInclude Include="GenomePanel.h">
       <Filter>Panel</Filter>
     </ClInclude>
@@ -53,6 +55,24 @@
     </ClInclude>
     <ClInclude Include="PreviewState.h">
       <Filter>Panel\Preview</Filter>
+    </ClInclude>
+    <ClInclude Include="Resize.h">
+      <Filter>Panel\Preview</Filter>
+    </ClInclude>
+    <ClInclude Include="Operation.h">
+      <Filter>Panel\Preview</Filter>
+    </ClInclude>
+    <ClInclude Include="ImGuiWindowScope.h">
+      <Filter>misc</Filter>
+    </ClInclude>
+    <ClInclude Include="ImGuiMenuScope.h">
+      <Filter>misc</Filter>
+    </ClInclude>
+    <ClInclude Include="ImGuiMainMenuBarScope.h">
+      <Filter>misc</Filter>
+    </ClInclude>
+    <ClInclude Include="FileOperation.h">
+      <Filter>misc</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -82,12 +102,21 @@
     <ClCompile Include="Application.cpp">
       <Filter>Application</Filter>
     </ClCompile>
-    <ClCompile Include="ImGuiWindowScope.cpp" />
     <ClCompile Include="GenomePanel.cpp">
       <Filter>Panel</Filter>
     </ClCompile>
     <ClCompile Include="PreviewPanel.cpp">
       <Filter>Panel\Preview</Filter>
     </ClCompile>
+    <ClCompile Include="ImGuiWindowScope.cpp">
+      <Filter>misc</Filter>
+    </ClCompile>
+    <ClCompile Include="ImGuiMenuScope.cpp">
+      <Filter>misc</Filter>
+    </ClCompile>
+    <ClCompile Include="ImGuiMainMenuBarScope.cpp">
+      <Filter>misc</Filter>
+    </ClCompile>
+    <ClCompile Include="FileOperation.cpp" />
   </ItemGroup>
 </Project>

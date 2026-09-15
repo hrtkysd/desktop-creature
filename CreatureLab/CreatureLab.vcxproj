@@ -143,8 +143,12 @@
     <ClInclude Include="..\third_party\imgui\imgui.h" />
     <ClInclude Include="..\third_party\imgui\imgui_internal.h" />
     <ClInclude Include="Application.h" />
+    <ClInclude Include="FileOperation.h" />
     <ClInclude Include="GenomePanel.h" />
+    <ClInclude Include="ImGuiMainMenuBarScope.h" />
+    <ClInclude Include="ImGuiMenuScope.h" />
     <ClInclude Include="ImGuiWindowScope.h" />
+    <ClInclude Include="Operation.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="PreviewPanel.h" />
     <ClInclude Include="PreviewState.h" />
@@ -179,7 +183,10 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Application.cpp" />
+    <ClCompile Include="FileOperation.cpp" />
     <ClCompile Include="GenomePanel.cpp" />
+    <ClCompile Include="ImGuiMainMenuBarScope.cpp" />
+    <ClCompile Include="ImGuiMenuScope.cpp" />
     <ClCompile Include="ImGuiWindowScope.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="pch.cpp">
@@ -189,6 +196,7 @@
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <ClCompile Include="PreviewPanel.cpp" />
+    <ClInclude Include="Resize.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CreatureCore\CreatureCore.vcxproj">

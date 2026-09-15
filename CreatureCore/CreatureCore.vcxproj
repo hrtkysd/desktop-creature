@@ -113,6 +113,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalIncludeDirectories>$(SolutionDir)third_party\json\single_include;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -131,6 +132,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalIncludeDirectories>$(SolutionDir)third_party\json\single_include;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -144,6 +146,7 @@
     <ClInclude Include="Animation.h" />
     <ClInclude Include="AnimationTrack.h" />
     <ClInclude Include="Appearance.h" />
+    <ClInclude Include="CreatureIO.h" />
     <ClInclude Include="PartAppearance.h" />
     <ClInclude Include="Creature.h" />
     <ClInclude Include="CreaturePose.h" />
@@ -161,6 +164,7 @@
     <ClCompile Include="Animation.cpp" />
     <ClCompile Include="Appearance.cpp" />
     <ClCompile Include="Creature.cpp" />
+    <ClCompile Include="CreatureIO.cpp" />
     <ClCompile Include="GenomeGenerator.cpp" />
     <ClInclude Include="PartPose.h" />
     <ClInclude Include="Matrix3x2.h" />
