@@ -117,6 +117,8 @@
     <ClCompile Include="ImGuiMainMenuBarScope.cpp">
       <Filter>misc</Filter>
     </ClCompile>
-    <ClCompile Include="FileOperation.cpp" />
+    <ClCompile Include="FileOperation.cpp">
+      <Filter>misc</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
