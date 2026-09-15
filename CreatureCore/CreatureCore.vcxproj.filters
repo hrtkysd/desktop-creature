@@ -20,6 +20,9 @@
     <Filter Include="Math">
       <UniqueIdentifier>{f253d5f3-692e-4e8d-9922-f312870ca5a4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="IO">
+      <UniqueIdentifier>{4ad1901f-ce8d-46c0-8bcf-25892e7ee1dd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Animation.h">
@@ -71,6 +74,9 @@
     <ClInclude Include="RectCorner.h">
       <Filter>Math</Filter>
     </ClInclude>
+    <ClInclude Include="CreatureIO.h">
+      <Filter>IO</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Animation.cpp">
@@ -97,6 +103,9 @@
     </ClCompile>
     <ClCompile Include="Transform2D.cpp">
       <Filter>Math</Filter>
+    </ClCompile>
+    <ClCompile Include="CreatureIO.cpp">
+      <Filter>IO</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

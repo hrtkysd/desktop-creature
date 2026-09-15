@@ -1,23 +1,28 @@
 #include "pch.h"
 
-// third party
-#include "imgui.h"
-#include "imgui_impl_win32.h"
-#include "imgui_impl_dx11.h"
-#include "imgui_internal.h"
-
 #include "Appearance.h"
 #include "Application.h"
 #include "Creature.h"
+#include "CreatureIO.h"
+#include "FileOperation.h"
 #include "Skeleton.h"
 #include "GenomePanel.h"
+#include "ImGuiMainMenuBarScope.h"
+#include "ImGuiMenuScope.h"
 #include "ImGuiWindowScope.h"
 #include "Part.h"
 #include "PreviewPanel.h"
 #include "TextureCache.h"
 #include "TextureLoader.h"
 
+// third party
+#include "imgui.h"
+#include "imgui_impl_win32.h"
+#include "imgui_impl_dx11.h"
+#include "imgui_internal.h"
+
 using namespace Creature;
+using namespace Creature::IO;
 
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(
     HWND hWnd,
@@ -191,10 +196,16 @@ void CApp::InitializeCreature()
     auto& skelton = m_creature.GetSkeleton();
     const auto bodyId = skelton.AddPart("Body");
     const auto headId = skelton.AddPart("Head", bodyId);
+    const auto eyesId = skelton.AddPart("Eyes", headId);
+    const auto leftEarId = skelton.AddPart("LeftEar", headId);
+    const auto rightEarId = skelton.AddPart("RightEar", headId);
 
     auto& appearance = m_creature.GetAppearance();
     appearance.SetTexture(bodyId, L"assets/body.png");
     appearance.SetTexture(headId, L"assets/head.png");
+    appearance.SetTexture(eyesId, L"assets/eyes.png");
+    appearance.SetTexture(leftEarId, L"assets/left_ear.png");
+    appearance.SetTexture(rightEarId, L"assets/right_ear.png");
 }
 
 int CApp::Run()
@@ -272,10 +283,10 @@ void CApp::Render()
         dockspaceId,
         viewport,
         ImGuiDockNodeFlags_None);
+    DrawMenuBar();
 
     CGenomePanel::Draw(m_genome);
     m_previewPanel->Draw(m_creature, *m_textureCache);
-
     ImGui::Render();
 
     constexpr float clearColor[] =
@@ -301,6 +312,31 @@ void CApp::Render()
         ImGui::GetDrawData());
 
     m_swapChain->Present(1, 0);
+}
+
+void CApp::DrawMenuBar()
+{
+    if (CImGuiMainMenuBarScope menuBar{})
+    {
+        if (CImGuiMenuScope fileMenu{ "File" })
+        {
+            if (ImGui::MenuItem("Save As..."))
+            {
+                const auto path = CFileOperation::ShowSaveCreatureDialog(m_hWnd);
+                if (path.empty() || !CCreatureIO::SaveAsFile(m_creature, path)) return;
+                m_creatureFilePath = path;
+            }
+            else if (ImGui::MenuItem("Load From..."))
+            {
+                const auto path = CFileOperation::ShowOpenCreatureDialog(m_hWnd);
+                if (path.empty()) return;
+                CCreature creature;
+                if (!CCreatureIO::LoadFromFile(path, creature)) return;
+                m_creature = std::move(creature);
+                m_creatureFilePath = path;
+            }
+        }
+    }
 }
 
 void CApp::Shutdown()

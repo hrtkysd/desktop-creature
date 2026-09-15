@@ -85,6 +85,29 @@ PartId Creature::CSkeleton::AddPart(const std::string_view name, PartId parentId
     return m_vecPart.back().id;
 }
 
+PartId  Creature::CSkeleton::AddPart(Part&& part)
+{
+    part.id = m_nextPartId++;
+
+    const auto partId = part.id;
+    m_vecPart.emplace_back(std::move(part));
+
+    return partId;
+}
+
+bool Creature::CSkeleton::AddPartWithId(Part&& part)
+{
+    if (part.id == INVALID_PART_ID) return false;
+
+    if (FindPartById(part.id)) return false;
+
+    m_nextPartId = std::max(m_nextPartId, part.id + 1);
+
+    m_vecPart.emplace_back(std::move(part));
+
+    return true;
+}
+
 PartId Creature::CSkeleton::FindPartIdByName(const std::string_view name) const
 {
     const auto findPart = FindPartByName(name);
