@@ -34,7 +34,7 @@ class CPreviewPanel
 public:
     explicit CPreviewPanel(
         const Creature::CCreature& creature,
-        CLabController& labController,
+        CCreatureEditor& editor,
         CEditorContext& context);
 public:
     void Draw(
@@ -78,7 +78,7 @@ private:
         const Creature::Math::CMatrix3x2& previewTransform);
 private:
     const Creature::CCreature& m_creature;
-    CLabController& m_labController;
+    CCreatureEditor& m_editor;
     CEditorContext& m_editorContext;
     ResizeState m_resizeState{};
     Operation m_operation{};
