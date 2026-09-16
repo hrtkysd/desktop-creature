@@ -12,7 +12,7 @@ CTransformRect::CTransformRect(const Vec2& size, const CMatrix3x2& transform)
 {
 }
 
-RectCorner CTransformRect::Corners() const
+RectCorner CTransformRect::Corner() const
 {
     const Vec2 half{
          m_size.x * 0.5f,

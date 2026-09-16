@@ -23,6 +23,11 @@ const Vec2& CTransform2D::GetPosition() const
     return m_position;
 }
 
+void CTransform2D::SetPosition(const Vec2& position)
+{
+    m_position = position;
+}
+
 Vec2& CTransform2D::GetScale()
 {
     return m_scale;

@@ -15,6 +15,7 @@ namespace Creature
         public:
             Vec2& GetPosition();
             const Vec2& GetPosition() const;
+            void SetPosition(const Vec2& position);
 
             Vec2& GetScale();
             const Vec2& GetScale() const;

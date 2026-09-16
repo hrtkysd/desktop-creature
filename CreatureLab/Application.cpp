@@ -39,6 +39,7 @@ CApp::CApp()
     , m_editorController(m_creature, m_animationPlayer, m_editorContext)
     , m_labController(m_editorContext, m_documentController, m_editorController, m_creatureEditor)
     , m_menuBar(m_labController)
+    , m_previewPanel(m_creature, m_labController, m_editorContext)
 {
 }
 
@@ -288,7 +289,7 @@ void CApp::Render()
 
     const auto& pose = m_animationPlayer.GetPose();
     CGenomePanel::Draw(m_genome);
-    m_previewPanel.Draw(m_creature, pose, *m_textureCache);
+    m_previewPanel.Draw(pose, *m_textureCache);
     ImGui::Render();
 
     constexpr float clearColor[] =

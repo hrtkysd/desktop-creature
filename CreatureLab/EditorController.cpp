@@ -4,6 +4,7 @@
 #include "EditorCommand.h"
 #include "EditorContext.h"
 #include "EditorController.h"
+#include "Skeleton.h"
 
 using namespace Creature;
 using namespace Creature::Animation;
@@ -22,15 +23,15 @@ void CEditorController::Execute(EditorCommand command)
     case EditorCommand::PlayAnimation:
         m_animationPlayer.Play();
         break;
-
     case EditorCommand::StopAnimation:
         m_animationPlayer.Stop();
         break;
-
     case EditorCommand::PauseAnimation:
         m_animationPlayer.Pause();
         break;
-
+    case EditorCommand::DeletePart:
+        m_creature.GetSkeleton().RemovePart(m_context.GetPartId());
+        break;
     default:
         break;
     }
