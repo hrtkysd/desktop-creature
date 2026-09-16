@@ -4,22 +4,9 @@
 #include "AnimationTrack.h"
 #include "Appearance.h"
 #include "Application.h"
-#include "Creature.h"
-#include "CreatureEditor.h"
-#include "DocumentContext.h"
-#include "DocumentController.h"
-#include "EditorContext.h"
-#include "EditorController.h"
-#include "FileOperation.h"
 #include "GenomePanel.h"
-#include "LabController.h"
-#include "MenuBar.h"
 #include "Skeleton.h"
-#include "ImGuiMainMenuBarScope.h"
-#include "ImGuiMenuScope.h"
-#include "ImGuiWindowScope.h"
 #include "Part.h"
-#include "PreviewPanel.h"
 #include "TextureCache.h"
 #include "TextureLoader.h"
 
@@ -32,23 +19,26 @@
 using namespace Creature;
 using namespace Creature::Animation;
 
-extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(
-    HWND hWnd,
-    UINT msg,
-    WPARAM wParam,
-    LPARAM lParam);
-
 namespace
 {
     constexpr wchar_t kWindowClassName[] = L"CreatureLabWindow";
     constexpr wchar_t kWindowTitle[] = L"Creature Lab";
 }
 
+extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(
+    HWND hWnd,
+    UINT msg,
+    WPARAM wParam,
+    LPARAM lParam);
+
 CApp::CApp()
-    : m_hWnd(nullptr)
-    , m_hInstance(nullptr)
+    : m_hInstance(nullptr)
     , m_bImGuiInitialized(false)
-    , m_previewPanel(std::make_unique<CPreviewPanel>())
+    , m_creatureEditor(m_creature)
+    , m_documentController(m_window, m_creature, m_documentContext)
+    , m_editorController(m_creature, m_animationPlayer, m_editorContext)
+    , m_labController(m_editorContext, m_documentController, m_editorController, m_creatureEditor)
+    , m_menuBar(m_labController)
 {
 }
 
@@ -68,8 +58,6 @@ bool CApp::Initialize(
 
     if (!InitializeImGui()) return false;
 
-    SetupEditor();
-
     return true;
 }
 
@@ -88,24 +76,10 @@ bool CApp::CreateMainWindow(
 
     if (!RegisterClassExW(&wc)) return false;
 
-    m_hWnd = CreateWindowExW(
-        0,
-        kWindowClassName,
-        kWindowTitle,
-        WS_OVERLAPPEDWINDOW,
-        CW_USEDEFAULT,
-        CW_USEDEFAULT,
-        1280,
-        800,
-        nullptr,
-        nullptr,
-        hInstance,
-        this);
-
-    if (!m_hWnd) return false;
-
-    ShowWindow(m_hWnd, nCmdShow);
-    UpdateWindow(m_hWnd);
+    m_window.Create(hInstance, kWindowClassName, kWindowTitle, 1280, 800);
+   
+    ShowWindow(m_window.Handle(), nCmdShow);
+    UpdateWindow(m_window.Handle());
 
     return true;
 }
@@ -117,7 +91,7 @@ bool CApp::CreateDeviceD3D()
     desc.BufferCount = 2;
     desc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
     desc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-    desc.OutputWindow = m_hWnd;
+    desc.OutputWindow = m_window.Handle();
     desc.SampleDesc.Count = 1;
     desc.Windowed = TRUE;
     desc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
@@ -185,7 +159,7 @@ bool CApp::InitializeImGui()
 
     ImGui::StyleColorsDark();
 
-    if (!ImGui_ImplWin32_Init(m_hWnd))
+    if (!ImGui_ImplWin32_Init(m_window.Handle()))
     {
         return false;
     }
@@ -230,25 +204,6 @@ void CApp::InitializeCreature()
     m_idleAnimation.SetDuration(1.0f);
     m_idleAnimation.AddAnimationTrack(
         std::move(headRotation));
-}
-
-void CApp::SetupEditor()
-{
-    m_editorContext = std::make_unique<CEditorContext>();
-    m_documentContext = std::make_unique<CDocumentContext>();
-
-    m_creatureEditor = std::make_unique<CCreatureEditor>(m_creature);
-
-    m_editorController = std::make_unique<CEditorController>(m_creature, m_animationPlayer, *m_editorContext);
-    m_documentController = std::make_unique<CDocumentController>(m_hWnd, m_creature, *m_documentContext);
-    m_labController = std::make_unique<CLabController>(
-        *m_editorContext,
-        *m_documentController,
-        *m_editorController,
-        *m_creatureEditor
-    );
-
-    m_menuBar = std::make_unique<CMenuBar>(*m_labController);
 }
 
 int CApp::Run()
@@ -326,14 +281,14 @@ void CApp::Render()
         dockspaceId,
         viewport,
         ImGuiDockNodeFlags_None);
-    m_menuBar->Render(*m_editorContext);
+    m_menuBar.Render(m_editorContext);
 
     m_animationPlayer.Update(ImGui::GetIO().DeltaTime);
     m_animationPlayer.SamplePose(m_idleAnimation, m_creature.GetSkeleton());
 
     const auto& pose = m_animationPlayer.GetPose();
     CGenomePanel::Draw(m_genome);
-    m_previewPanel->Draw(m_creature, pose, *m_textureCache);
+    m_previewPanel.Draw(m_creature, pose, *m_textureCache);
     ImGui::Render();
 
     constexpr float clearColor[] =
@@ -377,12 +332,6 @@ void CApp::Shutdown()
     m_deviceContext.Reset();
     m_device.Reset();
 
-    if (m_hWnd)
-    {
-        DestroyWindow(m_hWnd);
-        m_hWnd = nullptr;
-    }
-
     if (m_hInstance)
     {
         UnregisterClassW(
@@ -411,7 +360,7 @@ LRESULT CALLBACK CApp::WndProc(
             GWLP_USERDATA,
             reinterpret_cast<LONG_PTR>(pApp));
 
-        pApp->m_hWnd = hWnd;
+        pApp->m_window.Attach(hWnd);
     }
     else
     {

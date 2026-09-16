@@ -116,6 +116,9 @@
     <ClInclude Include="DocumentContext.h">
       <Filter>Document</Filter>
     </ClInclude>
+    <ClInclude Include="Window.h">
+      <Filter>Document</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\third_party\imgui\imgui.cpp">
@@ -182,6 +185,9 @@
     </ClCompile>
     <ClCompile Include="CreatureEditor.cpp">
       <Filter>Edit</Filter>
+    </ClCompile>
+    <ClCompile Include="Window.cpp">
+      <Filter>Document</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -5,12 +5,13 @@
 #include "DocumentCommand.h"
 #include "DocumentContext.h"
 #include "DocumentController.h"
+#include "Window.h"
 
 using namespace Creature;
 using namespace Creature::IO;
 
-CDocumentController::CDocumentController(HWND hAppWnd, CCreature& creature, CDocumentContext& context)
-    : m_hAppWnd(hAppWnd)
+CDocumentController::CDocumentController(CWindow& appWindow, CCreature& creature, CDocumentContext& context)
+    : m_appWindow(appWindow)
     , m_creature(creature)
     , m_context(context)
 {
@@ -27,14 +28,14 @@ void CDocumentController::Execute(DocumentCommand command)
     {
     case DocumentCommand::SaveAs:
     {
-        auto path = CFileOperation::ShowSaveCreatureDialog(m_hAppWnd);
+        auto path = CFileOperation::ShowSaveCreatureDialog(m_appWindow.Handle());
         if (path.empty() || !CCreatureIO::SaveAsFile(m_creature, path)) return;
         m_context.SetPath(std::move(path));
     }
     break;
     case DocumentCommand::LoadFrom:
     {
-        const auto path = CFileOperation::ShowOpenCreatureDialog(m_hAppWnd);
+        const auto path = CFileOperation::ShowOpenCreatureDialog(m_appWindow.Handle());
         if (path.empty()) return;
         CCreature creature;
         if (!CCreatureIO::LoadFromFile(path, creature)) return;
