@@ -65,8 +65,16 @@ private:
         const Creature::Math::CMatrix3x2& previewTransform);
     void EndOperation();
 
-    bool TryBeginResize(
-        const CRenderPartItem& view,
+    void Select(const CRenderPartItem* view);
+
+    void BeginSelect(
+        const std::vector<CRenderPartItem>& vecPartView,
+        const Creature::Math::Vec2& mousePosition);
+    void BeginMove(
+        const std::vector<CRenderPartItem>& vecPartView,
+        const Creature::Math::Vec2& mousePosition);
+    void BeginScale(
+        const std::vector<CRenderPartItem>& vecPartView,
         const Creature::Math::Vec2& mousePosition);
 
     void MovePart(
