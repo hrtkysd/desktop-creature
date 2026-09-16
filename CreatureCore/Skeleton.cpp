@@ -1,6 +1,9 @@
 #include "pch.h"
 #include "Skeleton.h"
 
+#include <unordered_set>
+#include <iterator>
+
 using namespace Creature;
 
 namespace
@@ -36,39 +39,39 @@ namespace
     }
 }
 
-const std::vector<Part>& Creature::CSkeleton::Parts() const noexcept
+const std::vector<Part>& CSkeleton::Parts() const noexcept
 {
     return m_vecPart;
 }
 
-std::vector<Part>& Creature::CSkeleton::Parts() noexcept
+std::vector<Part>& CSkeleton::Parts() noexcept
 {
     return m_vecPart;
 }
 
-Part* Creature::CSkeleton::FindPartByName(std::string_view name)
+Part* CSkeleton::FindPartByName(std::string_view name)
 {
     return FindPart(m_vecPart, [name](const Creature::Part& part) { return std::string_view(part.strName) == name; });
 }
 
-const Creature::Part* Creature::CSkeleton::FindPartByName(const std::string_view name) const
+const Part* CSkeleton::FindPartByName(const std::string_view name) const
 {
-    return FindPart(m_vecPart, [name](const Creature::Part& part){ return std::string_view(part.strName) == name; });
+    return FindPart(m_vecPart, [name](const Part& part){ return std::string_view(part.strName) == name; });
 }
 
-Part* Creature::CSkeleton::FindPartById(PartId id)
-{
-    if (id == INVALID_PART_ID) return nullptr;
-    return FindPart(m_vecPart, [id](const Creature::Part& part) { return part.id == id; });
-}
-
-const Creature::Part* Creature::CSkeleton::FindPartById(PartId id) const
+Part* CSkeleton::FindPartById(PartId id)
 {
     if (id == INVALID_PART_ID) return nullptr;
-    return FindPart(m_vecPart, [id](const Creature::Part& part) { return part.id == id; });
+    return FindPart(m_vecPart, [id](const Part& part) { return part.id == id; });
 }
 
-PartId Creature::CSkeleton::AddPart(const std::string_view name, PartId parentId)
+const Part* CSkeleton::FindPartById(PartId id) const
+{
+    if (id == INVALID_PART_ID) return nullptr;
+    return FindPart(m_vecPart, [id](const Part& part) { return part.id == id; });
+}
+
+PartId CSkeleton::AddPart(const std::string_view name, PartId parentId)
 {
     if (parentId != INVALID_PART_ID && !FindPartById(parentId))
     {
@@ -85,7 +88,7 @@ PartId Creature::CSkeleton::AddPart(const std::string_view name, PartId parentId
     return m_vecPart.back().id;
 }
 
-PartId  Creature::CSkeleton::AddPart(Part&& part)
+PartId  CSkeleton::AddPart(Part&& part)
 {
     part.id = m_nextPartId++;
 
@@ -95,7 +98,7 @@ PartId  Creature::CSkeleton::AddPart(Part&& part)
     return partId;
 }
 
-bool Creature::CSkeleton::AddPartWithId(Part&& part)
+bool CSkeleton::AddPartWithId(Part&& part)
 {
     if (part.id == INVALID_PART_ID) return false;
 
@@ -108,8 +111,54 @@ bool Creature::CSkeleton::AddPartWithId(Part&& part)
     return true;
 }
 
-PartId Creature::CSkeleton::FindPartIdByName(const std::string_view name) const
+void CSkeleton::CollectDescendants(PartId parentId, std::unordered_set<PartId>& ids) const
+{
+    for (const auto& part : m_vecPart)
+    {
+        if (part.parentId == INVALID_PART_ID || part.parentId != parentId)
+        {
+            continue;
+        }
+
+        ids.insert(part.id);
+
+        CollectDescendants(part.id, ids);
+    }
+}
+
+bool CSkeleton::RemovePart(PartId id)
+{
+    if (FindPartIndexById(id) == INVALID_PART_INDEX) return false;
+
+    std::unordered_set<PartId> removeIds;
+    removeIds.insert(id);
+
+    CollectDescendants(id, removeIds);
+
+    m_vecPart.erase(
+        std::remove_if(
+            m_vecPart.begin(),
+            m_vecPart.end(),
+            [&removeIds](const Part& part)
+            {
+                return removeIds.find(part.id) != removeIds.cend();
+            }),
+        m_vecPart.end());
+
+    return true;
+}
+
+PartId CSkeleton::FindPartIdByName(const std::string_view name) const
 {
     const auto findPart = FindPartByName(name);
     return findPart ? findPart->id : INVALID_PART_ID;
+}
+
+int CSkeleton::FindPartIndexById(PartId id) const
+{
+    const auto itFind = std::find_if(m_vecPart.cbegin(), m_vecPart.cend(), [id](const Part& part) {
+        return part.id == id;
+    });
+    if (itFind == m_vecPart.cend()) return INVALID_PART_INDEX;
+    return static_cast<int>(std::distance(m_vecPart.begin(), itFind));
 }

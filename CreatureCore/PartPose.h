@@ -11,7 +11,7 @@ namespace Creature
          */
         struct PartPose
         {
-            Math::Transform2D transform{};
+            Math::CTransform2D transform{};
         };
     } // namespace Animation
 } // namespace Creature

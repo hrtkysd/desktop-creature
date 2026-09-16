@@ -144,6 +144,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Animation.h" />
+    <ClInclude Include="AnimationPlayer.h" />
     <ClInclude Include="AnimationTrack.h" />
     <ClInclude Include="Appearance.h" />
     <ClInclude Include="CreatureIO.h" />
@@ -162,6 +163,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Animation.cpp" />
+    <ClCompile Include="AnimationPlayer.cpp" />
+    <ClCompile Include="AnimationTrack.cpp" />
     <ClCompile Include="Appearance.cpp" />
     <ClCompile Include="Creature.cpp" />
     <ClCompile Include="CreatureIO.cpp" />

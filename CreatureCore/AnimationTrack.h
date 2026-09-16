@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Part.h"
 #include "Transform2D.h"
 
 #include <vector>
@@ -24,12 +25,25 @@ namespace Creature
             float fValue = 0.0f;
         };
 
-        struct AnimationTrack
+        class CAnimationTrack
         {
-            std::string strTargetPart;
-            AnimationProperty eProperty;
+        public:
+            float Sample(float fTime) const;
 
-            std::vector<FloatKeyFrame> vecKeyFrame;
+            PartId GetPartId() const;
+            void SetPartId(PartId id);
+
+            AnimationProperty GetAnimationProperty() const;
+            void SetAnimationProperty(AnimationProperty eProperty);
+
+            const std::vector<FloatKeyFrame>& GetKeyFrames() const;
+            void AddKeyFrame(FloatKeyFrame&& keyFrame);
+        private:
+
+            PartId m_targetPartId = INVALID_PART_ID;
+            AnimationProperty m_eProperty;
+
+            std::vector<FloatKeyFrame> m_vecKeyFrame;
         };
     } // namespace Animation
 } // namespace Creature

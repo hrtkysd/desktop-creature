@@ -12,7 +12,7 @@ namespace Creature
      */
     struct CreaturePose
     {
-        Math::CTransform2D rootTransform {}; // Root transform applied to the entire creature.
+        Math::CTransform2D rootTransform; // Root transform applied to the entire creature.
         Math::Vec2 eyeOffset {}; // Offset applied to the eyes for gaze movement.
 
         bool blink = false; // Indicates whether the creature is currently blinking.

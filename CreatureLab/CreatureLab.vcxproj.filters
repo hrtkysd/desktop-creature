@@ -26,6 +26,21 @@
     <Filter Include="misc">
       <UniqueIdentifier>{1068c082-61c5-4286-bd31-5ba8d6d50048}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Menu">
+      <UniqueIdentifier>{f8a46314-0975-4bdc-8271-e1d2644a3dd2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Edit">
+      <UniqueIdentifier>{59a05b7d-3e43-4805-b8a3-423619e2cbab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Controller">
+      <UniqueIdentifier>{1613591c-e8b8-40fb-b91b-1e6c8f0ab723}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Command">
+      <UniqueIdentifier>{3d31f920-8ff0-4cff-9d7f-0f4e59835845}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Document">
+      <UniqueIdentifier>{f88ec156-2c72-4399-aca7-08bbdb4567d2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\third_party\imgui\backends\imgui_impl_dx11.h">
@@ -74,6 +89,33 @@
     <ClInclude Include="FileOperation.h">
       <Filter>misc</Filter>
     </ClInclude>
+    <ClInclude Include="MenuBar.h">
+      <Filter>Menu</Filter>
+    </ClInclude>
+    <ClInclude Include="EditorContext.h">
+      <Filter>Edit</Filter>
+    </ClInclude>
+    <ClInclude Include="EditorController.h">
+      <Filter>Controller</Filter>
+    </ClInclude>
+    <ClInclude Include="LabController.h">
+      <Filter>Controller</Filter>
+    </ClInclude>
+    <ClInclude Include="CreatureEditor.h">
+      <Filter>Edit</Filter>
+    </ClInclude>
+    <ClInclude Include="DocumentController.h">
+      <Filter>Controller</Filter>
+    </ClInclude>
+    <ClInclude Include="EditorCommand.h">
+      <Filter>Command</Filter>
+    </ClInclude>
+    <ClInclude Include="DocumentCommand.h">
+      <Filter>Command</Filter>
+    </ClInclude>
+    <ClInclude Include="DocumentContext.h">
+      <Filter>Document</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\third_party\imgui\imgui.cpp">
@@ -119,6 +161,27 @@
     </ClCompile>
     <ClCompile Include="FileOperation.cpp">
       <Filter>misc</Filter>
+    </ClCompile>
+    <ClCompile Include="EditorContext.cpp">
+      <Filter>Edit</Filter>
+    </ClCompile>
+    <ClCompile Include="MenuBar.cpp">
+      <Filter>Menu</Filter>
+    </ClCompile>
+    <ClCompile Include="EditorController.cpp">
+      <Filter>Controller</Filter>
+    </ClCompile>
+    <ClCompile Include="LabController.cpp">
+      <Filter>Controller</Filter>
+    </ClCompile>
+    <ClCompile Include="DocumentContext.cpp">
+      <Filter>Document</Filter>
+    </ClCompile>
+    <ClCompile Include="DocumentController.cpp">
+      <Filter>Controller</Filter>
+    </ClCompile>
+    <ClCompile Include="CreatureEditor.cpp">
+      <Filter>Edit</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -1,11 +1,21 @@
 #pragma once
 
+#include "Animation.h"
+#include "AnimationPlayer.h"
+
 #include "Creature.h"
 #include "Genome.h"
 
 #include <filesystem>
 #include <windef.h>
 
+class CCreatureEditor;
+class CDocumentContext;
+class CDocumentController;
+class CEditorContext;
+class CEditorController;
+class CLabController;
+class CMenuBar;
 class CTextureCache;
 class CPreviewPanel;
 
@@ -29,11 +39,12 @@ private:
     bool InitializeImGui();
     void InitializeCreature();
 
+    void SetupEditor();
+
     void CleanupRenderTarget();
     void Shutdown();
 
     void Render();
-    void DrawMenuBar();
 
     LRESULT HandleMessage(
         HWND hWnd,
@@ -61,7 +72,20 @@ private:
 
     std::shared_ptr<CTextureCache> m_textureCache;
 
+    Creature::Animation::CAnimationPlayer m_animationPlayer;
+    Creature::Animation::CAnimation m_idleAnimation;
     std::unique_ptr<CPreviewPanel> m_previewPanel;
-    std::filesystem::path m_creatureFilePath;
+
+    std::unique_ptr<CEditorContext>      m_editorContext;
+    std::unique_ptr<CDocumentContext>    m_documentContext;
+
+    std::unique_ptr<CCreatureEditor>     m_creatureEditor;
+
+    std::unique_ptr<CDocumentController> m_documentController;
+    std::unique_ptr<CEditorController>   m_editorController;
+    std::unique_ptr<CLabController>      m_labController;
+
+    std::unique_ptr<CMenuBar>            m_menuBar;
+
     bool m_bImGuiInitialized;
 };

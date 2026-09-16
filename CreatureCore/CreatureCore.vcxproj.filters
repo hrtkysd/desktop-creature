@@ -25,7 +25,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Animation.h">
+    <ClInclude Include="AnimationPlayer.h">
       <Filter>Animation</Filter>
     </ClInclude>
     <ClInclude Include="GenomeGenerator.h">
@@ -77,9 +77,12 @@
     <ClInclude Include="CreatureIO.h">
       <Filter>IO</Filter>
     </ClInclude>
+    <ClInclude Include="Animation.h">
+      <Filter>Animation</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Animation.cpp">
+    <ClCompile Include="AnimationPlayer.cpp">
       <Filter>Animation</Filter>
     </ClCompile>
     <ClCompile Include="GenomeGenerator.cpp">
@@ -106,6 +109,12 @@
     </ClCompile>
     <ClCompile Include="CreatureIO.cpp">
       <Filter>IO</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimationTrack.cpp">
+      <Filter>Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="Animation.cpp">
+      <Filter>Animation</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

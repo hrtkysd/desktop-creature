@@ -1,11 +1,10 @@
 #pragma once
 
-#include <memory>
+#include <string>
+#include <vector>
 
 namespace Creature
 {
-    struct CreaturePose;
-
     namespace Animation
     {
         enum class AnimationState
@@ -16,23 +15,25 @@ namespace Creature
             Sleep
         };
 
+        class CAnimationTrack;
         class CAnimation
         {
         public:
             CAnimation();
+            CAnimation(const std::string& strName, float fDuration, const std::vector<CAnimationTrack>& vecAnimationTrack);
+            virtual ~CAnimation();
         public:
-            void Update(
-                float deltaTime,
-                AnimationState state,
-                float velocityX);
+            const std::string& GetName() const;
 
-            const CreaturePose& GetPose() const noexcept;
+            float GetDuration() const;
+            void SetDuration(float fDuration);
 
+            const std::vector<CAnimationTrack>& GetAnimationTrack() const;
+            void AddAnimationTrack(CAnimationTrack&& animationTrack);
         private:
-            float m_time = 0.0f;
-            float m_blinkTimer = 0.0f;
-
-            std::unique_ptr<Creature::CreaturePose> m_pose{};
+            std::string m_strName;
+            float m_fDuration = 0.0f;
+            std::vector<CAnimationTrack> m_vecAnimationTrack;
         };
     } // namespace Animation
 } // namespace Creature

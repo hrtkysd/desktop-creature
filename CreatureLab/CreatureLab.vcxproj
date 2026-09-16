@@ -143,11 +143,20 @@
     <ClInclude Include="..\third_party\imgui\imgui.h" />
     <ClInclude Include="..\third_party\imgui\imgui_internal.h" />
     <ClInclude Include="Application.h" />
+    <ClInclude Include="CreatureEditor.h" />
+    <ClInclude Include="DocumentCommand.h" />
+    <ClInclude Include="DocumentContext.h" />
+    <ClInclude Include="DocumentController.h" />
+    <ClInclude Include="EditorCommand.h" />
+    <ClInclude Include="EditorContext.h" />
+    <ClInclude Include="EditorController.h" />
     <ClInclude Include="FileOperation.h" />
     <ClInclude Include="GenomePanel.h" />
     <ClInclude Include="ImGuiMainMenuBarScope.h" />
     <ClInclude Include="ImGuiMenuScope.h" />
     <ClInclude Include="ImGuiWindowScope.h" />
+    <ClInclude Include="LabController.h" />
+    <ClInclude Include="MenuBar.h" />
     <ClInclude Include="Operation.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="PreviewPanel.h" />
@@ -183,12 +192,19 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Application.cpp" />
+    <ClCompile Include="CreatureEditor.cpp" />
+    <ClCompile Include="DocumentContext.cpp" />
+    <ClCompile Include="DocumentController.cpp" />
+    <ClCompile Include="EditorContext.cpp" />
+    <ClCompile Include="EditorController.cpp" />
     <ClCompile Include="FileOperation.cpp" />
     <ClCompile Include="GenomePanel.cpp" />
     <ClCompile Include="ImGuiMainMenuBarScope.cpp" />
     <ClCompile Include="ImGuiMenuScope.cpp" />
     <ClCompile Include="ImGuiWindowScope.cpp" />
+    <ClCompile Include="LabController.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="MenuBar.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
