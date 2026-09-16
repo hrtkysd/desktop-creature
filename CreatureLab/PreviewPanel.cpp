@@ -207,24 +207,28 @@ void CPreviewPanel::DrawResizeHandle(ImDrawList* drawList, const Vec2& position)
 
 void CPreviewPanel::BeginOperation(const std::vector<CRenderPartItem>& vecPartView, const Vec2& mousePosition)
 {
-    const auto* selectedView = FindPartView(vecPartView, m_editorContext.GetPartId());
-
-    if (selectedView && TryBeginResize(*selectedView, mousePosition)) return;
-    
-    const auto hitView = HitTestPart(vecPartView, mousePosition);
-    if (!hitView)
+    switch (m_editorContext.GetEditMode())
     {
-        m_editorContext.SelectPart(INVALID_PART_ID);
-        m_operation = {};
-        return;
+    case EditMode::Select:
+        BeginSelect(vecPartView, mousePosition);
+        break;
+
+    case EditMode::Move:
+        BeginMove(vecPartView, mousePosition);
+        break;
+
+    case EditMode::Scale:
+        BeginScale(vecPartView, mousePosition);
+        break;
+
+    case EditMode::Rotate:
+        // BeginRotate(vecPartView, mousePosition);
+        break;
+
+    case EditMode::Pivot:
+        // BeginPivot(vecPartView, mousePosition);
+        break;
     }
-    m_editorContext.SelectPart(hitView->GetPartId());
-
-    m_operation =
-    {
-        OperationType::Move,
-        m_editorContext.GetPartId()
-    };
 }
 
 void CPreviewPanel::EndOperation()
@@ -265,51 +269,91 @@ void CPreviewPanel::DrawSelectPartFrameRect(
     DrawResizeHandle(drawList, corner.bottomLeft);
 }
 
-bool CPreviewPanel::TryBeginResize(const CRenderPartItem& view, const Vec2& mousePosition)
+void CPreviewPanel::Select(const CRenderPartItem* view)
 {
-    const auto handle = HitTestResizeHandle(view.GetRect(), mousePosition);
+    m_editorContext.SelectPart(
+        view
+        ? view->GetPartId()
+        : INVALID_PART_ID);
+    m_operation = {};
+}
 
-    if (handle == ResizeHandle::None) return false;
+void CPreviewPanel::BeginSelect(const std::vector<CRenderPartItem>& vecPartView, const Vec2& mousePosition)
+{
+    Select(HitTestPart(vecPartView, mousePosition));
+}
+
+void CPreviewPanel::BeginScale(const std::vector<CRenderPartItem>& vecPartView, const Vec2& mousePosition)
+{
+    const auto* selectedView = FindPartView(vecPartView, m_editorContext.GetPartId());
+
+    if (selectedView)
+    {
+        const auto handle = HitTestResizeHandle(selectedView->GetRect(), mousePosition);
+
+        if (handle == ResizeHandle::None) return;
+
+        m_operation =
+        {
+            OperationType::Resize,
+            selectedView->GetPartId()
+        };
+
+        const auto& skeleton = m_creature.GetSkeleton();
+        auto part = skeleton.FindPartById(selectedView->GetPartId());
+        if (!part) return;
+
+        const auto texture = selectedView->GetTexture();
+        if (!texture) return;
+
+        const auto direction = GetHandleDirection(handle);
+
+        const auto width = static_cast<float>(texture->GetWidth());
+        const float height = static_cast<float>(texture->GetHeight());
+
+        const Vec2 anchorLocal
+        {
+            -direction.x * width * 0.5f,
+            -direction.y * height * 0.5f
+        };
+
+        const auto localTransform = part->bindTransform.ToMatrix();
+
+        const auto anchor = localTransform.TransformPoint(anchorLocal);
+
+        m_operation =
+        {
+            OperationType::Resize,
+            part->id
+        };
+
+        m_resizeState.eHandle = handle;
+        m_resizeState.anchor = anchor;
+        return;
+    }
+
+    const auto hitView = HitTestPart(vecPartView, mousePosition);
+
+    Select(hitView);
+}
+
+void CPreviewPanel::BeginMove(const std::vector<CRenderPartItem>& vecPartView, const Vec2& mousePosition)
+{
+    const auto hitView = HitTestPart(vecPartView, mousePosition);
+
+    if (!hitView)
+    {
+        Select(nullptr);
+        return;
+    }
+
+    Select(hitView);
 
     m_operation =
     {
-        OperationType::Resize,
-        view.GetPartId()
+        OperationType::Move,
+        hitView->GetPartId()
     };
-
-    const auto& skeleton = m_creature.GetSkeleton();
-    auto part = skeleton.FindPartById(view.GetPartId());
-
-    if (!part) return false;
-
-    const auto texture = view.GetTexture();
-    if (!texture) return false;
-
-    const auto direction = GetHandleDirection(handle);
-
-    const auto width = static_cast<float>(texture->GetWidth());
-    const float height = static_cast<float>(texture->GetHeight());
-
-    const Vec2 anchorLocal
-    {
-        -direction.x * width * 0.5f,
-        -direction.y * height * 0.5f
-    };
-
-    const auto localTransform = part->bindTransform.ToMatrix();
-
-    const auto anchor = localTransform.TransformPoint(anchorLocal);
-
-    m_operation =
-    {
-        OperationType::Resize,
-        part->id
-    };
-
-    m_resizeState.eHandle = handle;
-    m_resizeState.anchor = anchor;
-
-    return true;
 }
 
 void CPreviewPanel::UpdateOperation(const CreaturePose& pose, const std::vector<CRenderPartItem>& vecPartView, const CMatrix3x2& previewTransform)
