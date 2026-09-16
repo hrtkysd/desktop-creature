@@ -23,9 +23,6 @@
     <Filter Include="IO">
       <UniqueIdentifier>{4ad1901f-ce8d-46c0-8bcf-25892e7ee1dd}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Transform">
-      <UniqueIdentifier>{0b69dde4-8258-43a7-90d9-659be3d191d4}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AnimationPlayer.h">
@@ -84,7 +81,7 @@
       <Filter>Animation</Filter>
     </ClInclude>
     <ClInclude Include="PartTransformBuilder.h">
-      <Filter>Transform</Filter>
+      <Filter>Math</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -123,7 +120,7 @@
       <Filter>Animation</Filter>
     </ClCompile>
     <ClCompile Include="PartTransformBuilder.cpp">
-      <Filter>Transform</Filter>
+      <Filter>Math</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

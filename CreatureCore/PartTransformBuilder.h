@@ -12,18 +12,17 @@ namespace Creature
         class CMatrix3x2;
         class CTransform2D;
 
-        struct Part;
-    }
-    class CPartTransformBuilder
-    {
-    public:
-        static Math::CMatrix3x2 BuildLocal(
-            const Part& part,
-            const Math::CTransform2D& transform);
+        class CPartTransformBuilder
+        {
+        public:
+            static Math::CMatrix3x2 BuildLocal(
+                const Part& part,
+                const Math::CTransform2D& transform);
 
-        static Math::CMatrix3x2 BuildWorld(
-            const Part& part,
-            const CSkeleton& skeleton,
-            const CreaturePose& pose);
-    };
-} 
+            static Math::CMatrix3x2 BuildWorld(
+                const Part& part,
+                const CSkeleton& skeleton,
+                const CreaturePose& pose);
+        };
+    } // namespace Math
+} // namespace Creature
