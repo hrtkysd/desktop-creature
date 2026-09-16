@@ -1,0 +1,10 @@
+#pragma once
+
+#include "Transform2D.h"
+
+struct RotateState
+{
+    float fPartRotationStart = 0.0f;
+    float fMouseAngleStart = 0.0f;
+    Creature::Math::Vec2 pivot{};
+};

@@ -26,6 +26,7 @@ public:
     void StopAnimation();
 
     void SetEditMode(EditMode mode);
+    EditMode GetEditMode() const noexcept;
 
     CCreatureEditor& CreatureEditor();
 
