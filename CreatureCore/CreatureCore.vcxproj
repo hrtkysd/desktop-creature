@@ -156,6 +156,7 @@
     <ClInclude Include="Part.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="RectCorner.h" />
+    <ClInclude Include="PartTransformBuilder.h" />
     <ClInclude Include="TransformRect.h" />
     <ClInclude Include="Skeleton.h" />
     <ClInclude Include="Transform2D.h" />
@@ -178,6 +179,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="PartTransformBuilder.cpp" />
     <ClCompile Include="Transform2D.cpp" />
     <ClCompile Include="TransformRect.cpp" />
     <ClCompile Include="Skeleton.cpp" />
