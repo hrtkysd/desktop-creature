@@ -18,7 +18,10 @@ namespace Creature
 
             Vec2& GetScale();
             const Vec2& GetScale() const;
+            void SetScale(const Vec2& scale);
+
             float GetRotation() const;
+            void SetRotation(float fRotation);
 
             CMatrix3x2 ToMatrix() const;
         private:

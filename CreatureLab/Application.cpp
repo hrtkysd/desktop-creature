@@ -1,12 +1,20 @@
 #include "pch.h"
 
+#include "Animation.h"
+#include "AnimationTrack.h"
 #include "Appearance.h"
 #include "Application.h"
 #include "Creature.h"
-#include "CreatureIO.h"
+#include "CreatureEditor.h"
+#include "DocumentContext.h"
+#include "DocumentController.h"
+#include "EditorContext.h"
+#include "EditorController.h"
 #include "FileOperation.h"
-#include "Skeleton.h"
 #include "GenomePanel.h"
+#include "LabController.h"
+#include "MenuBar.h"
+#include "Skeleton.h"
 #include "ImGuiMainMenuBarScope.h"
 #include "ImGuiMenuScope.h"
 #include "ImGuiWindowScope.h"
@@ -22,7 +30,7 @@
 #include "imgui_internal.h"
 
 using namespace Creature;
-using namespace Creature::IO;
+using namespace Creature::Animation;
 
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(
     HWND hWnd,
@@ -55,8 +63,12 @@ bool CApp::Initialize(
     if (!CreateMainWindow(hInstance, nCmdShow)) return false;
     if (!CreateDeviceD3D()) return false;
     if (!CreateRenderTarget()) return false;
+
     InitializeCreature();
+
     if (!InitializeImGui()) return false;
+
+    SetupEditor();
 
     return true;
 }
@@ -206,6 +218,37 @@ void CApp::InitializeCreature()
     appearance.SetTexture(eyesId, L"assets/eyes.png");
     appearance.SetTexture(leftEarId, L"assets/left_ear.png");
     appearance.SetTexture(rightEarId, L"assets/right_ear.png");
+
+    CAnimationTrack headRotation;
+    headRotation.SetPartId(headId);
+    headRotation.SetAnimationProperty(
+        AnimationProperty::Rotation);
+    headRotation.AddKeyFrame({ 0.0f,  0.0f });
+    headRotation.AddKeyFrame({ 0.5f,  0.1f });
+    headRotation.AddKeyFrame({ 1.0f,  0.0f });
+
+    m_idleAnimation.SetDuration(1.0f);
+    m_idleAnimation.AddAnimationTrack(
+        std::move(headRotation));
+}
+
+void CApp::SetupEditor()
+{
+    m_editorContext = std::make_unique<CEditorContext>();
+    m_documentContext = std::make_unique<CDocumentContext>();
+
+    m_creatureEditor = std::make_unique<CCreatureEditor>(m_creature);
+
+    m_editorController = std::make_unique<CEditorController>(m_creature, m_animationPlayer, *m_editorContext);
+    m_documentController = std::make_unique<CDocumentController>(m_hWnd, m_creature, *m_documentContext);
+    m_labController = std::make_unique<CLabController>(
+        *m_editorContext,
+        *m_documentController,
+        *m_editorController,
+        *m_creatureEditor
+    );
+
+    m_menuBar = std::make_unique<CMenuBar>(*m_labController);
 }
 
 int CApp::Run()
@@ -283,10 +326,14 @@ void CApp::Render()
         dockspaceId,
         viewport,
         ImGuiDockNodeFlags_None);
-    DrawMenuBar();
+    m_menuBar->Render(*m_editorContext);
 
+    m_animationPlayer.Update(ImGui::GetIO().DeltaTime);
+    m_animationPlayer.SamplePose(m_idleAnimation, m_creature.GetSkeleton());
+
+    const auto& pose = m_animationPlayer.GetPose();
     CGenomePanel::Draw(m_genome);
-    m_previewPanel->Draw(m_creature, *m_textureCache);
+    m_previewPanel->Draw(m_creature, pose, *m_textureCache);
     ImGui::Render();
 
     constexpr float clearColor[] =
@@ -308,35 +355,9 @@ void CApp::Render()
         m_renderTargetView.Get(),
         clearColor);
 
-    ImGui_ImplDX11_RenderDrawData(
-        ImGui::GetDrawData());
+    ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 
     m_swapChain->Present(1, 0);
-}
-
-void CApp::DrawMenuBar()
-{
-    if (CImGuiMainMenuBarScope menuBar{})
-    {
-        if (CImGuiMenuScope fileMenu{ "File" })
-        {
-            if (ImGui::MenuItem("Save As..."))
-            {
-                const auto path = CFileOperation::ShowSaveCreatureDialog(m_hWnd);
-                if (path.empty() || !CCreatureIO::SaveAsFile(m_creature, path)) return;
-                m_creatureFilePath = path;
-            }
-            else if (ImGui::MenuItem("Load From..."))
-            {
-                const auto path = CFileOperation::ShowOpenCreatureDialog(m_hWnd);
-                if (path.empty()) return;
-                CCreature creature;
-                if (!CCreatureIO::LoadFromFile(path, creature)) return;
-                m_creature = std::move(creature);
-                m_creatureFilePath = path;
-            }
-        }
-    }
 }
 
 void CApp::Shutdown()

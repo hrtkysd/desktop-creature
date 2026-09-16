@@ -1,6 +1,8 @@
 #include "pch.h"
+#include "Animation.h"
 #include "Appearance.h"
 #include "Creature.h"
+#include "CreaturePose.h"
 #include "ImGuiWindowScope.h"
 #include "PreviewPanel.h"
 #include "RectCorner.h"
@@ -14,10 +16,35 @@
 #include "imgui.h"
 
 using namespace Creature;
+using namespace Creature::Animation;
 using namespace Creature::Math;
 
 namespace
 {
+    CTransform2D BuildAnimatedTransform(
+        const Part& part,
+        const CTransform2D& poseTransform)
+    {
+        auto transform = part.bindTransform;
+
+        transform.GetPosition().x +=
+            poseTransform.GetPosition().x;
+
+        transform.GetPosition().y +=
+            poseTransform.GetPosition().y;
+
+        transform.SetRotation(
+            transform.GetRotation() +
+            poseTransform.GetRotation());
+
+        transform.GetScale().x *=
+            poseTransform.GetScale().x;
+
+        transform.GetScale().y *=
+            poseTransform.GetScale().y;
+
+        return transform;
+    }
     Vec2 GetHandleDirection(ResizeHandle handle)
     {
         switch (handle)
@@ -97,22 +124,44 @@ namespace
         return ResizeHandle::None;
     }
 
+    CMatrix3x2 BuildLocalTransform(const CTransform2D transform, const Vec2& pivot)
+    {
+        return
+            CMatrix3x2::CreateTranslation({ -pivot.x, -pivot.y }) *
+            CMatrix3x2::CreateScale(transform.GetScale()) *
+            CMatrix3x2::CreateRotation(transform.GetRotation()) *
+            CMatrix3x2::CreateTranslation(pivot) *
+            CMatrix3x2::CreateTranslation(transform.GetPosition());
+    }
+
     CMatrix3x2 BuildWorldTransform(
         const Part& part,
-        const CSkeleton& skeleton)
+        const CSkeleton& skeleton,
+        const CreaturePose& pose)
     {
-        const auto local = part.bindTransform.ToMatrix();
+        const auto index = skeleton.FindPartIndexById(part.id);
+
+        if (index == Creature::INVALID_PART_INDEX) return part.bindTransform.ToMatrix();
+
+        const auto transform = BuildAnimatedTransform(part, pose.vecPartTransform.at(index));
+        const auto local = BuildLocalTransform(transform, part.pivot);
 
         if (part.parentId == INVALID_PART_ID) return local;
 
         const auto parent = skeleton.FindPartById(part.parentId);
         if (!parent) return local;
 
-        return local * BuildWorldTransform(*parent, skeleton);
+        return
+            local
+            *
+            BuildWorldTransform(
+                *parent,
+                skeleton,
+                pose);
     }
 }
 
-void CPreviewPanel::Draw(CCreature& creature, CTextureCache& textureCache)
+void CPreviewPanel::Draw(CCreature& creature, const CreaturePose& pose, CTextureCache& textureCache)
 {
     CImGuiWindowScope scope("Preview");
 
@@ -135,9 +184,11 @@ void CPreviewPanel::Draw(CCreature& creature, CTextureCache& textureCache)
             center.y
             });
 
-    const auto vecPartView = BuildPartViews(creature, previewTransform, textureCache);
+    m_fAnimationTime += ImGui::GetIO().DeltaTime;
 
-    HandleInput(creature, previewTransform, vecPartView);
+    const auto vecPartView = BuildPartViews(creature, pose, previewTransform, textureCache);
+
+    HandleInput(creature, pose, previewTransform, vecPartView);
 
     const auto drawList = ImGui::GetWindowDrawList();
     for (const auto& part : vecPartView)
@@ -184,7 +235,11 @@ void CPreviewPanel::Draw(CCreature& creature, CTextureCache& textureCache)
     ImGui::Dummy(area);
 }
 
-void CPreviewPanel::HandleInput(CCreature& creature, const CMatrix3x2& previewTransform, const std::vector<CRenderPartItem>& vecPartView)
+void CPreviewPanel::HandleInput(
+    CCreature& creature,
+    const CreaturePose& pose,
+    const CMatrix3x2& previewTransform,
+    const std::vector<CRenderPartItem>& vecPartView)
 {
     const auto mousePosition = ImGui::GetMousePos();
 
@@ -195,7 +250,7 @@ void CPreviewPanel::HandleInput(CCreature& creature, const CMatrix3x2& previewTr
 
     if (ImGui::IsMouseDragging(ImGuiMouseButton_Left))
     {
-        UpdateOperation(creature, vecPartView, previewTransform);
+        UpdateOperation(creature, pose, vecPartView, previewTransform);
     }
 
     if (ImGui::IsMouseReleased(ImGuiMouseButton_Left))
@@ -306,22 +361,22 @@ bool CPreviewPanel::TryBeginResize(CCreature& creature, const CRenderPartItem& v
     return true;
 }
 
-void CPreviewPanel::UpdateOperation(CCreature& creature, const std::vector<CRenderPartItem>& vecPartView, const CMatrix3x2& previewTransform)
+void CPreviewPanel::UpdateOperation(CCreature& creature, const CreaturePose& pose, const std::vector<CRenderPartItem>& vecPartView, const CMatrix3x2& previewTransform)
 {
     switch (m_operation.eType)
     {
     case OperationType::Move:
-        MovePart(creature, previewTransform);
+        MovePart(creature, pose, previewTransform);
         break;
     case OperationType::Resize:
-        ResizePart(creature, vecPartView, previewTransform);
+        ResizePart(creature, pose, vecPartView, previewTransform);
         break;
     default:
         break;
     }
 }
 
-void CPreviewPanel::MovePart(CCreature& creature, const Math::CMatrix3x2& previewTransform)
+void CPreviewPanel::MovePart(CCreature& creature, const CreaturePose& pose, const CMatrix3x2& previewTransform)
 {
     auto& skeleton = creature.GetSkeleton();
 
@@ -332,7 +387,7 @@ void CPreviewPanel::MovePart(CCreature& creature, const Math::CMatrix3x2& previe
     if (part->parentId != INVALID_PART_ID)
     {
         const auto parent = skeleton.FindPartById(part->parentId);
-        if (parent) parentWorld = BuildWorldTransform(*parent, skeleton);
+        if (parent) parentWorld = BuildWorldTransform(*parent, skeleton, pose);
     }
 
     const auto parentScreen = parentWorld * previewTransform;
@@ -359,7 +414,7 @@ void CPreviewPanel::MovePart(CCreature& creature, const Math::CMatrix3x2& previe
     position.y += currentMouse.y - previousMouse.y;
 }
 
-void CPreviewPanel::ResizePart(Creature::CCreature& creature, const std::vector<CRenderPartItem>& vecPartView, const Creature::Math::CMatrix3x2& previewTransform)
+void CPreviewPanel::ResizePart(Creature::CCreature& creature, const CreaturePose& pose, const std::vector<CRenderPartItem>& vecPartView, const Creature::Math::CMatrix3x2& previewTransform)
 {
     auto& skeleton = creature.GetSkeleton();
     auto* part = skeleton.FindPartById(m_operation.partId);
@@ -379,7 +434,7 @@ void CPreviewPanel::ResizePart(Creature::CCreature& creature, const std::vector<
     if (part->parentId != INVALID_PART_ID)
     {
         const auto* parent = skeleton.FindPartById(part->parentId);
-        if (parent) parentWorld = BuildWorldTransform(*parent, skeleton);
+        if (parent) parentWorld = BuildWorldTransform(*parent, skeleton, pose);
     }
 
     const auto parentScreen = parentWorld * previewTransform;
@@ -444,7 +499,7 @@ void CPreviewPanel::ResizePart(Creature::CCreature& creature, const std::vector<
     part->bindTransform.GetPosition() = newPosition;
 }
 
-std::vector<CRenderPartItem> CPreviewPanel::BuildPartViews(CCreature& creature, const CMatrix3x2& previewTransform, CTextureCache& textureCache)
+std::vector<CRenderPartItem> CPreviewPanel::BuildPartViews(CCreature& creature, const CreaturePose& pose, const CMatrix3x2& previewTransform, CTextureCache& textureCache)
 {
     const auto& skeleton = creature.GetSkeleton();
 
@@ -459,7 +514,7 @@ std::vector<CRenderPartItem> CPreviewPanel::BuildPartViews(CCreature& creature, 
         auto texture = textureCache.Load(appearance->texturePath);
         if (!texture) continue;
 
-        const auto worldTransform = BuildWorldTransform(part, skeleton);
+        const auto worldTransform = BuildWorldTransform(part, skeleton, pose);
         const auto screenTransform = worldTransform * previewTransform;
 
         const Vec2 size

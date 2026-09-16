@@ -3,6 +3,7 @@
 #include "Part.h"
 
 #include <string_view>
+#include <unordered_set>
 #include <vector>
 
 namespace Creature
@@ -21,11 +22,16 @@ namespace Creature
 
         PartId FindPartIdByName(const std::string_view name) const;
 
+        int FindPartIndexById(PartId id) const;
+
         PartId AddPart(const std::string_view name, PartId parentId = INVALID_PART_ID);
         PartId AddPart(Part&& part);
-        bool AddPartWithId(Part&& part);
-    private:
 
+        bool AddPartWithId(Part&& part);
+        bool RemovePart(PartId id);
+    private:
+        void CollectDescendants(PartId parentId, std::unordered_set<PartId>& ids) const;
+    private:
         std::vector<Part> m_vecPart;
         PartId m_nextPartId = 0;
     };

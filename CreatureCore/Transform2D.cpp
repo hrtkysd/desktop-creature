@@ -33,9 +33,19 @@ const Vec2& CTransform2D::GetScale() const
     return m_scale;
 }
 
+void CTransform2D::SetScale(const Vec2& scale)
+{
+    m_scale = scale;
+}
+
 float CTransform2D::GetRotation() const
 {
     return m_fRotation;
+}
+
+void CTransform2D::SetRotation(float fRotation)
+{
+    m_fRotation = fRotation;
 }
 
 CMatrix3x2 CTransform2D::ToMatrix() const
