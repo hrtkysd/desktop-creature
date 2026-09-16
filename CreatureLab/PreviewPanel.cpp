@@ -163,8 +163,8 @@ namespace
     }
 }
 
-CPreviewPanel::CPreviewPanel(const Creature::CCreature& creature, CLabController& labController, CEditorContext& context)
-    : m_labController(labController)
+CPreviewPanel::CPreviewPanel(const Creature::CCreature& creature, CCreatureEditor& editor, CEditorContext& context)
+    : m_editor(editor)
     , m_creature(creature)
     , m_editorContext(context)
 {
@@ -424,7 +424,7 @@ void CPreviewPanel::MovePart(const CreaturePose& pose, const CMatrix3x2& preview
     transform.GetPosition().x += currentMouse.x - previousMouse.x;
     transform.GetPosition().y += currentMouse.y - previousMouse.y;
 
-    m_labController.CreatureEditor().SetPartTransform(part->id, transform);
+    m_editor.SetPartTransform(part->id, transform);
 }
 
 void CPreviewPanel::ResizePart(const CreaturePose& pose, const std::vector<CRenderPartItem>& vecPartView, const Creature::Math::CMatrix3x2& previewTransform)
@@ -509,7 +509,7 @@ void CPreviewPanel::ResizePart(const CreaturePose& pose, const std::vector<CRend
     editTransform.GetScale() = newScale;
     editTransform.GetPosition() = newPosition;
 
-    m_labController.CreatureEditor().SetPartTransform(part->id, editTransform);
+    m_editor.SetPartTransform(part->id, editTransform);
 }
 
 std::vector<CRenderPartItem> CPreviewPanel::BuildPartViews(const CreaturePose& pose, const CMatrix3x2& previewTransform, CTextureCache& textureCache)
