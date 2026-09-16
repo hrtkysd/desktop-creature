@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "Angle.h"
 #include "Animation.h"
 #include "Appearance.h"
 #include "Creature.h"
@@ -6,6 +7,7 @@
 #include "CreaturePose.h"
 #include "EditorContext.h"
 #include "ImGuiWindowScope.h"
+#include "LabController.h"
 #include "PartTransformBuilder.h"
 #include "PreviewPanel.h"
 #include "RectCorner.h"
@@ -24,7 +26,8 @@ using namespace Creature::Math;
 
 namespace
 {
-    Vec2 GetHandleDirection(ResizeHandle handle)
+    Vec2 GetHandleDirection(
+        ResizeHandle handle)
     {
         switch (handle)
         {
@@ -41,7 +44,9 @@ namespace
         }
     }
 
-    const CRenderPartItem* FindPartView(const std::vector<CRenderPartItem>& vecPartView, PartId partId)
+    const CRenderPartItem* FindPartView(
+        const std::vector<CRenderPartItem>& vecPartView,
+        PartId partId)
     {
         if (partId == INVALID_PART_ID)
             return nullptr;
@@ -103,14 +108,19 @@ namespace
     }
 }
 
-CPreviewPanel::CPreviewPanel(const Creature::CCreature& creature, CCreatureEditor& editor, CEditorContext& context)
+CPreviewPanel::CPreviewPanel(
+    const Creature::CCreature& creature,
+    CCreatureEditor& editor,
+    CEditorContext& context)
     : m_editor(editor)
     , m_creature(creature)
     , m_editorContext(context)
 {
 }
 
-void CPreviewPanel::Draw(const CreaturePose& pose, CTextureCache& textureCache)
+void CPreviewPanel::Draw(
+    const CreaturePose& pose,
+    CTextureCache& textureCache)
 {
     CImGuiWindowScope scope("Preview");
 
@@ -164,7 +174,7 @@ void CPreviewPanel::HandleInput(
 
     if (ImGui::IsMouseClicked(ImGuiMouseButton_Left))
     {
-        BeginOperation(vecPartView, { mousePosition.x, mousePosition.y });
+        BeginOperation(pose, previewTransform, vecPartView, { mousePosition.x, mousePosition.y });
     }
 
     if (ImGui::IsMouseDragging(ImGuiMouseButton_Left))
@@ -178,7 +188,9 @@ void CPreviewPanel::HandleInput(
     }
 }
 
-void CPreviewPanel::DrawResizeHandle(ImDrawList* drawList, const Vec2& position)
+void CPreviewPanel::DrawResizeHandle(
+    ImDrawList* drawList,
+    const Vec2& position)
 {
     constexpr float halfSize = 4.0f;
 
@@ -205,7 +217,11 @@ void CPreviewPanel::DrawResizeHandle(ImDrawList* drawList, const Vec2& position)
         IM_COL32(255, 0, 0, 255));
 }
 
-void CPreviewPanel::BeginOperation(const std::vector<CRenderPartItem>& vecPartView, const Vec2& mousePosition)
+void CPreviewPanel::BeginOperation(
+    const CreaturePose& pose,
+    const CMatrix3x2& previewTransform,
+    const std::vector<CRenderPartItem>& vecPartView,
+    const Vec2& mousePosition)
 {
     switch (m_editorContext.GetEditMode())
     {
@@ -222,7 +238,7 @@ void CPreviewPanel::BeginOperation(const std::vector<CRenderPartItem>& vecPartVi
         break;
 
     case EditMode::Rotate:
-        // BeginRotate(vecPartView, mousePosition);
+        BeginRotate(vecPartView, mousePosition, pose, previewTransform);
         break;
 
     case EditMode::Pivot:
@@ -263,13 +279,16 @@ void CPreviewPanel::DrawSelectPartFrameRect(
         color,
         2.0f);
 
+    if (m_editorContext.GetEditMode() != EditMode::Scale) return;
+
     DrawResizeHandle(drawList, corner.topLeft);
     DrawResizeHandle(drawList, corner.topRight);
     DrawResizeHandle(drawList, corner.bottomRight);
     DrawResizeHandle(drawList, corner.bottomLeft);
 }
 
-void CPreviewPanel::Select(const CRenderPartItem* view)
+void CPreviewPanel::Select(
+    const CRenderPartItem* view)
 {
     m_editorContext.SelectPart(
         view
@@ -278,66 +297,135 @@ void CPreviewPanel::Select(const CRenderPartItem* view)
     m_operation = {};
 }
 
-void CPreviewPanel::BeginSelect(const std::vector<CRenderPartItem>& vecPartView, const Vec2& mousePosition)
+void CPreviewPanel::BeginSelect(
+    const std::vector<CRenderPartItem>& vecPartView,
+    const Vec2& mousePosition)
 {
     Select(HitTestPart(vecPartView, mousePosition));
 }
 
-void CPreviewPanel::BeginScale(const std::vector<CRenderPartItem>& vecPartView, const Vec2& mousePosition)
+void CPreviewPanel::BeginScale(
+    const std::vector<CRenderPartItem>& vecPartView,
+    const Vec2& mousePosition)
 {
-    const auto* selectedView = FindPartView(vecPartView, m_editorContext.GetPartId());
+    const auto selectedView = FindPartView(vecPartView, m_editorContext.GetPartId());
 
-    if (selectedView)
+    if (!selectedView)
     {
-        const auto handle = HitTestResizeHandle(selectedView->GetRect(), mousePosition);
-
-        if (handle == ResizeHandle::None) return;
-
-        m_operation =
-        {
-            OperationType::Resize,
-            selectedView->GetPartId()
-        };
-
-        const auto& skeleton = m_creature.GetSkeleton();
-        auto part = skeleton.FindPartById(selectedView->GetPartId());
-        if (!part) return;
-
-        const auto texture = selectedView->GetTexture();
-        if (!texture) return;
-
-        const auto direction = GetHandleDirection(handle);
-
-        const auto width = static_cast<float>(texture->GetWidth());
-        const float height = static_cast<float>(texture->GetHeight());
-
-        const Vec2 anchorLocal
-        {
-            -direction.x * width * 0.5f,
-            -direction.y * height * 0.5f
-        };
-
-        const auto localTransform = part->bindTransform.ToMatrix();
-
-        const auto anchor = localTransform.TransformPoint(anchorLocal);
-
-        m_operation =
-        {
-            OperationType::Resize,
-            part->id
-        };
-
-        m_resizeState.eHandle = handle;
-        m_resizeState.anchor = anchor;
+        const auto hitView = HitTestPart(vecPartView, mousePosition);
+        Select(hitView);
         return;
     }
 
-    const auto hitView = HitTestPart(vecPartView, mousePosition);
+    const auto handle = HitTestResizeHandle(selectedView->GetRect(), mousePosition);
+    if (handle == ResizeHandle::None) return;
 
-    Select(hitView);
+    m_operation =
+    {
+        OperationType::Resize,
+        selectedView->GetPartId()
+    };
+
+    const auto& skeleton = m_creature.GetSkeleton();
+    auto part = skeleton.FindPartById(selectedView->GetPartId());
+    if (!part) return;
+
+    const auto texture = selectedView->GetTexture();
+    if (!texture) return;
+
+    const auto direction = GetHandleDirection(handle);
+
+    const auto width = static_cast<float>(texture->GetWidth());
+    const float height = static_cast<float>(texture->GetHeight());
+
+    const Vec2 anchorLocal
+    {
+        -direction.x * width * 0.5f,
+        -direction.y * height * 0.5f
+    };
+
+    const auto localTransform = part->bindTransform.ToMatrix();
+
+    const auto anchor = localTransform.TransformPoint(anchorLocal);
+
+    m_operation =
+    {
+        OperationType::Resize,
+        part->id
+    };
+
+    m_resizeState.eHandle = handle;
+    m_resizeState.anchor = anchor;
 }
 
-void CPreviewPanel::BeginMove(const std::vector<CRenderPartItem>& vecPartView, const Vec2& mousePosition)
+void CPreviewPanel::BeginRotate(
+    const std::vector<CRenderPartItem>& vecPartView,
+    const Vec2& mousePosition,
+    const CreaturePose& pose,
+    const CMatrix3x2& previewTransform)
+{
+    const auto hitView = HitTestPart(vecPartView, mousePosition);
+
+    if (!hitView)
+    {
+        m_editorContext.SelectPart(INVALID_PART_ID);
+        m_operation = {};
+        return;
+    }
+
+    m_editorContext.SelectPart(hitView->GetPartId());
+
+    const auto& skeleton = m_creature.GetSkeleton();
+    const auto* part = skeleton.FindPartById(hitView->GetPartId());
+    if (!part) return;
+
+    CMatrix3x2 parentWorld;
+    if (part->parentId != INVALID_PART_ID)
+    {
+        if (const auto parent = skeleton.FindPartById(part->parentId))
+        {
+            parentWorld = CPartTransformBuilder::BuildWorld(*parent, skeleton, pose);
+        }
+    }
+
+    const auto parentScreen = parentWorld * previewTransform;
+
+    CMatrix3x2 inverseParentScreen;
+    if (!parentScreen.TryInverse(inverseParentScreen)) return;
+
+    const auto mouse = ImGui::GetMousePos();
+    const auto mouseParent = inverseParentScreen.TransformPoint({
+        mouse.x,
+        mouse.y
+    });
+
+    const auto& transform = part->bindTransform;
+    const Vec2 pivotParent
+    {
+        transform.GetPosition().x + part->pivot.x,
+        transform.GetPosition().y + part->pivot.y
+    };
+
+    const auto angle = CAngle::Normalize(
+        std::atan2(mouseParent.y - pivotParent.y, mouseParent.x - pivotParent.x));
+ 
+    m_rotateState =
+    {
+        transform.GetRotation(),
+        angle,
+        pivotParent
+    };
+
+    m_operation =
+    {
+        OperationType::Rotate,
+        part->id
+    };
+}
+
+void CPreviewPanel::BeginMove(
+    const std::vector<CRenderPartItem>& vecPartView,
+    const Vec2& mousePosition)
 {
     const auto hitView = HitTestPart(vecPartView, mousePosition);
 
@@ -356,7 +444,10 @@ void CPreviewPanel::BeginMove(const std::vector<CRenderPartItem>& vecPartView, c
     };
 }
 
-void CPreviewPanel::UpdateOperation(const CreaturePose& pose, const std::vector<CRenderPartItem>& vecPartView, const CMatrix3x2& previewTransform)
+void CPreviewPanel::UpdateOperation(
+    const CreaturePose& pose,
+    const std::vector<CRenderPartItem>& vecPartView,
+    const CMatrix3x2& previewTransform)
 {
     switch (m_operation.eType)
     {
@@ -366,12 +457,17 @@ void CPreviewPanel::UpdateOperation(const CreaturePose& pose, const std::vector<
     case OperationType::Resize:
         ResizePart(pose, vecPartView, previewTransform);
         break;
+    case OperationType::Rotate:
+        RotatePart(pose, previewTransform);
+        break;
     default:
         break;
     }
 }
 
-void CPreviewPanel::MovePart(const CreaturePose& pose, const CMatrix3x2& previewTransform)
+void CPreviewPanel::MovePart(
+    const CreaturePose& pose,
+    const CMatrix3x2& previewTransform)
 {
     const auto& skeleton = m_creature.GetSkeleton();
 
@@ -411,7 +507,10 @@ void CPreviewPanel::MovePart(const CreaturePose& pose, const CMatrix3x2& preview
     m_editor.SetPartTransform(part->id, transform);
 }
 
-void CPreviewPanel::ResizePart(const CreaturePose& pose, const std::vector<CRenderPartItem>& vecPartView, const Creature::Math::CMatrix3x2& previewTransform)
+void CPreviewPanel::ResizePart(
+    const CreaturePose& pose,
+    const std::vector<CRenderPartItem>& vecPartView,
+    const Creature::Math::CMatrix3x2& previewTransform)
 {
     const auto& skeleton = m_creature.GetSkeleton();
     auto part = skeleton.FindPartById(m_operation.partId);
@@ -496,7 +595,53 @@ void CPreviewPanel::ResizePart(const CreaturePose& pose, const std::vector<CRend
     m_editor.SetPartTransform(part->id, editTransform);
 }
 
-std::vector<CRenderPartItem> CPreviewPanel::BuildPartViews(const CreaturePose& pose, const CMatrix3x2& previewTransform, CTextureCache& textureCache)
+void CPreviewPanel::RotatePart(
+    const CreaturePose& pose,
+    const CMatrix3x2& previewTransform)
+{
+    const auto& skeleton = m_creature.GetSkeleton();
+
+    const auto part = skeleton.FindPartById(m_operation.partId);
+    if (!part) return;
+
+    CMatrix3x2 parentWorld;
+
+    if (part->parentId != INVALID_PART_ID)
+    {
+        if (const auto parent = skeleton.FindPartById(part->parentId))
+        {
+            parentWorld = CPartTransformBuilder::BuildWorld(*parent, skeleton, pose);
+        }
+    }
+
+    const auto parentScreen = parentWorld * previewTransform;
+
+    CMatrix3x2 inverse;
+    if (!parentScreen.TryInverse(inverse)) return;
+
+    const auto mouse = ImGui::GetMousePos();
+    const auto mouseParent = inverse.TransformPoint({
+        mouse.x,
+        mouse.y
+    });
+
+    const float currentAngle = CAngle::Normalize(
+        std::atan2(
+            mouseParent.y - m_rotateState.pivot.y,
+            mouseParent.x - m_rotateState.pivot.x));
+
+    const float delta = currentAngle - m_rotateState.fMouseAngleStart;
+
+    auto transform = part->bindTransform;
+    transform.SetRotation(m_rotateState.fPartRotationStart + delta);
+
+    m_editor.SetPartTransform(part->id, transform);
+}
+
+std::vector<CRenderPartItem> CPreviewPanel::BuildPartViews(
+    const CreaturePose& pose,
+    const CMatrix3x2& previewTransform,
+    CTextureCache& textureCache)
 {
     const auto& skeleton = m_creature.GetSkeleton();
 

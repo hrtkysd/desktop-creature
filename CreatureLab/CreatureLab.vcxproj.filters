@@ -119,6 +119,9 @@
     <ClInclude Include="Window.h">
       <Filter>Document</Filter>
     </ClInclude>
+    <ClInclude Include="Rotate.h">
+      <Filter>Panel\Preview</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\third_party\imgui\imgui.cpp">

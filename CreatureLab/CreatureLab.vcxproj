@@ -161,6 +161,7 @@
     <ClInclude Include="pch.h" />
     <ClInclude Include="PreviewPanel.h" />
     <ClInclude Include="PreviewState.h" />
+    <ClInclude Include="Rotate.h" />
     <ClInclude Include="Window.h" />
   </ItemGroup>
   <ItemGroup>

@@ -49,6 +49,11 @@ void CLabController::SetEditMode(EditMode mode)
     m_editorContext.SetEditMode(mode);
 }
 
+EditMode CLabController::GetEditMode() const noexcept
+{
+    return m_editorContext.GetEditMode();
+}
+
 CCreatureEditor& CLabController::CreatureEditor()
 {
     return m_creatureEditor;
