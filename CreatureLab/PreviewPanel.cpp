@@ -6,7 +6,6 @@
 #include "CreaturePose.h"
 #include "EditorContext.h"
 #include "ImGuiWindowScope.h"
-#include "LabController.h"
 #include "PreviewPanel.h"
 #include "RectCorner.h"
 #include "RenderPartItem.h"
@@ -224,7 +223,7 @@ void CPreviewPanel::HandleInput(
 
     if (ImGui::IsMouseClicked(ImGuiMouseButton_Left))
     {
-        BeginOpeartion(vecPartView, { mousePosition.x, mousePosition.y });
+        BeginOperation(vecPartView, { mousePosition.x, mousePosition.y });
     }
 
     if (ImGui::IsMouseDragging(ImGuiMouseButton_Left))
@@ -265,7 +264,7 @@ void CPreviewPanel::DrawResizeHandle(ImDrawList* drawList, const Vec2& position)
         IM_COL32(255, 0, 0, 255));
 }
 
-void CPreviewPanel::BeginOpeartion(const std::vector<CRenderPartItem>& vecPartView, const Vec2& mousePosition)
+void CPreviewPanel::BeginOperation(const std::vector<CRenderPartItem>& vecPartView, const Vec2& mousePosition)
 {
     const auto* selectedView = FindPartView(vecPartView, m_editorContext.GetPartId());
 

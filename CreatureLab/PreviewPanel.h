@@ -20,8 +20,8 @@ namespace Creature
     }
 }
 
+class CCreatureEditor;
 class CEditorContext;
-class CLabController;
 class CRenderPartItem;
 class CTextureCache;
 
@@ -56,7 +56,7 @@ private:
     void DrawResizeHandle(
         ImDrawList* drawList,
         const Creature::Math::Vec2& position);
-    void BeginOpeartion(
+    void BeginOperation(
         const std::vector<CRenderPartItem>& vecPartView,
         const Creature::Math::Vec2& mousePosition);
     void UpdateOperation(
