@@ -18,7 +18,7 @@ namespace Creature
                 const Vec2& size,
                 const CMatrix3x2& transform);
         public:
-            RectCorner Corners() const;
+            RectCorner Corner() const;
             bool Contains(const Vec2& point) const;
         private:
             Vec2 m_size{};

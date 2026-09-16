@@ -23,6 +23,6 @@ public:
     EditMode GetEditMode() const noexcept;
 
 private:    
-    Creature::PartId m_partId;
+    Creature::PartId m_partId = Creature::INVALID_PART_ID;
     EditMode m_eEditMode = EditMode::Select;
 };

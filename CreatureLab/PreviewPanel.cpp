@@ -2,8 +2,11 @@
 #include "Animation.h"
 #include "Appearance.h"
 #include "Creature.h"
+#include "CreatureEditor.h"
 #include "CreaturePose.h"
+#include "EditorContext.h"
 #include "ImGuiWindowScope.h"
+#include "LabController.h"
 #include "PreviewPanel.h"
 #include "RectCorner.h"
 #include "RenderPartItem.h"
@@ -114,12 +117,11 @@ namespace
         const CTransformRect& rect,
         const Vec2& point)
     {
-        const auto corners = rect.Corners();
-
-        if (IsInResizeHandle(point, corners.topLeft)) return ResizeHandle::TopLeft;
-        if (IsInResizeHandle(point, corners.topRight)) return ResizeHandle::TopRight;
-        if (IsInResizeHandle(point, corners.bottomRight)) return ResizeHandle::BottomRight;
-        if (IsInResizeHandle(point, corners.bottomLeft)) return ResizeHandle::BottomLeft;
+        const auto corner = rect.Corner();
+        if (IsInResizeHandle(point, corner.topLeft)) return ResizeHandle::TopLeft;
+        if (IsInResizeHandle(point, corner.topRight)) return ResizeHandle::TopRight;
+        if (IsInResizeHandle(point, corner.bottomRight)) return ResizeHandle::BottomRight;
+        if (IsInResizeHandle(point, corner.bottomLeft)) return ResizeHandle::BottomLeft;
 
         return ResizeHandle::None;
     }
@@ -161,7 +163,14 @@ namespace
     }
 }
 
-void CPreviewPanel::Draw(CCreature& creature, const CreaturePose& pose, CTextureCache& textureCache)
+CPreviewPanel::CPreviewPanel(const Creature::CCreature& creature, CLabController& labController, CEditorContext& context)
+    : m_labController(labController)
+    , m_creature(creature)
+    , m_editorContext(context)
+{
+}
+
+void CPreviewPanel::Draw(const CreaturePose& pose, CTextureCache& textureCache)
 {
     CImGuiWindowScope scope("Preview");
 
@@ -184,59 +193,29 @@ void CPreviewPanel::Draw(CCreature& creature, const CreaturePose& pose, CTexture
             center.y
             });
 
-    m_fAnimationTime += ImGui::GetIO().DeltaTime;
+    const auto vecPartView = BuildPartViews(pose, previewTransform, textureCache);
 
-    const auto vecPartView = BuildPartViews(creature, pose, previewTransform, textureCache);
-
-    HandleInput(creature, pose, previewTransform, vecPartView);
+    HandleInput(pose, previewTransform, vecPartView);
 
     const auto drawList = ImGui::GetWindowDrawList();
     for (const auto& part : vecPartView)
     {
-        const auto corners = part.GetRect().Corners();
-        if (m_selectedPartId == part.GetPartId())
+        const auto corner = part.GetRect().Corner();
+        if (m_editorContext.GetPartId() == part.GetPartId())
         {
-            const ImU32 color = IM_COL32(255, 0, 0, 255);
-            drawList->AddLine(
-                ImVec2{ corners.topLeft.x, corners.topLeft.y },
-                ImVec2{ corners.topRight.x, corners.topRight.y },
-                color,
-                2.0f);
-            drawList->AddLine(
-                ImVec2{ corners.topRight.x, corners.topRight.y },
-                ImVec2{ corners.bottomRight.x, corners.bottomRight.y },
-                color,
-                2.0f);
-            drawList->AddLine(
-                ImVec2{ corners.bottomRight.x, corners.bottomRight.y },
-                ImVec2{ corners.bottomLeft.x, corners.bottomLeft.y },
-                color,
-                2.0f);
-            drawList->AddLine(
-                ImVec2{ corners.bottomLeft.x, corners.bottomLeft.y },
-                ImVec2{ corners.topLeft.x, corners.topLeft.y },
-                color,
-                2.0f);
-
-            DrawResizeHandle(drawList, corners.topLeft);
-            DrawResizeHandle(drawList, corners.topRight);
-            DrawResizeHandle(drawList, corners.bottomRight);
-            DrawResizeHandle(drawList, corners.bottomLeft);
+            DrawSelectPartFrameRect(drawList, corner, part);
         }
-    
         drawList->AddImageQuad(
             part.GetTexture()->GetShaderResourceView(),
-            ImVec2{ corners.topLeft.x,     corners.topLeft.y },
-            ImVec2{ corners.topRight.x,    corners.topRight.y },
-            ImVec2{ corners.bottomRight.x, corners.bottomRight.y },
-            ImVec2{ corners.bottomLeft.x,  corners.bottomLeft.y });
+            ImVec2{ corner.topLeft.x,     corner.topLeft.y },
+            ImVec2{ corner.topRight.x,    corner.topRight.y },
+            ImVec2{ corner.bottomRight.x, corner.bottomRight.y },
+            ImVec2{ corner.bottomLeft.x,  corner.bottomLeft.y });
     }
-
     ImGui::Dummy(area);
 }
 
 void CPreviewPanel::HandleInput(
-    CCreature& creature,
     const CreaturePose& pose,
     const CMatrix3x2& previewTransform,
     const std::vector<CRenderPartItem>& vecPartView)
@@ -245,12 +224,12 @@ void CPreviewPanel::HandleInput(
 
     if (ImGui::IsMouseClicked(ImGuiMouseButton_Left))
     {
-        BeginOpeartion(creature, vecPartView, { mousePosition.x, mousePosition.y });
+        BeginOpeartion(vecPartView, { mousePosition.x, mousePosition.y });
     }
 
     if (ImGui::IsMouseDragging(ImGuiMouseButton_Left))
     {
-        UpdateOperation(creature, pose, vecPartView, previewTransform);
+        UpdateOperation(pose, vecPartView, previewTransform);
     }
 
     if (ImGui::IsMouseReleased(ImGuiMouseButton_Left))
@@ -286,26 +265,25 @@ void CPreviewPanel::DrawResizeHandle(ImDrawList* drawList, const Vec2& position)
         IM_COL32(255, 0, 0, 255));
 }
 
-void CPreviewPanel::BeginOpeartion(CCreature& creature, const std::vector<CRenderPartItem>& vecPartView, const Vec2& mousePosition)
+void CPreviewPanel::BeginOpeartion(const std::vector<CRenderPartItem>& vecPartView, const Vec2& mousePosition)
 {
-    const auto* selectedView = FindPartView(vecPartView, m_selectedPartId);
+    const auto* selectedView = FindPartView(vecPartView, m_editorContext.GetPartId());
 
-    if (selectedView && TryBeginResize(creature, *selectedView, mousePosition)) return;
+    if (selectedView && TryBeginResize(*selectedView, mousePosition)) return;
     
     const auto hitView = HitTestPart(vecPartView, mousePosition);
     if (!hitView)
     {
-        m_selectedPartId = INVALID_PART_ID;
+        m_editorContext.SelectPart(INVALID_PART_ID);
         m_operation = {};
         return;
     }
-
-    m_selectedPartId = hitView->GetPartId();
+    m_editorContext.SelectPart(hitView->GetPartId());
 
     m_operation =
     {
         OperationType::Move,
-        m_selectedPartId
+        m_editorContext.GetPartId()
     };
 }
 
@@ -314,7 +292,40 @@ void CPreviewPanel::EndOperation()
     m_operation = {};
 }
 
-bool CPreviewPanel::TryBeginResize(CCreature& creature, const CRenderPartItem& view, const Vec2& mousePosition)
+void CPreviewPanel::DrawSelectPartFrameRect(
+    ImDrawList* drawList,
+    const RectCorner& corner,
+    const CRenderPartItem& selectPartView)
+{
+    const ImU32 color = IM_COL32(255, 0, 0, 255);
+    drawList->AddLine(
+        ImVec2{ corner.topLeft.x, corner.topLeft.y },
+        ImVec2{ corner.topRight.x, corner.topRight.y },
+        color,
+        2.0f);
+    drawList->AddLine(
+        ImVec2{ corner.topRight.x, corner.topRight.y },
+        ImVec2{ corner.bottomRight.x, corner.bottomRight.y },
+        color,
+        2.0f);
+    drawList->AddLine(
+        ImVec2{ corner.bottomRight.x, corner.bottomRight.y },
+        ImVec2{ corner.bottomLeft.x, corner.bottomLeft.y },
+        color,
+        2.0f);
+    drawList->AddLine(
+        ImVec2{ corner.bottomLeft.x, corner.bottomLeft.y },
+        ImVec2{ corner.topLeft.x, corner.topLeft.y },
+        color,
+        2.0f);
+
+    DrawResizeHandle(drawList, corner.topLeft);
+    DrawResizeHandle(drawList, corner.topRight);
+    DrawResizeHandle(drawList, corner.bottomRight);
+    DrawResizeHandle(drawList, corner.bottomLeft);
+}
+
+bool CPreviewPanel::TryBeginResize(const CRenderPartItem& view, const Vec2& mousePosition)
 {
     const auto handle = HitTestResizeHandle(view.GetRect(), mousePosition);
 
@@ -326,7 +337,7 @@ bool CPreviewPanel::TryBeginResize(CCreature& creature, const CRenderPartItem& v
         view.GetPartId()
     };
 
-    auto& skeleton = creature.GetSkeleton();
+    const auto& skeleton = m_creature.GetSkeleton();
     auto part = skeleton.FindPartById(view.GetPartId());
 
     if (!part) return false;
@@ -361,26 +372,26 @@ bool CPreviewPanel::TryBeginResize(CCreature& creature, const CRenderPartItem& v
     return true;
 }
 
-void CPreviewPanel::UpdateOperation(CCreature& creature, const CreaturePose& pose, const std::vector<CRenderPartItem>& vecPartView, const CMatrix3x2& previewTransform)
+void CPreviewPanel::UpdateOperation(const CreaturePose& pose, const std::vector<CRenderPartItem>& vecPartView, const CMatrix3x2& previewTransform)
 {
     switch (m_operation.eType)
     {
     case OperationType::Move:
-        MovePart(creature, pose, previewTransform);
+        MovePart(pose, previewTransform);
         break;
     case OperationType::Resize:
-        ResizePart(creature, pose, vecPartView, previewTransform);
+        ResizePart(pose, vecPartView, previewTransform);
         break;
     default:
         break;
     }
 }
 
-void CPreviewPanel::MovePart(CCreature& creature, const CreaturePose& pose, const CMatrix3x2& previewTransform)
+void CPreviewPanel::MovePart(const CreaturePose& pose, const CMatrix3x2& previewTransform)
 {
-    auto& skeleton = creature.GetSkeleton();
+    const auto& skeleton = m_creature.GetSkeleton();
 
-    auto* part = skeleton.FindPartById(m_operation.partId);
+    auto part = skeleton.FindPartById(m_operation.partId);
     if (!part) return;
 
     CMatrix3x2 parentWorld;
@@ -408,25 +419,24 @@ void CPreviewPanel::MovePart(CCreature& creature, const CreaturePose& pose, cons
         mouse.y - delta.y
     });
 
-    auto& position = part->bindTransform.GetPosition();
+    auto transform = part->bindTransform;
 
-    position.x += currentMouse.x - previousMouse.x;
-    position.y += currentMouse.y - previousMouse.y;
+    transform.GetPosition().x += currentMouse.x - previousMouse.x;
+    transform.GetPosition().y += currentMouse.y - previousMouse.y;
+
+    m_labController.CreatureEditor().SetPartTransform(part->id, transform);
 }
 
-void CPreviewPanel::ResizePart(Creature::CCreature& creature, const CreaturePose& pose, const std::vector<CRenderPartItem>& vecPartView, const Creature::Math::CMatrix3x2& previewTransform)
+void CPreviewPanel::ResizePart(const CreaturePose& pose, const std::vector<CRenderPartItem>& vecPartView, const Creature::Math::CMatrix3x2& previewTransform)
 {
-    auto& skeleton = creature.GetSkeleton();
-    auto* part = skeleton.FindPartById(m_operation.partId);
-
+    const auto& skeleton = m_creature.GetSkeleton();
+    auto part = skeleton.FindPartById(m_operation.partId);
     if (!part) return;
 
     const auto* view = FindPartView(vecPartView, m_operation.partId);
-
     if (!view) return;
 
     const auto texture = view->GetTexture();
-
     if (!texture) return;
 
     CMatrix3x2 parentWorld;
@@ -457,7 +467,8 @@ void CPreviewPanel::ResizePart(Creature::CCreature& creature, const CreaturePose
         mouseParent.y - m_resizeState.anchor.y
     };
 
-    const auto inverseRotation = CMatrix3x2::CreateRotation(-part->bindTransform.GetRotation());
+    auto editTransform = part->bindTransform;
+    const auto inverseRotation = CMatrix3x2::CreateRotation(-editTransform.GetRotation());
 
     const auto localDelta = inverseRotation.TransformPoint(delta);
     const auto direction = GetHandleDirection(m_resizeState.eHandle);
@@ -485,7 +496,7 @@ void CPreviewPanel::ResizePart(Creature::CCreature& creature, const CreaturePose
     const auto scaleRotation =
         CMatrix3x2::CreateScale(newScale)
         *
-        CMatrix3x2::CreateRotation(part->bindTransform.GetRotation());
+        CMatrix3x2::CreateRotation(editTransform.GetRotation());
 
     const auto anchorOffset = scaleRotation.TransformPoint(anchorLocal);
 
@@ -495,20 +506,22 @@ void CPreviewPanel::ResizePart(Creature::CCreature& creature, const CreaturePose
         m_resizeState.anchor.y - anchorOffset.y
     };
 
-    part->bindTransform.GetScale() = newScale;
-    part->bindTransform.GetPosition() = newPosition;
+    editTransform.GetScale() = newScale;
+    editTransform.GetPosition() = newPosition;
+
+    m_labController.CreatureEditor().SetPartTransform(part->id, editTransform);
 }
 
-std::vector<CRenderPartItem> CPreviewPanel::BuildPartViews(CCreature& creature, const CreaturePose& pose, const CMatrix3x2& previewTransform, CTextureCache& textureCache)
+std::vector<CRenderPartItem> CPreviewPanel::BuildPartViews(const CreaturePose& pose, const CMatrix3x2& previewTransform, CTextureCache& textureCache)
 {
-    const auto& skeleton = creature.GetSkeleton();
+    const auto& skeleton = m_creature.GetSkeleton();
 
     std::vector<CRenderPartItem> result;
     result.reserve(skeleton.Parts().size());
 
     for (const auto& part : skeleton.Parts())
     {
-        const auto appearance = creature.GetAppearance().FindByPartId(part.id);
+        const auto appearance = m_creature.GetAppearance().FindByPartId(part.id);
         if (!appearance) continue;
 
         auto texture = textureCache.Load(appearance->texturePath);

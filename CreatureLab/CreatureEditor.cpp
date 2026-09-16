@@ -11,11 +11,27 @@ CCreatureEditor::CCreatureEditor(CCreature& creature)
 {
 }
 
+bool CCreatureEditor::SetPartTransform(Creature::PartId id, const Creature::Math::CTransform2D& transform)
+{
+    auto part = m_creature.GetSkeleton().FindPartById(id);
+    if (!part) return false;
+
+    part->bindTransform = transform;
+    return true;
+}
+
 void CCreatureEditor::SetPartRotation(PartId id, float rotation)
 {
     auto part = m_creature.GetSkeleton().FindPartById(id);
     if (part == nullptr) return;
     part->bindTransform.SetRotation(rotation);
+}
+
+void CCreatureEditor::SetPartPosition(Creature::PartId id, const Creature::Math::Vec2& position)
+{
+    auto part = m_creature.GetSkeleton().FindPartById(id);
+    if (part == nullptr) return;
+    part->bindTransform.SetPosition(position);
 }
 
 void CCreatureEditor::SetPartScale(PartId id, const Vec2& scale)
