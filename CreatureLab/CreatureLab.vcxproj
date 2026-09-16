@@ -161,6 +161,7 @@
     <ClInclude Include="pch.h" />
     <ClInclude Include="PreviewPanel.h" />
     <ClInclude Include="PreviewState.h" />
+    <ClInclude Include="Window.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\third_party\imgui\backends\imgui_impl_dx11.cpp">
@@ -212,6 +213,7 @@
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <ClCompile Include="PreviewPanel.cpp" />
+    <ClCompile Include="Window.cpp" />
     <ClInclude Include="Resize.h" />
   </ItemGroup>
   <ItemGroup>

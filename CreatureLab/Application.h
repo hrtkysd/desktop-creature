@@ -2,22 +2,22 @@
 
 #include "Animation.h"
 #include "AnimationPlayer.h"
-
 #include "Creature.h"
+#include "CreatureEditor.h"
+#include "DocumentContext.h"
+#include "DocumentController.h"
+#include "EditorContext.h"
+#include "EditorController.h"
 #include "Genome.h"
+#include "LabController.h"
+#include "MenuBar.h"
+#include "PreviewPanel.h"
+#include "Window.h"
 
 #include <filesystem>
 #include <windef.h>
 
-class CCreatureEditor;
-class CDocumentContext;
-class CDocumentController;
-class CEditorContext;
-class CEditorController;
-class CLabController;
-class CMenuBar;
 class CTextureCache;
-class CPreviewPanel;
 
 class CApp final
 {
@@ -39,8 +39,6 @@ private:
     bool InitializeImGui();
     void InitializeCreature();
 
-    void SetupEditor();
-
     void CleanupRenderTarget();
     void Shutdown();
 
@@ -60,7 +58,7 @@ private:
 
 private:
     HINSTANCE m_hInstance;
-    HWND m_hWnd;
+    CWindow m_window;
 
     Microsoft::WRL::ComPtr<ID3D11Device> m_device;
     Microsoft::WRL::ComPtr<ID3D11DeviceContext> m_deviceContext;
@@ -74,18 +72,18 @@ private:
 
     Creature::Animation::CAnimationPlayer m_animationPlayer;
     Creature::Animation::CAnimation m_idleAnimation;
-    std::unique_ptr<CPreviewPanel> m_previewPanel;
+    CPreviewPanel m_previewPanel;
 
-    std::unique_ptr<CEditorContext>      m_editorContext;
-    std::unique_ptr<CDocumentContext>    m_documentContext;
+    CEditorContext      m_editorContext;
+    CDocumentContext    m_documentContext;
 
-    std::unique_ptr<CCreatureEditor>     m_creatureEditor;
+    CCreatureEditor     m_creatureEditor;
 
-    std::unique_ptr<CDocumentController> m_documentController;
-    std::unique_ptr<CEditorController>   m_editorController;
-    std::unique_ptr<CLabController>      m_labController;
+    CDocumentController m_documentController;
+    CEditorController   m_editorController;
+    CLabController      m_labController;
 
-    std::unique_ptr<CMenuBar>            m_menuBar;
+    CMenuBar            m_menuBar;
 
     bool m_bImGuiInitialized;
 };
