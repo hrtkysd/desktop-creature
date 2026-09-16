@@ -11,7 +11,6 @@ using namespace Creature::Math;
 
 namespace
 {
-
     CTransform2D BuildAnimatedTransform(
         const Creature::Part& part,
         const CTransform2D& poseTransform)
