@@ -122,6 +122,12 @@
     <ClInclude Include="Rotate.h">
       <Filter>Panel\Preview</Filter>
     </ClInclude>
+    <ClInclude Include="PreviewEditor.h">
+      <Filter>Panel\Preview</Filter>
+    </ClInclude>
+    <ClInclude Include="PreviewPart.h">
+      <Filter>Panel\Preview</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\third_party\imgui\imgui.cpp">
@@ -191,6 +197,12 @@
     </ClCompile>
     <ClCompile Include="Window.cpp">
       <Filter>Document</Filter>
+    </ClCompile>
+    <ClCompile Include="PreviewPart.cpp">
+      <Filter>Panel\Preview</Filter>
+    </ClCompile>
+    <ClCompile Include="PreviewEditor.cpp">
+      <Filter>Panel\Preview</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

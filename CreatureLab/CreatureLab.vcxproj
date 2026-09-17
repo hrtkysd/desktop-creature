@@ -159,7 +159,9 @@
     <ClInclude Include="MenuBar.h" />
     <ClInclude Include="Operation.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="PreviewEditor.h" />
     <ClInclude Include="PreviewPanel.h" />
+    <ClInclude Include="PreviewPart.h" />
     <ClInclude Include="PreviewState.h" />
     <ClInclude Include="Rotate.h" />
     <ClInclude Include="Window.h" />
@@ -213,7 +215,9 @@
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">pch.h</PrecompiledHeaderFile>
     </ClCompile>
+    <ClCompile Include="PreviewEditor.cpp" />
     <ClCompile Include="PreviewPanel.cpp" />
+    <ClCompile Include="PreviewPart.cpp" />
     <ClCompile Include="Window.cpp" />
     <ClInclude Include="Resize.h" />
   </ItemGroup>

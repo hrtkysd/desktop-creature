@@ -10,6 +10,7 @@ enum class OperationType : std::uint8_t
     Move,
     Resize,
     Rotate,
+    Pivot,
 };
 
 struct Operation
