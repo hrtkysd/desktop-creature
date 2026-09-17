@@ -343,7 +343,7 @@ void CPreviewEditor::BeginRotate(
         transform.GetPosition().y + part->pivot.y
     };
 
-    const auto fAngle = CAngle::Normalize(
+    const auto fAngle = Angle::Normalize(
         std::atan2(mouseParent.y - pivotParent.y, mouseParent.x - pivotParent.x));
 
     m_rotateState =
@@ -530,7 +530,7 @@ void CPreviewEditor::RotatePart(
         mousePosition.y
     });
 
-    const auto fCurrentAngle = CAngle::Normalize(
+    const auto fCurrentAngle = Angle::Normalize(
         std::atan2(
             mouseParent.y - m_rotateState.pivot.y,
             mouseParent.x - m_rotateState.pivot.x));
