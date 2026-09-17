@@ -198,19 +198,17 @@ void CApp::InitializeCreature()
     headRotation.SetPartId(headId);
     headRotation.SetAnimationProperty(
         AnimationProperty::Rotation);
-    headRotation.AddKeyFrame({ 0.0f,  0.0f });
-    headRotation.AddKeyFrame({ 0.5f,  0.1f });
-    headRotation.AddKeyFrame({ 1.0f,  0.0f });
+    headRotation.AddOrUpdateKeyFrame({ 0.0f,  0.0f });
+    headRotation.AddOrUpdateKeyFrame({ 0.5f,  0.1f });
+    headRotation.AddOrUpdateKeyFrame({ 1.0f,  0.0f });
 
     m_idleAnimation.SetDuration(1.0f);
-    m_idleAnimation.AddAnimationTrack(
-        std::move(headRotation));
+    m_idleAnimation.AddAnimationTrack(std::move(headRotation));
 }
 
 int CApp::Run()
 {
     MSG msg{};
-
 
     while (msg.message != WM_QUIT)
     {

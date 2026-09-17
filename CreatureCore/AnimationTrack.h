@@ -25,6 +25,7 @@ namespace Creature
         {
             float fTime = 0.0f;
             float fValue = 0.0f;
+            Interpolation eInterpolationToNext = Interpolation::Linear;
         };
 
         class CAnimationTrack
@@ -38,16 +39,11 @@ namespace Creature
             AnimationProperty GetAnimationProperty() const;
             void SetAnimationProperty(AnimationProperty eProperty);
 
-            Interpolation GetInterpolation() const noexcept;
-            void SetInterpolation(Interpolation eInterpolation) noexcept;
-
             const std::vector<FloatKeyFrame>& GetKeyFrames() const;
-            void AddKeyFrame(FloatKeyFrame&& keyFrame);
+            void AddOrUpdateKeyFrame(const FloatKeyFrame& keyFrame);
         private:
-
             PartId m_targetPartId = INVALID_PART_ID;
             AnimationProperty m_eProperty = AnimationProperty::None;
-            Interpolation m_eInterpolation = Interpolation::SmoothStep;
 
             std::vector<FloatKeyFrame> m_vecKeyFrame;
         };
