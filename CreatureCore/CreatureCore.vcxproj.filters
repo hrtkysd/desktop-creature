@@ -90,7 +90,7 @@
       <Filter>Animation</Filter>
     </ClInclude>
     <ClInclude Include="Math.h">
-      <Filter>Animation</Filter>
+      <Filter>Math</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
