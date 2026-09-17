@@ -86,6 +86,12 @@
     <ClInclude Include="Angle.h">
       <Filter>Math</Filter>
     </ClInclude>
+    <ClInclude Include="Interpolation.h">
+      <Filter>Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="Math.h">
+      <Filter>Animation</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AnimationPlayer.cpp">

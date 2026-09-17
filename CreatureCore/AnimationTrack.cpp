@@ -1,16 +1,10 @@
 #include "pch.h"
 #include "AnimationTrack.h"
+#include "Math.h"
 
 using namespace Creature;
 using namespace Creature::Animation;
-
-namespace
-{
-    float Lerp(float a, float b, float t)
-    {
-        return a + (b - a) * t;
-    }
-}
+using namespace Creature::Math;
 
 float CAnimationTrack::Sample(float fTime) const
 {
@@ -21,13 +15,23 @@ float CAnimationTrack::Sample(float fTime) const
 
     for (std::size_t i = 0; i + 1 < m_vecKeyFrame.size(); ++i)
     {
-        const auto& key0 = m_vecKeyFrame.at(i);
-        const auto& key1 = m_vecKeyFrame.at(i + 1);
+        const auto& from = m_vecKeyFrame.at(i);
+        const auto& to = m_vecKeyFrame.at(i + 1);
+        if (fTime < from.fTime || fTime > to.fTime)  continue;
+        const float t =(fTime - from.fTime) / (to.fTime - from.fTime);
+        float fInterpolation = t;
 
-        if (fTime < key0.fTime || fTime > key1.fTime) continue;
-        const float t =(fTime - key0.fTime) / (key1.fTime - key0.fTime);
-
-        return Lerp(key0.fValue, key1.fValue, t);
+        switch (m_eInterpolation)
+        {
+        case Interpolation::Linear:
+            break;
+        case Interpolation::SmoothStep:
+            fInterpolation = t * t * (3.0f - 2.0f * t);
+            break;
+        case Interpolation::Step:
+            return from.fValue;
+        }
+        return Lerp(from.fValue, to.fValue, fInterpolation);
     }
 
     return 0.0f;
@@ -51,6 +55,16 @@ AnimationProperty CAnimationTrack::GetAnimationProperty() const
 void CAnimationTrack::SetAnimationProperty(AnimationProperty eProperty)
 {
     m_eProperty = eProperty;
+}
+
+Interpolation Creature::Animation::CAnimationTrack::GetInterpolation() const noexcept
+{
+    return m_eInterpolation;
+}
+
+void CAnimationTrack::SetInterpolation(Interpolation eInterpolation) noexcept
+{
+    m_eInterpolation = eInterpolation;
 }
 
 const std::vector<FloatKeyFrame>& CAnimationTrack::GetKeyFrames() const
