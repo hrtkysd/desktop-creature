@@ -3,7 +3,6 @@
 #include "Transform2D.h"
 #include "Vec2.h"
 
-#include <cstddef>
 #include <cstdint>
 #include <string>
 

@@ -16,7 +16,7 @@ namespace
         std::uniform_real_distribution<float> dist(min, max);
         return dist(rng);
     }
-    
+
     int RandomInt(
         std::mt19937& rng,
         int min,

@@ -2,7 +2,6 @@
 #include "Animation.h"
 #include "AnimationPlayer.h"
 #include "AnimationTrack.h"
-#include "Creature.h"
 #include "CreaturePose.h"
 #include "Skeleton.h"
 

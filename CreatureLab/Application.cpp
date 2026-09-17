@@ -1,6 +1,4 @@
 #include "pch.h"
-
-#include "Animation.h"
 #include "AnimationTrack.h"
 #include "Appearance.h"
 #include "Application.h"
@@ -8,12 +6,11 @@
 #include "Skeleton.h"
 #include "Part.h"
 #include "TextureCache.h"
-#include "TextureLoader.h"
 
 // third party
 #include "imgui.h"
-#include "imgui_impl_win32.h"
 #include "imgui_impl_dx11.h"
+#include "imgui_impl_win32.h"
 #include "imgui_internal.h"
 
 using namespace Creature;
@@ -78,7 +75,7 @@ bool CApp::CreateMainWindow(
     if (!RegisterClassExW(&wc)) return false;
 
     m_window.Create(hInstance, kWindowClassName, kWindowTitle, 1280, 800);
-   
+
     ShowWindow(m_window.Handle(), nCmdShow);
     UpdateWindow(m_window.Handle());
 

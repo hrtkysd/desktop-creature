@@ -2,7 +2,6 @@
 #include "Skeleton.h"
 
 #include <unordered_set>
-#include <iterator>
 
 using namespace Creature;
 
@@ -56,7 +55,7 @@ Part* CSkeleton::FindPartByName(std::string_view name)
 
 const Part* CSkeleton::FindPartByName(const std::string_view name) const
 {
-    return FindPart(m_vecPart, [name](const Part& part){ return std::string_view(part.strName) == name; });
+    return FindPart(m_vecPart, [name](const Part& part) { return std::string_view(part.strName) == name; });
 }
 
 Part* CSkeleton::FindPartById(PartId id)
@@ -156,9 +155,10 @@ PartId CSkeleton::FindPartIdByName(const std::string_view name) const
 
 int CSkeleton::FindPartIndexById(PartId id) const
 {
-    const auto itFind = std::find_if(m_vecPart.cbegin(), m_vecPart.cend(), [id](const Part& part) {
-        return part.id == id;
-    });
+    const auto itFind = std::find_if(m_vecPart.cbegin(), m_vecPart.cend(), [id](const Part& part)
+        {
+            return part.id == id;
+        });
     if (itFind == m_vecPart.cend()) return INVALID_PART_INDEX;
     return static_cast<int>(std::distance(m_vecPart.begin(), itFind));
 }

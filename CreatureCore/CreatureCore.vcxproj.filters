@@ -89,7 +89,7 @@
     <ClInclude Include="Interpolation.h">
       <Filter>Animation</Filter>
     </ClInclude>
-    <ClInclude Include="Math.h">
+    <ClInclude Include="MathUtils.h">
       <Filter>Math</Filter>
     </ClInclude>
   </ItemGroup>

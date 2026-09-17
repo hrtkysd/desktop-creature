@@ -17,9 +17,6 @@
     <Filter Include="Panel">
       <UniqueIdentifier>{1aaa2255-ae1b-4236-a90f-a760e08b2d91}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Animation">
-      <UniqueIdentifier>{a1f9d0ca-a99b-413a-9487-5e66d68ac2b2}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Panel\Preview">
       <UniqueIdentifier>{1cb3b404-80df-4409-a006-c046c619db58}</UniqueIdentifier>
     </Filter>

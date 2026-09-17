@@ -78,9 +78,10 @@ void CPreviewPanel::Draw(
 
     std::vector<CPreviewPart> vecEditPreview;
     vecEditPreview.reserve(vecPartView.size());
-    std::transform(vecPartView.begin(), vecPartView.end(), std::back_inserter(vecEditPreview), [](const CRenderPartItem& renderItem) {
-        return ToPreviewPart(renderItem);
-    });
+    std::transform(vecPartView.begin(), vecPartView.end(), std::back_inserter(vecEditPreview), [](const CRenderPartItem& renderItem)
+        {
+            return ToPreviewPart(renderItem);
+        });
     m_previewEditor.HandleInput(pose, previewTransform, vecEditPreview);
 
     const auto drawList = ImGui::GetWindowDrawList();

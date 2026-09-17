@@ -10,8 +10,8 @@ namespace Creature
 class CGenomeGenerator
 {
 private:
-	CGenomeGenerator() = delete;
-	~CGenomeGenerator() = delete;
+    CGenomeGenerator() = delete;
+    ~CGenomeGenerator() = delete;
 public:
-	static Creature::Genome Generate(uint32_t seed);
+    static Creature::Genome Generate(uint32_t seed);
 };

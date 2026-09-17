@@ -27,7 +27,7 @@ bool CTextureLoader::LoadImage(const std::filesystem::path& path, ImageData& ima
         &decoder);
 
     if (FAILED(hr)) return false;
-    
+
     Microsoft::WRL::ComPtr<IWICBitmapFrameDecode> frame;
 
     hr = decoder->GetFrame(0, &frame);
