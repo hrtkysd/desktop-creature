@@ -149,6 +149,8 @@
     <ClInclude Include="AnimationTrack.h" />
     <ClInclude Include="Appearance.h" />
     <ClInclude Include="CreatureIO.h" />
+    <ClInclude Include="Interpolation.h" />
+    <ClInclude Include="Math.h" />
     <ClInclude Include="PartAppearance.h" />
     <ClInclude Include="Creature.h" />
     <ClInclude Include="CreaturePose.h" />

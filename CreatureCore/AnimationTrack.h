@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Interpolation.h"
 #include "Part.h"
 #include "Transform2D.h"
 
@@ -12,6 +13,7 @@ namespace Creature
     {
         enum class AnimationProperty
         {
+            None,
             PositionX,
             PositionY,
             Rotation,
@@ -36,12 +38,16 @@ namespace Creature
             AnimationProperty GetAnimationProperty() const;
             void SetAnimationProperty(AnimationProperty eProperty);
 
+            Interpolation GetInterpolation() const noexcept;
+            void SetInterpolation(Interpolation eInterpolation) noexcept;
+
             const std::vector<FloatKeyFrame>& GetKeyFrames() const;
             void AddKeyFrame(FloatKeyFrame&& keyFrame);
         private:
 
             PartId m_targetPartId = INVALID_PART_ID;
-            AnimationProperty m_eProperty;
+            AnimationProperty m_eProperty = AnimationProperty::None;
+            Interpolation m_eInterpolation = Interpolation::SmoothStep;
 
             std::vector<FloatKeyFrame> m_vecKeyFrame;
         };
