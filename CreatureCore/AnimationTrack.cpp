@@ -17,21 +17,22 @@ float CAnimationTrack::Sample(float fTime) const
     {
         const auto& from = m_vecKeyFrame.at(i);
         const auto& to = m_vecKeyFrame.at(i + 1);
-        if (fTime < from.fTime || fTime > to.fTime)  continue;
-        const float t =(fTime - from.fTime) / (to.fTime - from.fTime);
-        float fInterpolation = t;
 
-        switch (m_eInterpolation)
+        if (fTime < from.fTime || fTime > to.fTime)  continue;
+
+        auto t =(fTime - from.fTime) / (to.fTime - from.fTime);
+
+        switch (from.eInterpolationToNext)
         {
         case Interpolation::Linear:
             break;
         case Interpolation::SmoothStep:
-            fInterpolation = t * t * (3.0f - 2.0f * t);
+            t = Math::SmoothStep(t);
             break;
         case Interpolation::Step:
             return from.fValue;
         }
-        return Lerp(from.fValue, to.fValue, fInterpolation);
+        return Lerp(from.fValue, to.fValue, t);
     }
 
     return 0.0f;
@@ -57,22 +58,28 @@ void CAnimationTrack::SetAnimationProperty(AnimationProperty eProperty)
     m_eProperty = eProperty;
 }
 
-Interpolation Creature::Animation::CAnimationTrack::GetInterpolation() const noexcept
-{
-    return m_eInterpolation;
-}
-
-void CAnimationTrack::SetInterpolation(Interpolation eInterpolation) noexcept
-{
-    m_eInterpolation = eInterpolation;
-}
-
 const std::vector<FloatKeyFrame>& CAnimationTrack::GetKeyFrames() const
 {
     return m_vecKeyFrame;
 }
 
-void CAnimationTrack::AddKeyFrame(FloatKeyFrame&& keyFrame)
+void CAnimationTrack::AddOrUpdateKeyFrame(const FloatKeyFrame& keyFrame)
 {
-    m_vecKeyFrame.emplace_back(std::move(keyFrame));
+    const auto it = std::lower_bound(
+        m_vecKeyFrame.begin(),
+        m_vecKeyFrame.end(),
+        keyFrame.fTime,
+        [](const FloatKeyFrame& key, float time)
+        {
+            return key.fTime < time;
+        });
+
+    if (it != m_vecKeyFrame.cend() && it->fTime == keyFrame.fTime)
+    {
+        *it = keyFrame;
+        return;
+    }
+
+    m_vecKeyFrame.insert(it, keyFrame);
 }
+
