@@ -206,6 +206,9 @@ void CPreviewEditor::UpdateOperation(
     case OperationType::Rotate:
         RotatePart(pose, previewTransform);
         break;
+    case OperationType::Pivot:
+        MovePivot(pose, previewTransform);
+        break;
     default:
         break;
     }
@@ -527,15 +530,61 @@ void CPreviewEditor::RotatePart(
         mousePosition.y
     });
 
-    const float currentAngle = CAngle::Normalize(
+    const auto fCurrentAngle = CAngle::Normalize(
         std::atan2(
             mouseParent.y - m_rotateState.pivot.y,
             mouseParent.x - m_rotateState.pivot.x));
 
-    const auto fDelta = currentAngle - m_rotateState.fMouseAngleStart;
+    const auto fDelta = fCurrentAngle - m_rotateState.fMouseAngleStart;
 
     auto transform = part->bindTransform;
     transform.SetRotation(m_rotateState.fPartRotationStart + fDelta);
 
     m_editor.SetPartTransform(part->id, transform);
+}
+
+void CPreviewEditor::MovePivot(
+    const CreaturePose& pose,
+    const CMatrix3x2& previewTransform)
+{
+    const auto& skeleton = m_creature.GetSkeleton();
+
+    const auto part = skeleton.FindPartById(m_operation.partId);
+    if (!part) return;
+
+    CMatrix3x2 inverse;
+    if (!TryGetParentScreenInverse(skeleton, *part, pose, previewTransform, inverse))
+    {
+        return;
+    }
+
+    const auto mouse = ImGui::GetMousePos();
+    const Vec2 mouseParent = inverse.TransformPoint({
+        mouse.x,
+        mouse.y
+    });
+    const auto local = CPartTransformBuilder::BuildLocal(*part, part->bindTransform);
+    CMatrix3x2 inverseLocal;
+    if (!local.TryInverse(inverseLocal)) return;
+
+    const Vec2 newPivot = inverseLocal.TransformPoint(mouseParent);
+    const Vec2 deltaPivot
+    {
+        newPivot.x - part->pivot.x,
+        newPivot.y - part->pivot.y
+    };
+
+    const auto scaleRotation = CMatrix3x2::CreateScale(
+        part->bindTransform.GetScale())
+        *
+        CMatrix3x2::CreateRotation(part->bindTransform.GetRotation());
+
+    const auto transformedDelta = scaleRotation.TransformPoint(deltaPivot);
+
+    auto transform = part->bindTransform;
+    auto& position = transform.GetPosition();
+    position.x += transformedDelta.x - deltaPivot.x;
+    position.y += transformedDelta.y - deltaPivot.y;
+
+    m_editor.SetPartPivotAndTransform(part->id, newPivot, transform);
 }

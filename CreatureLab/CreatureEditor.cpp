@@ -20,6 +20,15 @@ bool CCreatureEditor::SetPartTransform(Creature::PartId id, const Creature::Math
     return true;
 }
 
+bool CCreatureEditor::SetPartPivotAndTransform(Creature::PartId id, const Vec2& pivot, const CTransform2D& transform)
+{
+    auto part = m_creature.GetSkeleton().FindPartById(id);
+    if (!part) return false;
+    part->pivot = pivot;
+    part->bindTransform = transform;
+    return true;
+}
+
 void CCreatureEditor::SetPartRotation(PartId id, float rotation)
 {
     auto part = m_creature.GetSkeleton().FindPartById(id);
