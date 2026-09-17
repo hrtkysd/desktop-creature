@@ -83,7 +83,9 @@ private:
     void RotatePart(
         const Creature::CreaturePose& pose,
         const Creature::Math::CMatrix3x2& previewTransform);
-
+    void MovePivot(
+        const Creature::CreaturePose& pose,
+        const Creature::Math::CMatrix3x2& previewTransform);
 private:
     const Creature::CCreature& m_creature;
     CCreatureEditor& m_editor;
