@@ -2,10 +2,8 @@
 
 #include "Interpolation.h"
 #include "Part.h"
-#include "Transform2D.h"
 
 #include <vector>
-#include <string>
 
 namespace Creature
 {

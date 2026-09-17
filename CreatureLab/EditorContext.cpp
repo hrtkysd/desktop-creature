@@ -1,5 +1,4 @@
 #include "pch.h"
-#include "Creature.h"
 #include "EditorContext.h"
 
 using namespace Creature;

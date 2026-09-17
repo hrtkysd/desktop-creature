@@ -3,8 +3,8 @@
 #include "DocumentCommand.h"
 #include "DocumentController.h"
 #include "EditorCommand.h"
-#include "EditorController.h"
 #include "EditorContext.h"
+#include "EditorController.h"
 #include "LabController.h"
 
 CLabController::CLabController(

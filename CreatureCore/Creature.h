@@ -14,7 +14,7 @@ namespace Creature
     public:
         CCreature();
         ~CCreature();
-    
+
         CCreature(const CCreature&) = delete;
         CCreature& operator=(const CCreature&) = delete;
 

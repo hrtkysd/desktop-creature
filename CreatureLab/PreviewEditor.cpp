@@ -8,7 +8,6 @@
 #include "PreviewEditor.h"
 #include "PreviewPart.h"
 #include "Skeleton.h"
-#include "Transform2D.h"
 
 #include "imgui.h"
 
@@ -331,10 +330,11 @@ void CPreviewEditor::BeginRotate(
     CMatrix3x2 inverseParentScreen;
     if (!parentScreen.TryInverse(inverseParentScreen)) return;
 
-    const auto mouseParent = inverseParentScreen.TransformPoint({
-        mousePosition.x,
-        mousePosition.y
-    });
+    const auto mouseParent = inverseParentScreen.TransformPoint(
+        {
+            mousePosition.x,
+            mousePosition.y
+        });
 
     const auto& transform = part->bindTransform;
     const Vec2 pivotParent
@@ -417,15 +417,17 @@ void CPreviewEditor::MovePart(
     const auto mouse = ImGui::GetMousePos();
     const auto delta = ImGui::GetIO().MouseDelta;
 
-    const Vec2 currentMouse = inverse.TransformPoint({
-        mouse.x,
-        mouse.y
-    });
+    const Vec2 currentMouse = inverse.TransformPoint(
+        {
+            mouse.x,
+            mouse.y
+        });
 
-    const Vec2 previousMouse = inverse.TransformPoint({
-        mouse.x - delta.x,
-        mouse.y - delta.y
-    });
+    const Vec2 previousMouse = inverse.TransformPoint(
+        {
+            mouse.x - delta.x,
+            mouse.y - delta.y
+        });
 
     auto transform = part->bindTransform;
 
@@ -447,7 +449,7 @@ void CPreviewEditor::ResizePart(
 
     const auto view = FindPartView(vecPartView, m_operation.partId);
     if (!view) return;
-   
+
     CMatrix3x2 inverse;
     if (!TryGetParentScreenInverse(skeleton, *part, pose, previewTransform, inverse))
     {
@@ -455,10 +457,11 @@ void CPreviewEditor::ResizePart(
     }
 
     const auto mouse = ImGui::GetMousePos();
-    const auto mouseParent = inverse.TransformPoint({
-        mouse.x,
-        mouse.y
-    });
+    const auto mouseParent = inverse.TransformPoint(
+        {
+            mouse.x,
+            mouse.y
+        });
 
     const Vec2 delta
     {
@@ -525,10 +528,11 @@ void CPreviewEditor::RotatePart(
     }
 
     const auto mousePosition = ImGui::GetMousePos();
-    const auto mouseParent = inverse.TransformPoint({
-        mousePosition.x,
-        mousePosition.y
-    });
+    const auto mouseParent = inverse.TransformPoint(
+        {
+            mousePosition.x,
+            mousePosition.y
+        });
 
     const auto fCurrentAngle = Angle::Normalize(
         std::atan2(
@@ -559,10 +563,11 @@ void CPreviewEditor::MovePivot(
     }
 
     const auto mouse = ImGui::GetMousePos();
-    const Vec2 mouseParent = inverse.TransformPoint({
-        mouse.x,
-        mouse.y
-    });
+    const Vec2 mouseParent = inverse.TransformPoint(
+        {
+            mouse.x,
+            mouse.y
+        });
     const auto local = CPartTransformBuilder::BuildLocal(*part, part->bindTransform);
     CMatrix3x2 inverseLocal;
     if (!local.TryInverse(inverseLocal)) return;

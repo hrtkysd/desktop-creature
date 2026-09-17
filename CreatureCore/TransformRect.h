@@ -4,8 +4,6 @@
 #include "RectCorner.h"
 #include "Vec2.h"
 
-#include <array>
-
 namespace Creature
 {
     namespace Math

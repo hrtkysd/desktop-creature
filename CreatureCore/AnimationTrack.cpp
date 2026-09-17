@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "AnimationTrack.h"
-#include "Math.h"
+#include "MathUtils.h"
 
 using namespace Creature;
 using namespace Creature::Animation;
@@ -20,7 +20,7 @@ float CAnimationTrack::Sample(float fTime) const
 
         if (fTime < from.fTime || fTime > to.fTime)  continue;
 
-        auto t =(fTime - from.fTime) / (to.fTime - from.fTime);
+        auto t = (fTime - from.fTime) / (to.fTime - from.fTime);
 
         switch (from.eInterpolationToNext)
         {
@@ -32,7 +32,7 @@ float CAnimationTrack::Sample(float fTime) const
         case Interpolation::Step:
             return from.fValue;
         }
-        return Lerp(from.fValue, to.fValue, t);
+        return Math::Lerp(from.fValue, to.fValue, t);
     }
 
     return 0.0f;

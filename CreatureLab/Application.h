@@ -14,7 +14,6 @@
 #include "PreviewPanel.h"
 #include "Window.h"
 
-#include <filesystem>
 #include <windef.h>
 
 class CTextureCache;

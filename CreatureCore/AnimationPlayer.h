@@ -2,11 +2,8 @@
 
 #include "CreaturePose.h"
 
-#include <memory>
-
 namespace Creature
 {
-    class CCreature;
     class CSkeleton;
 
     namespace Animation
