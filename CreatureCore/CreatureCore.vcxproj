@@ -145,6 +145,7 @@
   <ItemGroup>
     <ClInclude Include="Angle.h" />
     <ClInclude Include="Animation.h" />
+    <ClInclude Include="AnimationEntry.h" />
     <ClInclude Include="AnimationPlayer.h" />
     <ClInclude Include="AnimationTrack.h" />
     <ClInclude Include="Appearance.h" />

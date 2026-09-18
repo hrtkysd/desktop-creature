@@ -2,6 +2,7 @@
 #include "AnimationTrack.h"
 #include "Appearance.h"
 #include "Application.h"
+#include "AnimationPanel.h"
 #include "GenomePanel.h"
 #include "Skeleton.h"
 #include "Part.h"
@@ -255,6 +256,7 @@ void CApp::Render()
 
         ImGuiID mainDockId = dockspaceId;
         ImGuiID leftDockId = 0;
+        ImGuiID downDockId = 0;
 
         ImGui::DockBuilderSplitNode(
             mainDockId,
@@ -263,9 +265,20 @@ void CApp::Render()
             &leftDockId,
             &mainDockId);
 
+        ImGui::DockBuilderSplitNode(
+            mainDockId,
+            ImGuiDir_Down,
+            0.25f,
+            &downDockId,
+            &mainDockId);
+
         ImGui::DockBuilderDockWindow(
             "Genome",
             leftDockId);
+
+        ImGui::DockBuilderDockWindow(
+            "Animation",
+            downDockId);
 
         ImGui::DockBuilderDockWindow(
             "Preview",
@@ -273,6 +286,7 @@ void CApp::Render()
 
         ImGui::DockBuilderFinish(dockspaceId);
     }
+
     ImGui::DockSpaceOverViewport(
         dockspaceId,
         viewport,
@@ -283,6 +297,7 @@ void CApp::Render()
     m_animationPlayer.SamplePose(m_idleAnimation, m_creature.GetSkeleton());
 
     const auto& pose = m_animationPlayer.GetPose();
+    CAnimationPanel::Draw(m_idleAnimation);
     CGenomePanel::Draw(m_genome);
     m_previewPanel.Draw(pose, *m_textureCache);
     ImGui::Render();

@@ -8,7 +8,7 @@
 
 namespace Creature
 {
-    class Appearance
+    class CAppearance
     {
     public:
         void SetTexture(PartId partId, const std::filesystem::path& path);

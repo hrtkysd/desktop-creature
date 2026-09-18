@@ -38,6 +38,15 @@
     <Filter Include="Document">
       <UniqueIdentifier>{f88ec156-2c72-4399-aca7-08bbdb4567d2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Panel\Animation">
+      <UniqueIdentifier>{a73e2dad-c65a-4db5-99b4-6368b3710db0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="third_party\misc">
+      <UniqueIdentifier>{f904eadb-eb56-46d9-8963-13dad8421e3a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="third_party\misc\cpp">
+      <UniqueIdentifier>{2d3b08af-d68e-4a7a-9047-08c6f168dcf6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\third_party\imgui\backends\imgui_impl_dx11.h">
@@ -125,6 +134,12 @@
     <ClInclude Include="PreviewPart.h">
       <Filter>Panel\Preview</Filter>
     </ClInclude>
+    <ClInclude Include="AnimationPanel.h">
+      <Filter>Panel\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\third_party\imgui\misc\cpp\imgui_stdlib.h">
+      <Filter>third_party\misc\cpp</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\third_party\imgui\imgui.cpp">
@@ -200,6 +215,12 @@
     </ClCompile>
     <ClCompile Include="PreviewEditor.cpp">
       <Filter>Panel\Preview</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimationPanel.cpp">
+      <Filter>Panel\Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="..\third_party\imgui\misc\cpp\imgui_stdlib.cpp">
+      <Filter>third_party\misc\cpp</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
