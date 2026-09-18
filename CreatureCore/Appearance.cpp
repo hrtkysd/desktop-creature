@@ -4,7 +4,7 @@
 
 using namespace Creature;
 
-void Appearance::SetTexture(PartId partId, const std::filesystem::path& path)
+void CAppearance::SetTexture(PartId partId, const std::filesystem::path& path)
 {
     const auto itFind = std::find_if(m_vecPart.begin(), m_vecPart.end(), [partId](const PartAppearance& appearance)
         {
@@ -20,7 +20,7 @@ void Appearance::SetTexture(PartId partId, const std::filesystem::path& path)
     m_vecPart.emplace_back(PartAppearance{ partId, path });
 }
 
-const PartAppearance* Creature::Appearance::FindByPartId(PartId partId) const
+const PartAppearance* CAppearance::FindByPartId(PartId partId) const
 {
     const auto itFind = std::find_if(m_vecPart.cbegin(), m_vecPart.cend(), [partId](const PartAppearance& appearance)
         {

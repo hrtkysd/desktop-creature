@@ -1,13 +1,20 @@
 #pragma once
 
+#include <cstdint>
 #include <memory>
 
 namespace Creature
 {
     struct Genome;
 
-    class Appearance;
+    class CAppearance;
     class CSkeleton;
+
+    namespace Animation
+    {
+        class CAnimation;
+        using AnimationId = std::uint32_t;
+    }
 
     class CCreature
     {
@@ -27,8 +34,13 @@ namespace Creature
         const CSkeleton& GetSkeleton() const;
         CSkeleton& GetSkeleton();
 
-        const Appearance& GetAppearance() const;
-        Appearance& GetAppearance();
+        const CAppearance& GetAppearance() const;
+        CAppearance& GetAppearance();
+
+        Animation::AnimationId AddAnimation(Animation::CAnimation&& animation);
+
+        Animation::CAnimation* FindAnimationById(Animation::AnimationId id);
+        const Animation::CAnimation* FindAnimationById(Animation::AnimationId id) const;
 
     private:
         struct Impl;

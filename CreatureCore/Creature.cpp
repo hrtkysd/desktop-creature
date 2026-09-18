@@ -1,16 +1,24 @@
 #include "pch.h"
+#include "Animation.h"
+#include "AnimationEntry.h"
 #include "Appearance.h"
 #include "Creature.h"
 #include "Genome.h"
 #include "Skeleton.h"
 
+#include <utility>
+
 using namespace Creature;
+using namespace Creature::Animation;
 
 struct CCreature::Impl
 {
     Genome genome{};
-    Appearance appearance{};
+    CAppearance appearance{};
     CSkeleton skelton;
+
+    AnimationId nextAnimationId = MIN_ANIMATION_ID;
+    std::vector<AnimationEntry> vecAnimation;
 };
 
 CCreature::CCreature()
@@ -42,12 +50,45 @@ CSkeleton& CCreature::GetSkeleton()
     return m_impl->skelton;
 }
 
-const Appearance& CCreature::GetAppearance() const
+const CAppearance& CCreature::GetAppearance() const
 {
     return m_impl->appearance;
 }
 
-Appearance& CCreature::GetAppearance()
+CAppearance& CCreature::GetAppearance()
 {
     return m_impl->appearance;
+}
+
+AnimationId CCreature::AddAnimation(CAnimation&& animation)
+{
+    const auto id = m_impl->nextAnimationId++;
+
+    m_impl->vecAnimation.emplace_back(
+        AnimationEntry
+        {
+            id,
+            std::move(animation)
+        });
+
+    return id;
+}
+
+CAnimation* CCreature::FindAnimationById(AnimationId id)
+{
+    return const_cast<CAnimation*>(std::as_const(*this).FindAnimationById(id));
+}
+
+const CAnimation* CCreature::FindAnimationById(Animation::AnimationId id) const
+{
+    if (id == INVALID_ANIMATION_ID) return nullptr;
+
+    auto& vecAnimation = m_impl->vecAnimation;
+    auto itFind = std::find_if(vecAnimation.begin(), vecAnimation.end(), [id](const AnimationEntry& entry)
+        {
+            return entry.id == id;
+        });
+    return itFind != vecAnimation.cend()
+        ? &itFind->animation
+        : nullptr;
 }
