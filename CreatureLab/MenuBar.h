@@ -7,7 +7,7 @@ class CMenuBar
 public:
     explicit CMenuBar(CLabController& labController);
 public:
-    void Render(CEditorContext& context);
+    void Draw(CEditorContext& context);
 private:
     CLabController& m_labController;
 };

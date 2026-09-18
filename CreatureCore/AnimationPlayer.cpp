@@ -37,7 +37,7 @@ void CAnimationPlayer::Update(float fDeltaTime)
     m_fCurrentTime += fDeltaTime;
 }
 
-const CreaturePose& CAnimationPlayer::GetPose() const noexcept
+const CCreaturePose& CAnimationPlayer::GetPose() const noexcept
 {
     return m_pose;
 }
@@ -48,9 +48,9 @@ void CAnimationPlayer::SamplePose(const CAnimation& animation, const CSkeleton& 
     {
         m_fCurrentTime = std::fmod(m_fCurrentTime, animation.GetDuration());
     }
-
-    m_pose.vecPartTransform.clear();
-    m_pose.vecPartTransform.resize(skeleton.Parts().size());
+    auto& vecPartTransform = m_pose.GetPartTransform();
+    vecPartTransform.clear();
+    vecPartTransform.resize(skeleton.Parts().size());
 
     for (const auto& track : animation.GetAnimationTrack())
     {
@@ -58,7 +58,7 @@ void CAnimationPlayer::SamplePose(const CAnimation& animation, const CSkeleton& 
         if (index == INVALID_PART_INDEX) continue;
 
         const auto value = track.Sample(m_fCurrentTime);
-        auto& transform = m_pose.vecPartTransform.at(index);
+        auto& transform = vecPartTransform.at(index);
 
         switch (track.GetAnimationProperty())
         {

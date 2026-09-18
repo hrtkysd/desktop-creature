@@ -5,7 +5,8 @@
 namespace Creature
 {
     struct Genome;
-    struct CreaturePose;
+
+    class CCreaturePose;
 }
 
 class CCreatureRenderer
@@ -18,5 +19,5 @@ public:
         HDC hdc,
         const RECT& client,
         const Creature::Genome& genome,
-        const Creature::CreaturePose& pose);
+        const Creature::CCreaturePose& pose);
 };

@@ -4,7 +4,7 @@
 #include "ImGuiWindowScope.h"
 
 #include "imgui.h"
-#include "misc/cpp/imgui_stdlib.h"
+#include "imgui_stdlib.h"
 
 namespace
 {

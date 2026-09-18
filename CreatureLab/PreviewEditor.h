@@ -9,8 +9,7 @@
 namespace Creature
 {
     class CCreature;
-
-    struct CreaturePose;
+    class CCreaturePose;
 
     namespace Math
     {
@@ -36,19 +35,20 @@ public:
 
 public:
     void HandleInput(
-        const Creature::CreaturePose& pose,
+        const Creature::CCreaturePose& pose,
         const Creature::Math::CMatrix3x2& previewTransform,
-        const std::vector<CPreviewPart>& vecPreview);
+        const std::vector<CPreviewPart>& vecPreview,
+        bool isInsidePreview);
 
 private:
     void Select(const CPreviewPart* view);
     void BeginOperation(
-        const Creature::CreaturePose& pose,
+        const Creature::CCreaturePose& pose,
         const Creature::Math::CMatrix3x2& previewTransform,
         const std::vector<CPreviewPart>& vecPartView,
         const Creature::Math::Vec2& mousePosition);
     void UpdateOperation(
-        const Creature::CreaturePose& pose,
+        const Creature::CCreaturePose& pose,
         const std::vector<CPreviewPart>& vecPartView,
         const Creature::Math::CMatrix3x2& previewTransform);
     void EndOperation();
@@ -63,28 +63,28 @@ private:
         const std::vector<CPreviewPart>& vecPartView,
         const Creature::Math::Vec2& mousePosition);
     void BeginRotate(
-        const Creature::CreaturePose& pose,
+        const Creature::CCreaturePose& pose,
         const Creature::Math::CMatrix3x2& previewTransform,
         const std::vector<CPreviewPart>& vecPartView,
         const Creature::Math::Vec2& mousePosition);
     void BeginPivot(
-        const Creature::CreaturePose& pose,
+        const Creature::CCreaturePose& pose,
         const Creature::Math::CMatrix3x2& previewTransform,
         const std::vector<CPreviewPart>& vecPartView,
         const Creature::Math::Vec2& mousePosition);
 
     void MovePart(
-        const Creature::CreaturePose& pose,
+        const Creature::CCreaturePose& pose,
         const Creature::Math::CMatrix3x2& previewTransform);
     void ResizePart(
-        const Creature::CreaturePose& pose,
+        const Creature::CCreaturePose& pose,
         const std::vector<CPreviewPart>& vecPartView,
         const Creature::Math::CMatrix3x2& previewTransform);
     void RotatePart(
-        const Creature::CreaturePose& pose,
+        const Creature::CCreaturePose& pose,
         const Creature::Math::CMatrix3x2& previewTransform);
     void MovePivot(
-        const Creature::CreaturePose& pose,
+        const Creature::CCreaturePose& pose,
         const Creature::Math::CMatrix3x2& previewTransform);
 private:
     const Creature::CCreature& m_creature;

@@ -61,3 +61,8 @@ bool CCreatureEditor::DeletePart(Creature::PartId id)
 {
     return m_creature.GetSkeleton().RemovePart(id);
 }
+
+void CCreatureEditor::SetName(const std::string& strName)
+{
+    m_creature.SetName(strName);
+}

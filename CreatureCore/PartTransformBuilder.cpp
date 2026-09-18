@@ -48,15 +48,39 @@ CMatrix3x2 CPartTransformBuilder::BuildLocal(const Part& part, const Math::CTran
         CMatrix3x2::CreateTranslation(transform.GetPosition());
 }
 
-CMatrix3x2 CPartTransformBuilder::BuildWorld(const Part& part, const CSkeleton& skeleton, const CreaturePose& pose)
+CMatrix3x2 Creature::Math::CPartTransformBuilder::BuildWorld(
+    const Part& part,
+    const CSkeleton& skeleton)
+{
+    const auto local = part.bindTransform.ToMatrix();
+
+    if (part.parentId == INVALID_PART_ID) return local;
+
+    const auto* parent = skeleton.FindPartById(part.parentId);
+
+    if (!parent) return local;
+
+    const auto parentWorld = BuildWorld(*parent, skeleton);
+
+    return
+        local
+        *
+        parentWorld;
+}
+
+CMatrix3x2 CPartTransformBuilder::BuildWorld(
+    const Part& part,
+    const CSkeleton& skeleton,
+    const CCreaturePose& pose)
 {
     auto transform = part.bindTransform;
 
     const auto index = skeleton.FindPartIndexById(part.id);
+    const auto& vecPartTransform = pose.GetPartTransform();
 
     if (index != INVALID_PART_INDEX)
     {
-        transform = BuildAnimatedTransform(part, pose.vecPartTransform.at(index));
+        transform = BuildAnimatedTransform(part, vecPartTransform.at(index));
     }
 
     const auto local = BuildLocal(part, transform);

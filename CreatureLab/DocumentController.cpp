@@ -39,6 +39,7 @@ void CDocumentController::Execute(DocumentCommand command)
         if (path.empty()) return;
         CCreature creature;
         if (!CCreatureIO::LoadFromFile(path, creature)) return;
+        if (creature.GetName().empty()) creature.SetName("no name");
         m_creature = std::move(creature);
     }
     break;

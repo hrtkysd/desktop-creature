@@ -134,5 +134,8 @@
     <ClCompile Include="PartTransformBuilder.cpp">
       <Filter>Math</Filter>
     </ClCompile>
+    <ClCompile Include="CreaturePose.cpp">
+      <Filter>Creature</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

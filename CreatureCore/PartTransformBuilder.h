@@ -2,9 +2,9 @@
 
 namespace Creature
 {
+    class CCreaturePose;
     class CSkeleton;
 
-    struct CreaturePose;
     struct Part;
 
     namespace Math
@@ -19,10 +19,14 @@ namespace Creature
                 const Part& part,
                 const Math::CTransform2D& transform);
 
+            static CMatrix3x2 BuildWorld(
+                const Part& part,
+                const CSkeleton& skeleton);
+
             static Math::CMatrix3x2 BuildWorld(
                 const Part& part,
                 const CSkeleton& skeleton,
-                const CreaturePose& pose);
+                const CCreaturePose& pose);
         };
     } // namespace Math
 } // namespace Creature

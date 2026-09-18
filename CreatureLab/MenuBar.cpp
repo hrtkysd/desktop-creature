@@ -12,7 +12,7 @@ CMenuBar::CMenuBar(CLabController& labController)
 {
 }
 
-void CMenuBar::Render(CEditorContext& context)
+void CMenuBar::Draw(CEditorContext& context)
 {
     if (CImGuiMainMenuBarScope menuBar{})
     {

@@ -37,6 +37,20 @@ namespace
             }
         };
     }
+
+    bool IsMouseCursorInPanel()
+    {
+        const auto origin = ImGui::GetCursorScreenPos();
+        const auto area = ImGui::GetContentRegionAvail();
+
+        const auto mouse = ImGui::GetMousePos();
+
+        return
+            mouse.x >= origin.x &&
+            mouse.x <= origin.x + area.x &&
+            mouse.y >= origin.y &&
+            mouse.y <= origin.y + area.y;
+    }
 }
 
 CPreviewPanel::CPreviewPanel(
@@ -50,7 +64,7 @@ CPreviewPanel::CPreviewPanel(
 }
 
 void CPreviewPanel::Draw(
-    const CreaturePose& pose,
+    const CCreaturePose& pose,
     CTextureCache& textureCache)
 {
     CImGuiWindowScope scope("Preview");
@@ -82,7 +96,8 @@ void CPreviewPanel::Draw(
         {
             return ToPreviewPart(renderItem);
         });
-    m_previewEditor.HandleInput(pose, previewTransform, vecEditPreview);
+
+    m_previewEditor.HandleInput(pose, previewTransform, vecEditPreview, IsMouseCursorInPanel());
 
     const auto drawList = ImGui::GetWindowDrawList();
     for (const auto& partView : vecPartView)
@@ -206,7 +221,7 @@ void CPreviewPanel::DrawSelectPartFrameRect(
 }
 
 std::vector<CRenderPartItem> CPreviewPanel::BuildPartViews(
-    const CreaturePose& pose,
+    const CCreaturePose& pose,
     const CMatrix3x2& previewTransform,
     CTextureCache& textureCache)
 {

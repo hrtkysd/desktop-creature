@@ -13,6 +13,9 @@ namespace Creature
     namespace Animation
     {
         class CAnimation;
+
+        struct AnimationEntry;
+
         using AnimationId = std::uint32_t;
     }
 
@@ -36,6 +39,11 @@ namespace Creature
 
         const CAppearance& GetAppearance() const;
         CAppearance& GetAppearance();
+
+        const std::string& GetName() const;
+        void SetName(const std::string& strName);
+
+        const std::vector<Animation::AnimationEntry> GetAnimationEntries() const;
 
         Animation::AnimationId AddAnimation(Animation::CAnimation&& animation);
 
