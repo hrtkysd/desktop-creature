@@ -6,6 +6,7 @@
 #include "Genome.h"
 #include "Skeleton.h"
 
+#include <string>
 #include <utility>
 
 using namespace Creature;
@@ -19,6 +20,8 @@ struct CCreature::Impl
 
     AnimationId nextAnimationId = MIN_ANIMATION_ID;
     std::vector<AnimationEntry> vecAnimation;
+
+    std::string strName;
 };
 
 CCreature::CCreature()
@@ -60,6 +63,21 @@ CAppearance& CCreature::GetAppearance()
     return m_impl->appearance;
 }
 
+const std::string& CCreature::GetName() const
+{
+    return m_impl->strName;
+}
+
+void CCreature::SetName(const std::string& strName)
+{
+    m_impl->strName = strName;
+}
+
+const std::vector<AnimationEntry> CCreature::GetAnimationEntries() const
+{
+    return m_impl->vecAnimation;
+}
+
 AnimationId CCreature::AddAnimation(CAnimation&& animation)
 {
     const auto id = m_impl->nextAnimationId++;
@@ -79,7 +97,7 @@ CAnimation* CCreature::FindAnimationById(AnimationId id)
     return const_cast<CAnimation*>(std::as_const(*this).FindAnimationById(id));
 }
 
-const CAnimation* CCreature::FindAnimationById(Animation::AnimationId id) const
+const CAnimation* CCreature::FindAnimationById(AnimationId id) const
 {
     if (id == INVALID_ANIMATION_ID) return nullptr;
 

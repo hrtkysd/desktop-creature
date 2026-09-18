@@ -104,7 +104,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)CreatureCore;$(SolutionDir)Renderer;$(SolutionDir)third_party\imgui;$(SolutionDir)third_party\imgui\misc;$(SolutionDir)third_party\imgui\backends</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)CreatureCore;$(SolutionDir)Renderer;$(SolutionDir)third_party\imgui;$(SolutionDir)third_party\imgui\misc\cpp;$(SolutionDir)third_party\imgui\backends</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
@@ -123,7 +123,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)CreatureCore;$(SolutionDir)Renderer;$(SolutionDir)third_party\imgui;$(SolutionDir)third_party\imgui\misc;$(SolutionDir)third_party\imgui\backends</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)CreatureCore;$(SolutionDir)Renderer;$(SolutionDir)third_party\imgui;$(SolutionDir)third_party\imgui\misc\cpp;$(SolutionDir)third_party\imgui\backends</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
@@ -146,6 +146,7 @@
     <ClInclude Include="AnimationPanel.h" />
     <ClInclude Include="Application.h" />
     <ClInclude Include="CreatureEditor.h" />
+    <ClInclude Include="CreatureTreePanel.h" />
     <ClInclude Include="DocumentCommand.h" />
     <ClInclude Include="DocumentContext.h" />
     <ClInclude Include="DocumentController.h" />
@@ -204,6 +205,7 @@
     <ClCompile Include="AnimationPanel.cpp" />
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="CreatureEditor.cpp" />
+    <ClCompile Include="CreatureTreePanel.cpp" />
     <ClCompile Include="DocumentContext.cpp" />
     <ClCompile Include="DocumentController.cpp" />
     <ClCompile Include="EditorContext.cpp" />

@@ -4,6 +4,7 @@
 #include "AnimationPlayer.h"
 #include "Creature.h"
 #include "CreatureEditor.h"
+#include "CreatureTreePanel.h"
 #include "DocumentContext.h"
 #include "DocumentController.h"
 #include "EditorContext.h"
@@ -67,10 +68,12 @@ private:
     Creature::Genome m_genome;
     Creature::CCreature m_creature;
 
+    CCreatureTreePanel m_creatureTreePanel;
+
     std::shared_ptr<CTextureCache> m_textureCache;
 
     Creature::Animation::CAnimationPlayer m_animationPlayer;
-    Creature::Animation::CAnimation m_idleAnimation;
+    Creature::Animation::AnimationId m_idleAnimationId;
     CPreviewPanel m_previewPanel;
 
     CEditorContext      m_editorContext;
@@ -83,6 +86,5 @@ private:
     CLabController      m_labController;
 
     CMenuBar            m_menuBar;
-
     bool m_bImGuiInitialized;
 };

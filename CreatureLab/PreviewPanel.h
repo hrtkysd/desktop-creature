@@ -5,8 +5,7 @@
 namespace Creature
 {
     class CCreature;
-
-    struct CreaturePose;
+    class CCreaturePose;
 
     namespace Math
     {
@@ -35,7 +34,7 @@ public:
         CEditorContext& context);
 public:
     void Draw(
-        const Creature::CreaturePose& pose,
+        const Creature::CCreaturePose& pose,
         CTextureCache& textureCache);
 private:
     void DrawSelectPartFrameRect(
@@ -43,7 +42,7 @@ private:
         const Creature::Math::RectCorner& corner,
         const CRenderPartItem& selectPartView);
     std::vector<CRenderPartItem> BuildPartViews(
-        const Creature::CreaturePose& pose,
+        const Creature::CCreaturePose& pose,
         const Creature::Math::CMatrix3x2& previewTransform,
         CTextureCache& textureCache);
     void DrawResizeHandle(

@@ -3,7 +3,8 @@
 #include "Appearance.h"
 #include "Application.h"
 #include "AnimationPanel.h"
-#include "GenomePanel.h"
+#include "CreaturePose.h"
+#include "CreatureTreePanel.h"
 #include "Skeleton.h"
 #include "Part.h"
 #include "TextureCache.h"
@@ -38,6 +39,7 @@ CApp::CApp()
     , m_labController(m_editorContext, m_documentController, m_editorController, m_creatureEditor)
     , m_menuBar(m_labController)
     , m_previewPanel(m_creature, m_creatureEditor, m_editorContext)
+    , m_creatureTreePanel(m_creature, m_creatureEditor, m_editorContext)
 {
 }
 
@@ -178,6 +180,8 @@ bool CApp::InitializeImGui()
 
 void CApp::InitializeCreature()
 {
+    m_creature.SetName("Hamster");
+
     auto& skelton = m_creature.GetSkeleton();
     const auto bodyId = skelton.AddPart("Body");
     const auto headId = skelton.AddPart("Head", bodyId);
@@ -200,8 +204,11 @@ void CApp::InitializeCreature()
     headRotation.AddOrUpdateKeyFrame({ 0.5f,  0.1f });
     headRotation.AddOrUpdateKeyFrame({ 1.0f,  0.0f });
 
-    m_idleAnimation.SetDuration(1.0f);
-    m_idleAnimation.AddAnimationTrack(std::move(headRotation));
+    Animation::CAnimation idle;
+    idle.SetName("Idle");
+    idle.SetDuration(1.0f);
+    idle.AddAnimationTrack(std::move(headRotation));
+    m_idleAnimationId = m_creature.AddAnimation(std::move(idle));
 }
 
 int CApp::Run()
@@ -273,7 +280,7 @@ void CApp::Render()
             &mainDockId);
 
         ImGui::DockBuilderDockWindow(
-            "Genome",
+            "Creature",
             leftDockId);
 
         ImGui::DockBuilderDockWindow(
@@ -291,15 +298,26 @@ void CApp::Render()
         dockspaceId,
         viewport,
         ImGuiDockNodeFlags_None);
-    m_menuBar.Render(m_editorContext);
 
-    m_animationPlayer.Update(ImGui::GetIO().DeltaTime);
-    m_animationPlayer.SamplePose(m_idleAnimation, m_creature.GetSkeleton());
+    m_menuBar.Draw(m_editorContext);
+    m_creatureTreePanel.Draw();
 
-    const auto& pose = m_animationPlayer.GetPose();
-    CAnimationPanel::Draw(m_idleAnimation);
-    CGenomePanel::Draw(m_genome);
-    m_previewPanel.Draw(pose, *m_textureCache);
+    const auto animation = m_creature.FindAnimationById(m_editorContext.GetAnimationId());
+    const auto& skeleton = m_creature.GetSkeleton();
+    const auto defaultPose = CCreaturePose::Default(skeleton);
+    const auto* pose = &defaultPose;
+    if (animation)
+    {
+        m_animationPlayer.Update(ImGui::GetIO().DeltaTime);
+        m_animationPlayer.SamplePose(*animation, skeleton);
+
+        CAnimationPanel::Draw(*animation);
+
+        pose = &m_animationPlayer.GetPose();
+    }
+
+
+    m_previewPanel.Draw(*pose, *m_textureCache);
     ImGui::Render();
 
     constexpr float clearColor[] =

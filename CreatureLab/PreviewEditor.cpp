@@ -2,6 +2,7 @@
 #include "Angle.h"
 #include "Creature.h"
 #include "CreatureEditor.h"
+#include "CreaturePose.h"
 #include "EditorContext.h"
 #include "Part.h"
 #include "PartTransformBuilder.h"
@@ -99,7 +100,7 @@ namespace
     bool TryGetParentScreenInverse(
         const CSkeleton& skeleton,
         const Part& part,
-        const CreaturePose& pose,
+        const CCreaturePose& pose,
         const CMatrix3x2& previewTransform,
         CMatrix3x2& inverse)
     {
@@ -128,18 +129,19 @@ CPreviewEditor::CPreviewEditor(
 }
 
 void CPreviewEditor::HandleInput(
-    const CreaturePose& pose,
+    const CCreaturePose& pose,
     const CMatrix3x2& previewTransform,
-    const std::vector<CPreviewPart>& vecPreviewPart)
+    const std::vector<CPreviewPart>& vecPreviewPart,
+    bool isInsidePreview)
 {
     const auto mousePosition = ImGui::GetMousePos();
 
-    if (ImGui::IsMouseClicked(ImGuiMouseButton_Left))
+    if (isInsidePreview && ImGui::IsMouseClicked(ImGuiMouseButton_Left))
     {
         BeginOperation(pose, previewTransform, vecPreviewPart, { mousePosition.x, mousePosition.y });
     }
 
-    if (ImGui::IsMouseDragging(ImGuiMouseButton_Left))
+    if (m_operation.eType != OperationType::None && ImGui::IsMouseDragging(ImGuiMouseButton_Left))
     {
         UpdateOperation(pose, vecPreviewPart, previewTransform);
     }
@@ -160,7 +162,7 @@ void CPreviewEditor::Select(const CPreviewPart* view)
 }
 
 void CPreviewEditor::BeginOperation(
-    const CreaturePose& pose,
+    const CCreaturePose& pose,
     const CMatrix3x2& previewTransform,
     const std::vector<CPreviewPart>& vecPartView,
     const Vec2& mousePosition)
@@ -190,7 +192,7 @@ void CPreviewEditor::BeginOperation(
 }
 
 void CPreviewEditor::UpdateOperation(
-    const CreaturePose& pose,
+    const CCreaturePose& pose,
     const std::vector<CPreviewPart>& vecPartView,
     const CMatrix3x2& previewTransform)
 {
@@ -296,7 +298,7 @@ void CPreviewEditor::BeginScale(
 }
 
 void CPreviewEditor::BeginRotate(
-    const CreaturePose& pose,
+    const CCreaturePose& pose,
     const CMatrix3x2& previewTransform,
     const std::vector<CPreviewPart>& vecPartView,
     const Vec2& mousePosition)
@@ -361,7 +363,7 @@ void CPreviewEditor::BeginRotate(
 }
 
 void CPreviewEditor::BeginPivot(
-    const CreaturePose& pose,
+    const CCreaturePose& pose,
     const CMatrix3x2& previewTransform,
     const std::vector<CPreviewPart>& vecPartView,
     const Vec2& mousePosition)
@@ -400,7 +402,7 @@ void CPreviewEditor::BeginPivot(
 }
 
 void CPreviewEditor::MovePart(
-    const CreaturePose& pose,
+    const CCreaturePose& pose,
     const CMatrix3x2& previewTransform)
 {
     const auto& skeleton = m_creature.GetSkeleton();
@@ -438,7 +440,7 @@ void CPreviewEditor::MovePart(
 }
 
 void CPreviewEditor::ResizePart(
-    const Creature::CreaturePose& pose,
+    const Creature::CCreaturePose& pose,
     const std::vector<CPreviewPart>& vecPartView,
     const CMatrix3x2& previewTransform)
 {
@@ -513,7 +515,7 @@ void CPreviewEditor::ResizePart(
 }
 
 void CPreviewEditor::RotatePart(
-    const CreaturePose& pose,
+    const CCreaturePose& pose,
     const CMatrix3x2& previewTransform)
 {
     const auto& skeleton = m_creature.GetSkeleton();
@@ -548,7 +550,7 @@ void CPreviewEditor::RotatePart(
 }
 
 void CPreviewEditor::MovePivot(
-    const CreaturePose& pose,
+    const CCreaturePose& pose,
     const CMatrix3x2& previewTransform)
 {
     const auto& skeleton = m_creature.GetSkeleton();

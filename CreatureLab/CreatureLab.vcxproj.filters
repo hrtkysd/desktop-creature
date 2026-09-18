@@ -47,6 +47,9 @@
     <Filter Include="third_party\misc\cpp">
       <UniqueIdentifier>{2d3b08af-d68e-4a7a-9047-08c6f168dcf6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Panel\Creature">
+      <UniqueIdentifier>{b5676d28-29e8-48bc-a648-c26d4dd56e16}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\third_party\imgui\backends\imgui_impl_dx11.h">
@@ -140,6 +143,9 @@
     <ClInclude Include="..\third_party\imgui\misc\cpp\imgui_stdlib.h">
       <Filter>third_party\misc\cpp</Filter>
     </ClInclude>
+    <ClInclude Include="CreatureTreePanel.h">
+      <Filter>Panel\Creature</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\third_party\imgui\imgui.cpp">
@@ -221,6 +227,9 @@
     </ClCompile>
     <ClCompile Include="..\third_party\imgui\misc\cpp\imgui_stdlib.cpp">
       <Filter>third_party\misc\cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="CreatureTreePanel.cpp">
+      <Filter>Panel\Creature</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

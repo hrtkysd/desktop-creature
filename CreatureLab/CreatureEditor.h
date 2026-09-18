@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Part.h"
+#include <string>
 
 class CCreatureDocument;
 
@@ -30,6 +31,7 @@ public:
     void SetPartPivot(Creature::PartId id, const Creature::Math::Vec2& pivot);
     bool DeletePart(Creature::PartId id);
 
+    void SetName(const std::string& strName);
 private:
     Creature::CCreature& m_creature;
 };
