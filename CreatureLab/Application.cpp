@@ -31,9 +31,7 @@ extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(
     LPARAM lParam);
 
 CApp::CApp()
-    : m_hInstance(nullptr)
-    , m_bImGuiInitialized(false)
-    , m_creatureEditor(m_creature)
+    : m_creatureEditor(m_creature)
     , m_documentController(m_window, m_creature, m_documentContext)
     , m_editorController(m_creature, m_animationPlayer, m_editorContext)
     , m_labController(m_editorContext, m_documentController, m_editorController, m_creatureEditor)

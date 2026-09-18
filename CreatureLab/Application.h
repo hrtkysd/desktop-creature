@@ -57,7 +57,7 @@ private:
         LPARAM lParam);
 
 private:
-    HINSTANCE m_hInstance;
+    HINSTANCE m_hInstance = nullptr;
     CWindow m_window;
 
     Microsoft::WRL::ComPtr<ID3D11Device> m_device;
@@ -73,7 +73,7 @@ private:
     std::shared_ptr<CTextureCache> m_textureCache;
 
     Creature::Animation::CAnimationPlayer m_animationPlayer;
-    Creature::Animation::AnimationId m_idleAnimationId;
+    Creature::Animation::AnimationId m_idleAnimationId = Creature::Animation::INVALID_ANIMATION_ID;
     CPreviewPanel m_previewPanel;
 
     CEditorContext      m_editorContext;
@@ -85,6 +85,7 @@ private:
     CEditorController   m_editorController;
     CLabController      m_labController;
 
-    CMenuBar            m_menuBar;
-    bool m_bImGuiInitialized;
+    CMenuBar m_menuBar;
+
+    bool m_bImGuiInitialized = false;
 };
