@@ -36,8 +36,8 @@ CApp::CApp()
     , m_editorController(m_creature, m_animationPlayer, m_editorContext)
     , m_labController(m_editorContext, m_documentController, m_editorController, m_creatureEditor)
     , m_menuBar(m_labController)
-    , m_previewPanel(m_creature, m_creatureEditor, m_editorContext)
-    , m_creatureTreePanel(m_creature, m_creatureEditor, m_editorContext)
+    , m_previewPanel(m_creatureEditor, m_editorContext)
+    , m_creatureTreePanel(m_creatureEditor, m_editorContext)
 {
 }
 
@@ -201,12 +201,8 @@ void CApp::InitializeCreature()
     headRotation.AddOrUpdateKeyFrame({ 0.0f,  0.0f });
     headRotation.AddOrUpdateKeyFrame({ 0.5f,  0.1f });
     headRotation.AddOrUpdateKeyFrame({ 1.0f,  0.0f });
-
-    Animation::CAnimation idle;
-    idle.SetName("Idle");
-    idle.SetDuration(1.0f);
-    idle.AddAnimationTrack(std::move(headRotation));
-    m_idleAnimationId = m_creature.AddAnimation(std::move(idle));
+    auto& newAnimation = m_creatureEditor.AddNewAnimation("idle");
+    newAnimation.AddAnimationTrack(std::move(headRotation));
 }
 
 int CApp::Run()
@@ -300,7 +296,7 @@ void CApp::Render()
     m_menuBar.Draw(m_editorContext);
     m_creatureTreePanel.Draw();
 
-    const auto animation = m_creature.FindAnimationById(m_editorContext.GetAnimationId());
+    const auto animation = m_creature.FindAnimationById(m_idleAnimationId);
     const auto& skeleton = m_creature.GetSkeleton();
     const auto defaultPose = CCreaturePose::Default(skeleton);
     const auto* pose = &defaultPose;

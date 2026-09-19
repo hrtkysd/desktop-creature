@@ -6,10 +6,6 @@
 #include "imgui.h"
 #include "imgui_stdlib.h"
 
-namespace
-{
-}
-
 bool CAnimationPanel::Draw(Creature::Animation::CAnimation& animation)
 {
     CImGuiWindowScope window("Animation");

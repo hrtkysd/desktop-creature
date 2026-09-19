@@ -2,6 +2,7 @@
 
 #include <cstdint>
 #include <memory>
+#include <vector>
 
 namespace Creature
 {
@@ -13,8 +14,6 @@ namespace Creature
     namespace Animation
     {
         class CAnimation;
-
-        struct AnimationEntry;
 
         using AnimationId = std::uint32_t;
     }
@@ -43,9 +42,11 @@ namespace Creature
         const std::string& GetName() const;
         void SetName(const std::string& strName);
 
-        const std::vector<Animation::AnimationEntry> GetAnimationEntries() const;
+        const std::vector<Animation::CAnimation>& GetAnimations() const;
 
         Animation::AnimationId AddAnimation(Animation::CAnimation&& animation);
+
+        Animation::CAnimation& AddNewAnimation(const std::string& strName);
 
         Animation::CAnimation* FindAnimationById(Animation::AnimationId id);
         const Animation::CAnimation* FindAnimationById(Animation::AnimationId id) const;

@@ -1,5 +1,4 @@
 #include "pch.h"
-#include "AnimationEntry.h"
 #include "Creature.h"
 #include "CreatureEditor.h"
 #include "CreatureTreePanel.h"
@@ -7,22 +6,23 @@
 #include "ImGuiWindowScope.h"
 
 #include "imgui.h"
+#include "imgui_stdlib.h"
 
 using namespace Creature;
 using namespace Creature::Animation;
 
 CCreatureTreePanel::CCreatureTreePanel(
-    const Creature::CCreature& creature,
     CCreatureEditor& editor,
     CEditorContext& context)
-    : m_creature(creature)
-    , m_editor(editor)
+    : m_editor(editor)
     , m_editorContext(context)
 {
 }
 
 void CCreatureTreePanel::Draw()
 {
+    const auto& creature = m_editor.GetCreature();
+
     CImGuiWindowScope window("Creature");
 
     ImGui::PushID("Creature");
@@ -31,26 +31,24 @@ void CCreatureTreePanel::Draw()
     const auto isOpen = ImGui::TreeNodeEx("##CreatureTree", treeFlags);
 
     ImGui::SameLine();
-
-    if (m_isRenaming)
+    if (m_nodeEdit.IsEditing(NodeEditType::RenameCreature))
     {
         ImGui::SetNextItemWidth(150.0f);
 
         if (ImGui::InputText(
             "##CreatureName",
-            m_szRenameBuffer,
-            sizeof(m_szRenameBuffer),
+            &m_nodeEdit.GetText(),
             ImGuiInputTextFlags_EnterReturnsTrue))
         {
-            m_editor.SetName(m_szRenameBuffer);
-            m_isRenaming = false;
+            m_editor.SetName(m_nodeEdit.GetText());
+            m_nodeEdit.EndEdit();
         }
     }
     else
     {
         const bool isSelected = m_editorContext.GetSelectionType() == SelectionType::Creature;
 
-        if (ImGui::Selectable(m_creature.GetName().c_str(), isSelected))
+        if (ImGui::Selectable(creature.GetName().c_str(), isSelected))
         {
             m_editorContext.SelectCreature();
         }
@@ -59,8 +57,7 @@ void CCreatureTreePanel::Draw()
         {
             if (ImGui::MenuItem("Rename"))
             {
-                strcpy_s(m_szRenameBuffer, sizeof(m_szRenameBuffer), m_creature.GetName().c_str());
-                m_isRenaming = true;
+                m_nodeEdit.BeginRenameCreature(creature.GetName());
             }
 
             ImGui::EndPopup();
@@ -75,25 +72,48 @@ void CCreatureTreePanel::Draw()
 
     if (ImGui::TreeNode("Animations"))
     {
-        for (const auto& entry : m_creature.GetAnimationEntries())
+        if (ImGui::BeginPopupContextItem())
         {
-            ImGui::PushID(entry.id);
+            if (ImGui::MenuItem("New Animation"))
+            {
+                m_nodeEdit.BeginCreateNewAnimation("New Animation");
+            }
+
+            ImGui::EndPopup();
+        }
+
+        if (m_nodeEdit.IsEditing(NodeEditType::CreateAnimation))
+        {
+            if (ImGui::InputText(
+                "##NewAnimation",
+                &m_nodeEdit.GetText(),
+                ImGuiInputTextFlags_EnterReturnsTrue))
+            {
+                const auto& newAnimation = m_editor.AddNewAnimation(m_nodeEdit.GetText());
+                m_editorContext.SelectAnimation(newAnimation.GetAnimationId());
+                m_nodeEdit.EndEdit();
+            }
+        }
+
+        for (const auto& animation : creature.GetAnimations())
+        {
+            ImGui::PushID(animation.GetAnimationId());
 
             ImGuiTreeNodeFlags flags =
                 ImGuiTreeNodeFlags_Leaf |
                 ImGuiTreeNodeFlags_NoTreePushOnOpen |
                 ImGuiTreeNodeFlags_SpanAvailWidth;
 
-            if (m_editorContext.GetAnimationId() == entry.id)
+            if (m_editorContext.GetAnimationId() == animation.GetAnimationId())
             {
                 flags |= ImGuiTreeNodeFlags_Selected;
             }
 
-            ImGui::TreeNodeEx(entry.animation.GetName().c_str(), flags);
+            ImGui::TreeNodeEx(animation.GetName().c_str(), flags);
 
             if (ImGui::IsItemClicked(ImGuiMouseButton_Left))
             {
-                m_editorContext.SelectAnimation(entry.id);
+                m_editorContext.SelectAnimation(animation.GetAnimationId());
             }
 
             ImGui::PopID();

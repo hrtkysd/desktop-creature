@@ -1,6 +1,5 @@
 #include "pch.h"
 #include "Animation.h"
-#include "AnimationEntry.h"
 #include "Appearance.h"
 #include "Creature.h"
 #include "Genome.h"
@@ -19,7 +18,7 @@ struct CCreature::Impl
     CSkeleton skelton;
 
     AnimationId nextAnimationId = MIN_ANIMATION_ID;
-    std::vector<AnimationEntry> vecAnimation;
+    std::vector<CAnimation> vecAnimation;
 
     std::string strName;
 };
@@ -73,7 +72,7 @@ void CCreature::SetName(const std::string& strName)
     m_impl->strName = strName;
 }
 
-const std::vector<AnimationEntry> CCreature::GetAnimationEntries() const
+const std::vector<Animation::CAnimation>& Creature::CCreature::GetAnimations() const
 {
     return m_impl->vecAnimation;
 }
@@ -81,15 +80,14 @@ const std::vector<AnimationEntry> CCreature::GetAnimationEntries() const
 AnimationId CCreature::AddAnimation(CAnimation&& animation)
 {
     const auto id = m_impl->nextAnimationId++;
-
-    m_impl->vecAnimation.emplace_back(
-        AnimationEntry
-        {
-            id,
-            std::move(animation)
-        });
-
+    m_impl->vecAnimation.emplace_back(std::move(animation));
     return id;
+}
+
+CAnimation& CCreature::AddNewAnimation(const std::string& strName)
+{
+    const auto newId = m_impl->nextAnimationId++;
+    return m_impl->vecAnimation.emplace_back(CAnimation::NewAnimation(newId, strName));
 }
 
 CAnimation* CCreature::FindAnimationById(AnimationId id)
@@ -102,11 +100,11 @@ const CAnimation* CCreature::FindAnimationById(AnimationId id) const
     if (id == INVALID_ANIMATION_ID) return nullptr;
 
     auto& vecAnimation = m_impl->vecAnimation;
-    auto itFind = std::find_if(vecAnimation.begin(), vecAnimation.end(), [id](const AnimationEntry& entry)
+    auto itFind = std::find_if(vecAnimation.begin(), vecAnimation.end(), [id](const CAnimation& animation)
         {
-            return entry.id == id;
+            return animation.GetAnimationId() == id;
         });
     return itFind != vecAnimation.cend()
-        ? &itFind->animation
+        ? &(*itFind)
         : nullptr;
 }

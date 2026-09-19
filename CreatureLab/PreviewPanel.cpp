@@ -54,12 +54,9 @@ namespace
 }
 
 CPreviewPanel::CPreviewPanel(
-    const Creature::CCreature& creature,
     CCreatureEditor& editor,
     CEditorContext& context)
-    : m_creature(creature)
-    , m_editorContext(context)
-    , m_previewEditor(creature, editor, context)
+    : m_previewEditor(editor, context)
 {
 }
 
@@ -99,6 +96,7 @@ void CPreviewPanel::Draw(
 
     m_previewEditor.HandleInput(pose, previewTransform, vecEditPreview, IsMouseCursorInPanel());
 
+    const auto& editorContext = m_previewEditor.GetEditorContext();
     const auto drawList = ImGui::GetWindowDrawList();
     for (const auto& partView : vecPartView)
     {
@@ -110,20 +108,22 @@ void CPreviewPanel::Draw(
             ImVec2{ corner.bottomRight.x, corner.bottomRight.y },
             ImVec2{ corner.bottomLeft.x,  corner.bottomLeft.y });
 
-        if (m_editorContext.GetPartId() == partView.GetPartId())
+        if (editorContext.GetPartId() == partView.GetPartId())
         {
             DrawSelectPartFrameRect(drawList, corner, partView);
 
-            if (m_editorContext.GetEditMode() == EditMode::Scale)
+            if (editorContext.GetEditMode() == EditMode::Scale)
             {
                 DrawResizeHandle(drawList, corner.topLeft);
                 DrawResizeHandle(drawList, corner.topRight);
                 DrawResizeHandle(drawList, corner.bottomRight);
                 DrawResizeHandle(drawList, corner.bottomLeft);
             }
-            else if (m_editorContext.GetEditMode() == EditMode::Pivot)
+            else if (editorContext.GetEditMode() == EditMode::Pivot)
             {
-                const auto& skeleton = m_creature.GetSkeleton();
+                const auto& editor = m_previewEditor.GetEditor();
+                const auto& creature = editor.GetCreature();
+                const auto& skeleton = creature.GetSkeleton();
                 const auto part = skeleton.FindPartById(partView.GetPartId());
                 if (part)
                 {
@@ -225,14 +225,16 @@ std::vector<CRenderPartItem> CPreviewPanel::BuildPartViews(
     const CMatrix3x2& previewTransform,
     CTextureCache& textureCache)
 {
-    const auto& skeleton = m_creature.GetSkeleton();
+    const auto& editor = m_previewEditor.GetEditor();
+    const auto& creature = editor.GetCreature();
+    const auto& skeleton = creature.GetSkeleton();
 
     std::vector<CRenderPartItem> result;
     result.reserve(skeleton.Parts().size());
 
     for (const auto& part : skeleton.Parts())
     {
-        const auto appearance = m_creature.GetAppearance().FindByPartId(part.id);
+        const auto appearance = creature.GetAppearance().FindByPartId(part.id);
         if (!appearance) continue;
 
         auto texture = textureCache.Load(appearance->texturePath);

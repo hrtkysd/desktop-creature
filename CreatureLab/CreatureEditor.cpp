@@ -4,6 +4,7 @@
 #include "Skeleton.h"
 
 using namespace Creature;
+using namespace Creature::Animation;
 using namespace Creature::Math;
 
 CCreatureEditor::CCreatureEditor(CCreature& creature)
@@ -65,4 +66,14 @@ bool CCreatureEditor::DeletePart(Creature::PartId id)
 void CCreatureEditor::SetName(const std::string& strName)
 {
     m_creature.SetName(strName);
+}
+
+CAnimation& CCreatureEditor::AddNewAnimation(const std::string& strName)
+{
+    return m_creature.AddNewAnimation(strName);
+}
+
+const CCreature& CCreatureEditor::GetCreature() const
+{
+    return m_creature;
 }

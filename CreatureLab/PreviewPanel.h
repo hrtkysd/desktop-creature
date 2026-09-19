@@ -29,7 +29,6 @@ class CPreviewPanel
 {
 public:
     explicit CPreviewPanel(
-        const Creature::CCreature& creature,
         CCreatureEditor& editor,
         CEditorContext& context);
 public:
@@ -52,7 +51,5 @@ private:
         ImDrawList* drawList,
         const Creature::Math::Vec2& position);
 private:
-    const Creature::CCreature& m_creature;
-    CEditorContext& m_editorContext;
     CPreviewEditor m_previewEditor;
 };
