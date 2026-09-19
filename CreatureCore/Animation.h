@@ -8,6 +8,7 @@
 
 namespace Creature
 {
+    class CCreature;
     namespace Animation
     {
         enum class AnimationState
@@ -24,10 +25,12 @@ namespace Creature
 
         class CAnimation
         {
+            friend class Creature::CCreature;
         private:
             explicit CAnimation(
                 AnimationId id,
                 const std::string& strName);
+            static CAnimation NewAnimation(AnimationId id, const std::string& strName);
         public:
             CAnimation() = delete;
             explicit CAnimation(
@@ -37,8 +40,6 @@ namespace Creature
                 const std::vector<CAnimationTrack>& vecAnimationTrack);
             virtual ~CAnimation();
         public:
-
-            static CAnimation NewAnimation(AnimationId id, const std::string& strName);
 
             AnimationId GetAnimationId() const;
 
