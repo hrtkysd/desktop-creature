@@ -24,15 +24,21 @@ namespace Creature
 
         class CAnimation
         {
+        private:
+            explicit CAnimation(
+                AnimationId id,
+                const std::string& strName);
         public:
-            CAnimation();
-            CAnimation(
+            CAnimation() = delete;
+            explicit CAnimation(
                 AnimationId id,
                 const std::string& strName,
                 float fDuration,
                 const std::vector<CAnimationTrack>& vecAnimationTrack);
             virtual ~CAnimation();
         public:
+
+            static CAnimation NewAnimation(AnimationId id, const std::string& strName);
 
             AnimationId GetAnimationId() const;
 

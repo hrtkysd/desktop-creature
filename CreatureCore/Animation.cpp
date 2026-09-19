@@ -4,7 +4,10 @@
 using namespace Creature;
 using namespace Creature::Animation;
 
-CAnimation::CAnimation() = default;
+CAnimation::CAnimation(AnimationId id, const std::string& strName)
+    : CAnimation(id, strName, 0.0f, {})
+{
+}
 
 CAnimation::CAnimation(AnimationId id, const std::string& strName, float fDuration, const std::vector<CAnimationTrack>& vecAnimationTrack)
     : m_animationId(id)
@@ -15,6 +18,11 @@ CAnimation::CAnimation(AnimationId id, const std::string& strName, float fDurati
 }
 
 CAnimation::~CAnimation() = default;
+
+CAnimation CAnimation::NewAnimation(AnimationId id, const std::string& strName)
+{
+    return CAnimation(id, strName);
+}
 
 AnimationId CAnimation::GetAnimationId() const
 {

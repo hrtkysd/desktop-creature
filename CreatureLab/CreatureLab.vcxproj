@@ -160,6 +160,7 @@
     <ClInclude Include="ImGuiWindowScope.h" />
     <ClInclude Include="LabController.h" />
     <ClInclude Include="MenuBar.h" />
+    <ClInclude Include="CreatureTreeNodeEdit.h" />
     <ClInclude Include="Operation.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="PreviewEditor.h" />
@@ -218,6 +219,7 @@
     <ClCompile Include="LabController.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MenuBar.cpp" />
+    <ClCompile Include="CreatureTreeNodeEdit.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>

@@ -29,11 +29,13 @@ class CPreviewEditor
 {
 public:
     explicit CPreviewEditor(
-        const Creature::CCreature& creature,
         CCreatureEditor& editor,
         CEditorContext& context);
 
 public:
+    const CCreatureEditor& GetEditor() const noexcept;
+    const CEditorContext& GetEditorContext() const noexcept;
+
     void HandleInput(
         const Creature::CCreaturePose& pose,
         const Creature::Math::CMatrix3x2& previewTransform,
@@ -87,7 +89,6 @@ private:
         const Creature::CCreaturePose& pose,
         const Creature::Math::CMatrix3x2& previewTransform);
 private:
-    const Creature::CCreature& m_creature;
     CCreatureEditor& m_editor;
     CEditorContext& m_editorContext;
 
