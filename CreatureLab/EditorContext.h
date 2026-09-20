@@ -42,5 +42,5 @@ private:
     Creature::Animation::AnimationId m_animationId;
     Creature::PartId m_partId = Creature::INVALID_PART_ID;
     EditMode m_eEditMode = EditMode::Select;
-    SelectionType m_eSelectonType = SelectionType::None;
+    SelectionType m_eSelectionType = SelectionType::None;
 };
