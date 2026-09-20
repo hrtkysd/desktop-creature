@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Animation.h"
-#include "Part.h"
+#include "AnimationId.h"
+#include "PartId.h"
 
 #include <cstdint>
 

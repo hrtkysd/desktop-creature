@@ -143,6 +143,7 @@
     <ClInclude Include="..\third_party\imgui\imgui.h" />
     <ClInclude Include="..\third_party\imgui\imgui_internal.h" />
     <ClInclude Include="..\third_party\imgui\misc\cpp\imgui_stdlib.h" />
+    <ClInclude Include="AnimationEditor.h" />
     <ClInclude Include="AnimationPanel.h" />
     <ClInclude Include="Application.h" />
     <ClInclude Include="CreatureEditor.h" />
@@ -203,6 +204,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="AnimationEditor.cpp" />
     <ClCompile Include="AnimationPanel.cpp" />
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="CreatureEditor.cpp" />

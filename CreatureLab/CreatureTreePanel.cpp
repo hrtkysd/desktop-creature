@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "Animation.h"
 #include "Creature.h"
 #include "CreatureEditor.h"
 #include "CreatureTreePanel.h"
@@ -89,8 +90,8 @@ void CCreatureTreePanel::Draw()
                 &m_nodeEdit.GetText(),
                 ImGuiInputTextFlags_EnterReturnsTrue))
             {
-                const auto& newAnimation = m_editor.AddNewAnimation(m_nodeEdit.GetText());
-                m_editorContext.SelectAnimation(newAnimation.GetAnimationId());
+                const auto& newId = m_editor.AddNewAnimation(m_nodeEdit.GetText());
+                m_editorContext.SelectAnimation(newId);
                 m_nodeEdit.EndEdit();
             }
         }

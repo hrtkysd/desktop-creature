@@ -1,6 +1,8 @@
 #pragma once
 
-#include "Part.h"
+#include "AnimationId.h"
+#include "PartId.h"
+
 #include <string>
 
 class CCreatureDocument;
@@ -8,10 +10,6 @@ class CCreatureDocument;
 namespace Creature
 {
     class CCreature;
-    namespace Animation
-    {
-        class CAnimation;
-    }
     namespace Math
     {
         class CTransform2D;
@@ -35,7 +33,7 @@ public:
     bool DeletePart(Creature::PartId id);
 
     void SetName(const std::string& strName);
-    Creature::Animation::CAnimation& AddNewAnimation(const std::string& strName);
+    Creature::Animation::AnimationId AddNewAnimation(const std::string& strName);
 
     const Creature::CCreature& GetCreature() const;
 private:

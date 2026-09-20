@@ -3,6 +3,7 @@
 #include "AnimationPlayer.h"
 #include "AnimationTrack.h"
 #include "CreaturePose.h"
+#include "PartId.h"
 #include "Skeleton.h"
 
 #include <cmath>
@@ -40,6 +41,16 @@ void CAnimationPlayer::Update(float fDeltaTime)
 const CCreaturePose& CAnimationPlayer::GetPose() const noexcept
 {
     return m_pose;
+}
+
+float CAnimationPlayer::GetCurrentAnimationTime() const noexcept
+{
+    return m_fCurrentTime;
+}
+
+void CAnimationPlayer::SetCurrentAnimationTime(float fCurrentTime)
+{
+    m_fCurrentTime = fCurrentTime;
 }
 
 void CAnimationPlayer::SamplePose(const CAnimation& animation, const CSkeleton& skeleton)

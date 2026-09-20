@@ -1,6 +1,7 @@
 #pragma once
 
-#include "Animation.h"
+#include "AnimationId.h"
+#include "AnimationEditor.h"
 #include "AnimationPlayer.h"
 #include "Creature.h"
 #include "CreatureEditor.h"
@@ -80,6 +81,7 @@ private:
     CDocumentContext    m_documentContext;
 
     CCreatureEditor     m_creatureEditor;
+    CAnimationEditor    m_animationEditor;
 
     CDocumentController m_documentController;
     CEditorController   m_editorController;

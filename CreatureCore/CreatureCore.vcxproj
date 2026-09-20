@@ -145,6 +145,7 @@
   <ItemGroup>
     <ClInclude Include="Angle.h" />
     <ClInclude Include="Animation.h" />
+    <ClInclude Include="AnimationId.h" />
     <ClInclude Include="AnimationPlayer.h" />
     <ClInclude Include="AnimationTrack.h" />
     <ClInclude Include="Appearance.h" />
@@ -157,6 +158,7 @@
     <ClInclude Include="Genome.h" />
     <ClInclude Include="GenomeGenerator.h" />
     <ClInclude Include="Part.h" />
+    <ClInclude Include="PartId.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="RectCorner.h" />
     <ClInclude Include="PartTransformBuilder.h" />

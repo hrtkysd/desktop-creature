@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Part.h"
+#include "PartId.h"
 #include "TransformRect.h"
 #include "Vec2.h"
 

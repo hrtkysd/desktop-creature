@@ -1,6 +1,7 @@
 #pragma once
 
-#include <cstdint>
+#include "AnimationId.h"
+
 #include <memory>
 #include <vector>
 
@@ -14,8 +15,6 @@ namespace Creature
     namespace Animation
     {
         class CAnimation;
-
-        using AnimationId = std::uint32_t;
     }
 
     class CCreature
