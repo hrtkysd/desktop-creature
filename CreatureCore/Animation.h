@@ -9,6 +9,7 @@
 namespace Creature
 {
     class CCreature;
+
     namespace Animation
     {
         enum class AnimationState

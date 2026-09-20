@@ -296,7 +296,7 @@ void CApp::Render()
     m_menuBar.Draw(m_editorContext);
     m_creatureTreePanel.Draw();
 
-    const auto animation = m_creature.FindAnimationById(m_idleAnimationId);
+    const auto animation = m_creature.FindAnimationById(m_editorContext.GetAnimationId());
     const auto& skeleton = m_creature.GetSkeleton();
     const auto defaultPose = CCreaturePose::Default(skeleton);
     const auto* pose = &defaultPose;
