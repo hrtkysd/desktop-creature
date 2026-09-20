@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Interpolation.h"
-#include "Part.h"
+#include "PartId.h"
 
 #include <vector>
 

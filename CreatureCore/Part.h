@@ -1,19 +1,13 @@
 #pragma once
 
+#include "PartId.h"
 #include "Transform2D.h"
 #include "Vec2.h"
 
-#include <cstdint>
 #include <string>
 
 namespace Creature
 {
-    using PartId = std::uint32_t;
-    using PartSlot = std::size_t;
-
-    inline constexpr PartId INVALID_PART_ID = std::numeric_limits<PartId>::max();
-    inline constexpr uint32_t INVALID_PART_INDEX = std::numeric_limits<PartId>::max();
-
     /**
      * @brief Represents creature's part properties.
      */

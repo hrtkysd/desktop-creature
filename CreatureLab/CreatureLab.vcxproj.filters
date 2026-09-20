@@ -149,6 +149,9 @@
     <ClInclude Include="CreatureTreeNodeEdit.h">
       <Filter>Panel\Creature</Filter>
     </ClInclude>
+    <ClInclude Include="AnimationEditor.h">
+      <Filter>Edit</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\third_party\imgui\imgui.cpp">
@@ -236,6 +239,9 @@
     </ClCompile>
     <ClCompile Include="CreatureTreeNodeEdit.cpp">
       <Filter>Panel\Creature</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimationEditor.cpp">
+      <Filter>Edit</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

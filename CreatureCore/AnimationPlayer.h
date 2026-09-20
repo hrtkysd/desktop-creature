@@ -28,6 +28,10 @@ namespace Creature
             void SamplePose(const CAnimation& animation, const CSkeleton& skeleton);
 
             const CCreaturePose& GetPose() const noexcept;
+
+            float GetCurrentAnimationTime() const noexcept;
+            void SetCurrentAnimationTime(float fCurrentTime);
+
         private:
             float m_fCurrentTime = 0.0f;
             float m_blinkTimer = 0.0f;

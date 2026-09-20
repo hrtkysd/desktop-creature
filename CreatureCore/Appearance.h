@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Part.h"
 #include "PartAppearance.h"
+#include "PartId.h"
 
 #include <filesystem>
 #include <vector>

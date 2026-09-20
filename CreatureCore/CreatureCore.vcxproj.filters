@@ -50,9 +50,6 @@
     <ClInclude Include="CreaturePose.h">
       <Filter>Creature</Filter>
     </ClInclude>
-    <ClInclude Include="Part.h">
-      <Filter>Animation</Filter>
-    </ClInclude>
     <ClInclude Include="PartPose.h">
       <Filter>Animation</Filter>
     </ClInclude>
@@ -91,6 +88,15 @@
     </ClInclude>
     <ClInclude Include="MathUtils.h">
       <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="AnimationId.h">
+      <Filter>Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="Part.h">
+      <Filter>Creature</Filter>
+    </ClInclude>
+    <ClInclude Include="PartId.h">
+      <Filter>Creature</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

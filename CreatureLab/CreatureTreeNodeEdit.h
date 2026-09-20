@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Animation.h"
+#include "AnimationId.h"
 
 #include <cstdint>
 #include <string>

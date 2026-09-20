@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "Animation.h"
 #include "Creature.h"
 #include "CreatureEditor.h"
 #include "Skeleton.h"
@@ -68,9 +69,10 @@ void CCreatureEditor::SetName(const std::string& strName)
     m_creature.SetName(strName);
 }
 
-CAnimation& CCreatureEditor::AddNewAnimation(const std::string& strName)
+AnimationId CCreatureEditor::AddNewAnimation(const std::string& strName)
 {
-    return m_creature.AddNewAnimation(strName);
+    const auto newAnimation = m_creature.AddNewAnimation(strName);
+    return newAnimation.GetAnimationId();
 }
 
 const CCreature& CCreatureEditor::GetCreature() const

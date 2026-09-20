@@ -1,5 +1,6 @@
 #pragma once
 
+#include "AnimationId.h"
 #include "AnimationTrack.h"
 
 #include <cstdint>
@@ -12,17 +13,13 @@ namespace Creature
 
     namespace Animation
     {
-        enum class AnimationState
+        enum class AnimationState : std::uint8_t
         {
             Idle,
             Walk,
             Run,
             Sleep
         };
-
-        using AnimationId = std::uint32_t;
-        constexpr AnimationId INVALID_ANIMATION_ID = 0;
-        constexpr AnimationId MIN_ANIMATION_ID = 1;
 
         class CAnimation
         {
@@ -31,6 +28,7 @@ namespace Creature
             explicit CAnimation(
                 AnimationId id,
                 const std::string& strName);
+        private:
             static CAnimation NewAnimation(AnimationId id, const std::string& strName);
         public:
             CAnimation() = delete;

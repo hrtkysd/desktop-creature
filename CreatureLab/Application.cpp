@@ -2,6 +2,7 @@
 #include "AnimationTrack.h"
 #include "Appearance.h"
 #include "Application.h"
+#include "AnimationEditor.h"
 #include "AnimationPanel.h"
 #include "CreaturePose.h"
 #include "CreatureTreePanel.h"
@@ -32,6 +33,7 @@ extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(
 
 CApp::CApp()
     : m_creatureEditor(m_creature)
+    , m_animationEditor(m_creature)
     , m_documentController(m_window, m_creature, m_documentContext)
     , m_editorController(m_creature, m_animationPlayer, m_editorContext)
     , m_labController(m_editorContext, m_documentController, m_editorController, m_creatureEditor)
@@ -201,8 +203,8 @@ void CApp::InitializeCreature()
     headRotation.AddOrUpdateKeyFrame({ 0.0f,  0.0f });
     headRotation.AddOrUpdateKeyFrame({ 0.5f,  0.1f });
     headRotation.AddOrUpdateKeyFrame({ 1.0f,  0.0f });
-    auto& newAnimation = m_creatureEditor.AddNewAnimation("idle");
-    newAnimation.AddAnimationTrack(std::move(headRotation));
+    const auto newId = m_creatureEditor.AddNewAnimation("idle");
+    m_animationEditor.AddAnimationTrack(newId, std::move(headRotation));
 }
 
 int CApp::Run()
@@ -296,7 +298,7 @@ void CApp::Render()
     m_menuBar.Draw(m_editorContext);
     m_creatureTreePanel.Draw();
 
-    const auto animation = m_creature.FindAnimationById(m_editorContext.GetAnimationId());
+    auto animation = m_creature.FindAnimationById(m_editorContext.GetAnimationId());
     const auto& skeleton = m_creature.GetSkeleton();
     const auto defaultPose = CCreaturePose::Default(skeleton);
     const auto* pose = &defaultPose;
@@ -305,7 +307,7 @@ void CApp::Render()
         m_animationPlayer.Update(ImGui::GetIO().DeltaTime);
         m_animationPlayer.SamplePose(*animation, skeleton);
 
-        CAnimationPanel::Draw(*animation);
+        CAnimationPanel::Draw(*animation, m_animationPlayer, m_animationEditor);
 
         pose = &m_animationPlayer.GetPose();
     }
