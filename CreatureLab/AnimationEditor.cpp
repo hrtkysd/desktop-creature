@@ -66,11 +66,7 @@ bool CAnimationEditor::AddOrUpdateKeyFrame(
 {
     if (auto animation = m_creature.FindAnimationById(id))
     {
-        if (const auto track = animation->FindAnimationTrack(trackKey))
-        {
-            track->AddOrUpdateKeyFrame(keyFrame);
-            return true;
-        }
+        return animation->AddOrUpdateKeyFrame(trackKey, keyFrame);
     }
     return false;
 }

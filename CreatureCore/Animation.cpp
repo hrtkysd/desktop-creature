@@ -1,5 +1,8 @@
 #include "pch.h"
 #include "Animation.h"
+#include "AnimationTrack.h"
+
+#include <algorithm>
 
 using namespace Creature;
 using namespace Creature::Animation;
@@ -49,9 +52,20 @@ float CAnimation::GetDuration() const
     return m_fDuration;
 }
 
-void CAnimation::SetDuration(float fDuration)
+bool CAnimation::SetDuration(float fDuration)
 {
+    if (fDuration < 0.0f) return false;
+
+    const auto hasOutOfRangeKeyFrame = std::any_of(m_vecAnimationTrack.cbegin(), m_vecAnimationTrack.cend()
+        , [fDuration](const CAnimationTrack& track)
+        {
+            const auto& keyFrames = track.GetKeyFrames();
+            return !keyFrames.empty() && keyFrames.back().fTime > fDuration;
+        });
+    if (hasOutOfRangeKeyFrame) return false;
+
     m_fDuration = fDuration;
+    return true;
 }
 
 const std::vector<CAnimationTrack>& CAnimation::GetAnimationTracks() const
@@ -62,7 +76,14 @@ const std::vector<CAnimationTrack>& CAnimation::GetAnimationTracks() const
 bool CAnimation::AddAnimationTrack(CAnimationTrack&& animationTrack)
 {
     if (!animationTrack.GetKey().IsValid()) return false;
+
     if (FindAnimationTrack(animationTrack.GetKey())) return false;
+
+    const auto& keyFrames = animationTrack.GetKeyFrames();
+    if (!keyFrames.empty() && keyFrames.back().fTime > m_fDuration)
+    {
+        return false;
+    }
 
     m_vecAnimationTrack.emplace_back(std::move(animationTrack));
     return true;
@@ -93,4 +114,19 @@ const CAnimationTrack* CAnimation::FindAnimationTrack(const CAnimationTrackKey& 
     return itFind != m_vecAnimationTrack.end()
         ? &(*itFind)
         : nullptr;
+}
+
+bool CAnimation::AddOrUpdateKeyFrame(const CAnimationTrackKey& key, const FloatKeyFrame& keyFrame)
+{
+    if (keyFrame.fTime < 0.0f ||
+        keyFrame.fTime > m_fDuration)
+    {
+        return false;
+    }
+
+    auto track = FindAnimationTrack(key);
+    if (!track) return false;
+
+    track->AddOrUpdateKeyFrame(keyFrame);
+    return true;
 }

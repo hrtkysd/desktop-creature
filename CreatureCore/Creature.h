@@ -58,8 +58,8 @@ namespace Creature
         const Animation::CAnimation* FindAnimationById(Animation::AnimationId id) const;
     private:
         Animation::AnimationId AddAnimationWithId(Animation::AnimationId id, const std::string& name);
-        AnimationId GenerateAnimationId();
-        void UpdateNextAnimationId(AnimationId id);
+        Animation::AnimationId GenerateAnimationId();
+        void UpdateNextAnimationId(Animation::AnimationId id);
     private:
         struct Impl;
         std::unique_ptr<Impl> m_impl;
