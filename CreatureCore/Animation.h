@@ -30,6 +30,7 @@ namespace Creature
                 const std::string& strName);
         private:
             static CAnimation NewAnimation(AnimationId id, const std::string& strName);
+            void SetAnimationId(AnimationId id);
         public:
             CAnimation() = delete;
             explicit CAnimation(

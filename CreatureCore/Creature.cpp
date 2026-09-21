@@ -80,6 +80,7 @@ const std::vector<Animation::CAnimation>& Creature::CCreature::GetAnimations() c
 AnimationId CCreature::AddAnimation(CAnimation&& animation)
 {
     const auto id = m_impl->nextAnimationId++;
+    animation.SetAnimationId(id);
     m_impl->vecAnimation.emplace_back(std::move(animation));
     return id;
 }
