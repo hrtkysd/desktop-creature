@@ -24,6 +24,11 @@ CAnimation CAnimation::NewAnimation(AnimationId id, const std::string& strName)
     return CAnimation(id, strName);
 }
 
+void CAnimation::SetAnimationId(AnimationId id)
+{
+    m_animationId = id;
+}
+
 AnimationId CAnimation::GetAnimationId() const
 {
     return m_animationId;
