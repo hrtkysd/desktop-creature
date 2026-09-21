@@ -86,6 +86,7 @@
     <ClInclude Include="Animation.h" />
     <ClInclude Include="AnimationId.h" />
     <ClInclude Include="AnimationPlayer.h" />
+    <ClInclude Include="AnimationProperty.h" />
     <ClInclude Include="AnimationTrack.h" />
     <ClInclude Include="AnimationTrackKey.h" />
     <ClInclude Include="Appearance.h" />

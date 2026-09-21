@@ -1,5 +1,12 @@
 #pragma once
 
+#include "AnimationId.h"
+#include "AnimationProperty.h"
+#include "AnimationTrackKey.h"
+
+#include <cstdint>
+#include <optional>
+
 namespace Creature
 {
     class CSkeleton;
@@ -24,7 +31,29 @@ public:
         const Creature::Animation::CAnimation& animation,
         const Creature::CSkeleton& skeleton);
 private:
+    bool DrawAnimationProperties(
+        Creature::Animation::CAnimation& animation);
+    void DrawCurrentTime(
+        const Creature::Animation::CAnimation& animation);
+    bool DrawTracks(
+        const Creature::Animation::CAnimation& animation,
+        const Creature::CSkeleton& skeleton);
+    bool DrawAddTrack(
+        const Creature::Animation::CAnimation& animation);
+    bool DrawTrack(
+        const Creature::Animation::CAnimation& animation,
+        const Creature::Animation::CAnimationTrack& track);
+
+private:
     Creature::Animation::CAnimationPlayer& m_animationPlayer;
     CAnimationEditor& m_editor;
     CEditorContext& m_editorContext;
+
+    Creature::Animation::AnimationId m_animationId =
+        Creature::Animation::INVALID_ANIMATION_ID;
+
+    std::optional<Creature::Animation::CAnimationTrackKey> m_selectedTrackKey;
+
+    Creature::Animation::AnimationProperty m_eNewTrackProperty =
+        Creature::Animation::AnimationProperty::Rotation;
 };

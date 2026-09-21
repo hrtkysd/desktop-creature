@@ -54,7 +54,7 @@ void CAnimation::SetDuration(float fDuration)
     m_fDuration = fDuration;
 }
 
-const std::vector<CAnimationTrack>& CAnimation::GetAnimationTrack() const
+const std::vector<CAnimationTrack>& CAnimation::GetAnimationTracks() const
 {
     return m_vecAnimationTrack;
 }
@@ -81,6 +81,11 @@ bool CAnimation::RemoveAnimationTrack(const CAnimationTrackKey& key)
     if (itFind == m_vecAnimationTrack.end()) return false;
     m_vecAnimationTrack.erase(itFind);
     return true;
+}
+
+CAnimationTrack* CAnimation::FindAnimationTrack(const CAnimationTrackKey& key)
+{
+    return const_cast<CAnimationTrack*>(std::as_const(*this).FindAnimationTrack(key));
 }
 
 const CAnimationTrack* CAnimation::FindAnimationTrack(const CAnimationTrackKey& key) const

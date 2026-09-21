@@ -14,6 +14,8 @@ namespace Creature
     {
         class CAnimationTrack;
         class CAnimationTrackKey;
+
+        struct FloatKeyFrame;
     }
 }
 
@@ -34,6 +36,10 @@ public:
     bool RemoveAnimationTrack(
         Creature::Animation::AnimationId id,
         const Creature::Animation::CAnimationTrackKey& trackKey);
+    bool AddOrUpdateKeyFrame(
+        Creature::Animation::AnimationId id,
+        const Creature::Animation::CAnimationTrackKey& trackKey,
+        const Creature::Animation::FloatKeyFrame& keyFrame);
 private:
     Creature::CCreature& m_creature;
 };

@@ -58,3 +58,19 @@ bool CAnimationEditor::RemoveAnimationTrack(
     }
     return false;
 }
+
+bool CAnimationEditor::AddOrUpdateKeyFrame(
+    AnimationId id,
+    const CAnimationTrackKey& trackKey,
+    const FloatKeyFrame& keyFrame)
+{
+    if (auto animation = m_creature.FindAnimationById(id))
+    {
+        if (const auto track = animation->FindAnimationTrack(trackKey))
+        {
+            track->AddOrUpdateKeyFrame(keyFrame);
+            return true;
+        }
+    }
+    return false;
+}

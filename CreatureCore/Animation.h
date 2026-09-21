@@ -50,10 +50,11 @@ namespace Creature
             float GetDuration() const;
             void SetDuration(float fDuration);
 
-            const std::vector<CAnimationTrack>& GetAnimationTrack() const;
+            const std::vector<CAnimationTrack>& GetAnimationTracks() const;
             bool AddAnimationTrack(CAnimationTrack&& animationTrack);
             bool RemoveAnimationTrack(const CAnimationTrackKey& key);
 
+            CAnimationTrack* FindAnimationTrack(const CAnimationTrackKey& key);
             const CAnimationTrack* FindAnimationTrack(const CAnimationTrackKey& key) const;
         private:
             AnimationId m_animationId = INVALID_ANIMATION_ID;

@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Animation.h"
 #include "AnimationTrackKey.h"
+#include "AnimationProperty.h"
 
 using namespace Creature;
 using namespace Creature::Animation;
