@@ -88,6 +88,7 @@ AnimationId CCreature::AddAnimation(CAnimation&& animation)
 AnimationId CCreature::AddAnimationWithId(AnimationId id, const std::string& name)
 {
     if (id == INVALID_ANIMATION_ID) return INVALID_ANIMATION_ID;
+    if (id == std::numeric_limits<AnimationId>::max()) return INVALID_ANIMATION_ID;
     if (FindAnimationById(id) != nullptr) return INVALID_ANIMATION_ID;
 
     m_impl->vecAnimation.emplace_back(CAnimation::NewAnimation(id, name));

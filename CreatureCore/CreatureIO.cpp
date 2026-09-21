@@ -134,7 +134,6 @@ bool CCreatureIO::LoadFromFile(const std::filesystem::path& path, CCreature& cre
         Part part;
 
         part.id = partJson["id"].get<PartId>();
-
         part.strName = partJson["name"].get<std::string>();
 
         if (partJson["parentId"].is_null())  part.parentId = INVALID_PART_ID;
@@ -173,19 +172,19 @@ bool CCreatureIO::LoadFromFile(const std::filesystem::path& path, CCreature& cre
         {
             const auto strName = animationJson["name"].get<std::string>();
             const auto animationId = animationJson["id"].get<AnimationId>();
-
-            loadedCreature.AddAnimationWithId(animationId, strName);
+            if (loadedCreature.AddAnimationWithId(animationId, strName) == INVALID_ANIMATION_ID)
+            {
+                return false;
+            }
 
             auto animation = loadedCreature.FindAnimationById(animationId);
-
-            if (animation == nullptr) return false;
+            if (!animation) return false;
 
             animation->SetDuration(animationJson["duration"].get<float>());
 
             for (const auto& trackJson : animationJson["tracks"])
             {
                 const auto partId = trackJson["partId"].get<PartId>();
-
                 const auto eProperty = static_cast<AnimationProperty>(trackJson["property"].get<int>());
 
                 CAnimationTrack track(CAnimationTrackKey{ partId, eProperty });
@@ -200,7 +199,10 @@ bool CCreatureIO::LoadFromFile(const std::filesystem::path& path, CCreature& cre
                     track.AddOrUpdateKeyFrame(keyFrame);
                 }
 
-                animation->AddAnimationTrack(std::move(track));
+                if (!animation->AddAnimationTrack(std::move(track)))
+                {
+                    return false;
+                }
             }
         }
     }

@@ -22,7 +22,7 @@ namespace
         {
         case AnimationProperty::PositionX: return "PositionX";
         case AnimationProperty::PositionY: return "PositionY";
-        case AnimationProperty::Rotation: return "Rotatation";
+        case AnimationProperty::Rotation: return "Rotation";
         case AnimationProperty::ScaleX: return "ScaleX";
         case AnimationProperty::ScaleY: return "ScaleY";
         }
