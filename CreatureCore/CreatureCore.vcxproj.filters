@@ -98,6 +98,9 @@
     <ClInclude Include="PartId.h">
       <Filter>Creature</Filter>
     </ClInclude>
+    <ClInclude Include="AnimationTrackKey.h">
+      <Filter>Animation</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AnimationPlayer.cpp">
@@ -139,6 +142,9 @@
     </ClCompile>
     <ClCompile Include="CreaturePose.cpp">
       <Filter>Creature</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimationTrackKey.cpp">
+      <Filter>Animation</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

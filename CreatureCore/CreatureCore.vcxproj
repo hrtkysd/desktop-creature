@@ -87,6 +87,7 @@
     <ClInclude Include="AnimationId.h" />
     <ClInclude Include="AnimationPlayer.h" />
     <ClInclude Include="AnimationTrack.h" />
+    <ClInclude Include="AnimationTrackKey.h" />
     <ClInclude Include="Appearance.h" />
     <ClInclude Include="CreatureIO.h" />
     <ClInclude Include="Interpolation.h" />
@@ -110,6 +111,7 @@
     <ClCompile Include="Animation.cpp" />
     <ClCompile Include="AnimationPlayer.cpp" />
     <ClCompile Include="AnimationTrack.cpp" />
+    <ClCompile Include="AnimationTrackKey.cpp" />
     <ClCompile Include="Appearance.cpp" />
     <ClCompile Include="Creature.cpp" />
     <ClCompile Include="CreatureIO.cpp" />

@@ -59,7 +59,37 @@ const std::vector<CAnimationTrack>& CAnimation::GetAnimationTrack() const
     return m_vecAnimationTrack;
 }
 
-void CAnimation::AddAnimationTrack(CAnimationTrack&& animationTrack)
+bool CAnimation::AddAnimationTrack(CAnimationTrack&& animationTrack)
 {
+    const auto itFind = std::find_if(m_vecAnimationTrack.begin(), m_vecAnimationTrack.end(), [&animationTrack](const CAnimationTrack& track)
+        {
+            return animationTrack.Matches(track.GetKey());
+        });
+
+    if (itFind != m_vecAnimationTrack.end()) return false;
+
     m_vecAnimationTrack.emplace_back(std::move(animationTrack));
+    return true;
+}
+
+bool CAnimation::RemoveAnimationTrack(const CAnimationTrackKey& key)
+{
+    const auto itFind = std::find_if(m_vecAnimationTrack.begin(), m_vecAnimationTrack.end(), [&key](const CAnimationTrack& track)
+        {
+            return track.Matches(key);
+        });
+    if (itFind == m_vecAnimationTrack.end()) return false;
+    m_vecAnimationTrack.erase(itFind);
+    return true;
+}
+
+const CAnimationTrack* CAnimation::FindAnimationTrack(const CAnimationTrackKey& key) const
+{
+    const auto itFind = std::find_if(m_vecAnimationTrack.begin(), m_vecAnimationTrack.end(), [&key](const CAnimationTrack& track)
+        {
+            return track.Matches(key);
+        });
+    return itFind != m_vecAnimationTrack.end()
+        ? &(*itFind)
+        : nullptr;
 }

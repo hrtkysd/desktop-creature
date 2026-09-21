@@ -2,6 +2,7 @@
 
 #include "AnimationId.h"
 #include "AnimationEditor.h"
+#include "AnimationPanel.h"
 #include "AnimationPlayer.h"
 #include "Creature.h"
 #include "CreatureEditor.h"
@@ -76,6 +77,7 @@ private:
     Creature::Animation::CAnimationPlayer m_animationPlayer;
     Creature::Animation::AnimationId m_idleAnimationId = Creature::Animation::INVALID_ANIMATION_ID;
     CPreviewPanel m_previewPanel;
+    CAnimationPanel m_animationPanel;
 
     CEditorContext      m_editorContext;
     CDocumentContext    m_documentContext;

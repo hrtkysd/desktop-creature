@@ -2,6 +2,7 @@
 
 #include "AnimationId.h"
 #include "AnimationTrack.h"
+#include "AnimationTrackKey.h"
 
 #include <cstdint>
 #include <string>
@@ -50,7 +51,10 @@ namespace Creature
             void SetDuration(float fDuration);
 
             const std::vector<CAnimationTrack>& GetAnimationTrack() const;
-            void AddAnimationTrack(CAnimationTrack&& animationTrack);
+            bool AddAnimationTrack(CAnimationTrack&& animationTrack);
+            bool RemoveAnimationTrack(const CAnimationTrackKey& key);
+
+            const CAnimationTrack* FindAnimationTrack(const CAnimationTrackKey& key) const;
         private:
             AnimationId m_animationId = INVALID_ANIMATION_ID;
             std::string m_strName;

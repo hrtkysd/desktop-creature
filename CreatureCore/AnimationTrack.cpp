@@ -6,6 +6,11 @@ using namespace Creature;
 using namespace Creature::Animation;
 using namespace Creature::Math;
 
+CAnimationTrack::CAnimationTrack(const CAnimationTrackKey& key)
+    : m_animationTrackKey(key)
+{
+}
+
 float CAnimationTrack::Sample(float fTime) const
 {
     if (m_vecKeyFrame.empty()) return 0.0f;
@@ -38,24 +43,9 @@ float CAnimationTrack::Sample(float fTime) const
     return 0.0f;
 }
 
-PartId CAnimationTrack::GetPartId() const
+const CAnimationTrackKey& CAnimationTrack::GetKey() const noexcept
 {
-    return m_targetPartId;
-}
-
-void CAnimationTrack::SetPartId(PartId id)
-{
-    m_targetPartId = id;
-}
-
-AnimationProperty CAnimationTrack::GetAnimationProperty() const
-{
-    return m_eProperty;
-}
-
-void CAnimationTrack::SetAnimationProperty(AnimationProperty eProperty)
-{
-    m_eProperty = eProperty;
+    return m_animationTrackKey;
 }
 
 const std::vector<FloatKeyFrame>& CAnimationTrack::GetKeyFrames() const
@@ -81,5 +71,10 @@ void CAnimationTrack::AddOrUpdateKeyFrame(const FloatKeyFrame& keyFrame)
     }
 
     m_vecKeyFrame.insert(it, keyFrame);
+}
+
+bool CAnimationTrack::Matches(const CAnimationTrackKey& key) const noexcept
+{
+    return m_animationTrackKey == key;
 }
 

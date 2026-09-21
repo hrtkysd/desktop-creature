@@ -90,7 +90,7 @@ void CCreatureTreePanel::Draw()
                 &m_nodeEdit.GetText(),
                 ImGuiInputTextFlags_EnterReturnsTrue))
             {
-                const auto& newId = m_editor.AddNewAnimation(m_nodeEdit.GetText());
+                const auto newId = m_editor.AddNewAnimation(m_nodeEdit.GetText());
                 m_editorContext.SelectAnimation(newId);
                 m_nodeEdit.EndEdit();
             }

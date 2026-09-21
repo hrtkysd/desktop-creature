@@ -10,10 +10,18 @@
 
 using namespace Creature::Animation;
 
-bool CAnimationPanel::Draw(
-    const CAnimation& animation,
+CAnimationPanel::CAnimationPanel(
     CAnimationPlayer& animationPlayer,
-    CAnimationEditor& animationEditor)
+    CAnimationEditor& animationEditor,
+    CEditorContext& editorContext)
+    : m_animationPlayer(animationPlayer)
+    , m_editor(animationEditor)
+    , m_editorContext(editorContext)
+{
+}
+bool CAnimationPanel::Draw(
+    const Creature::Animation::CAnimation& animation,
+    const Creature::CSkeleton& skeleton)
 {
     CImGuiWindowScope window("Animation");
 
@@ -46,7 +54,7 @@ bool CAnimationPanel::Draw(
                 "##AnimationName",
                 &strName))
             {
-                animationEditor.SetName(animation.GetAnimationId(), strName);
+                m_editor.SetName(animation.GetAnimationId(), strName);
                 bChanged = true;
             }
 
@@ -64,7 +72,7 @@ bool CAnimationPanel::Draw(
                 0.01f,
                 0.0f))
             {
-                animationEditor.SetDuration(animation.GetAnimationId(), fDuration);
+                m_editor.SetDuration(animation.GetAnimationId(), fDuration);
                 bChanged = true;
             }
 
@@ -76,7 +84,7 @@ bool CAnimationPanel::Draw(
         {
             ImGui::SeparatorText("Current Time");
 
-            auto fCurrentTime = animationPlayer.GetCurrentAnimationTime();
+            auto fCurrentTime = m_animationPlayer.GetCurrentAnimationTime();
             ImGui::SetNextItemWidth(-FLT_MIN);
             if (ImGui::SliderFloat(
                 "##CurrentTime",
@@ -85,7 +93,7 @@ bool CAnimationPanel::Draw(
                 animation.GetDuration(),
                 "%.2f"))
             {
-                animationPlayer.SetCurrentAnimationTime(fCurrentTime);
+                m_animationPlayer.SetCurrentAnimationTime(fCurrentTime);
                 bChanged = true;
             }
         }

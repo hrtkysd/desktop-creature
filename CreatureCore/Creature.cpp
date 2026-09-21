@@ -85,10 +85,26 @@ AnimationId CCreature::AddAnimation(CAnimation&& animation)
     return id;
 }
 
-CAnimation& CCreature::AddNewAnimation(const std::string& strName)
+bool CCreature::RemoveAnimation(AnimationId id)
+{
+    auto& vecAnimation = m_impl->vecAnimation;
+
+    const auto it = std::find_if(vecAnimation.begin(), vecAnimation.end(), [id](const CAnimation& animation)
+        {
+            return id == animation.GetAnimationId();
+        });
+
+    if (it == vecAnimation.end()) return false;
+
+    vecAnimation.erase(it);
+    return true;
+}
+
+AnimationId CCreature::AddNewAnimation(const std::string& strName)
 {
     const auto newId = m_impl->nextAnimationId++;
-    return m_impl->vecAnimation.emplace_back(CAnimation::NewAnimation(newId, strName));
+    m_impl->vecAnimation.emplace_back(CAnimation::NewAnimation(newId, strName));
+    return newId;
 }
 
 CAnimation* CCreature::FindAnimationById(AnimationId id)
