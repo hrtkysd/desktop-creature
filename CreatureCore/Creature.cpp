@@ -15,7 +15,7 @@ struct CCreature::Impl
 {
     Genome genome{};
     CAppearance appearance{};
-    CSkeleton skelton;
+    CSkeleton skeleton;
 
     AnimationId nextAnimationId = MIN_ANIMATION_ID;
     std::vector<CAnimation> vecAnimation;
@@ -44,12 +44,12 @@ Genome& CCreature::GetGenome()
 
 const CSkeleton& CCreature::GetSkeleton() const
 {
-    return m_impl->skelton;
+    return m_impl->skeleton;
 }
 
 CSkeleton& CCreature::GetSkeleton()
 {
-    return m_impl->skelton;
+    return m_impl->skeleton;
 }
 
 const CAppearance& CCreature::GetAppearance() const

@@ -182,12 +182,12 @@ void CApp::InitializeCreature()
 {
     m_creature.SetName("Hamster");
 
-    auto& skelton = m_creature.GetSkeleton();
-    const auto bodyId = skelton.AddPart("Body");
-    const auto headId = skelton.AddPart("Head", bodyId);
-    const auto eyesId = skelton.AddPart("Eyes", headId);
-    const auto leftEarId = skelton.AddPart("LeftEar", headId);
-    const auto rightEarId = skelton.AddPart("RightEar", headId);
+    auto& skeleton = m_creature.GetSkeleton();
+    const auto bodyId = skeleton.AddPart("Body");
+    const auto headId = skeleton.AddPart("Head", bodyId);
+    const auto eyesId = skeleton.AddPart("Eyes", headId);
+    const auto leftEarId = skeleton.AddPart("LeftEar", headId);
+    const auto rightEarId = skeleton.AddPart("RightEar", headId);
 
     auto& appearance = m_creature.GetAppearance();
     appearance.SetTexture(bodyId, L"assets/body.png");
