@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Skeleton.h"
 
+#include <algorithm>
 #include <unordered_set>
 
 using namespace Creature;
@@ -145,6 +146,47 @@ bool CSkeleton::RemovePart(PartId id)
         m_vecPart.end());
 
     return true;
+}
+
+bool CSkeleton::HasChildren(PartId id) const
+{
+    return std::any_of(
+        m_vecPart.cbegin(),
+        m_vecPart.cend(),
+        [id](const Part& part)
+        {
+            return part.parentId == id;
+        });
+}
+
+std::vector<PartId> CSkeleton::GetRootPartIds() const
+{
+    std::vector<PartId> vecRoot;
+
+    for (const auto& part : m_vecPart)
+    {
+        if (part.parentId == INVALID_PART_ID)
+        {
+            vecRoot.push_back(part.id);
+        }
+    }
+
+    return vecRoot;
+}
+
+std::vector<PartId> CSkeleton::GetChildPartIds(PartId id) const
+{
+    std::vector<PartId> vecChild;
+
+    for (const auto& part : m_vecPart)
+    {
+        if (part.parentId == id)
+        {
+            vecChild.push_back(part.id);
+        }
+    }
+
+    return vecChild;
 }
 
 PartId CSkeleton::FindPartIdByName(const std::string_view name) const

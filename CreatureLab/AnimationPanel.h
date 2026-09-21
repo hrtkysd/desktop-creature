@@ -32,7 +32,7 @@ public:
         const Creature::CSkeleton& skeleton);
 private:
     bool DrawAnimationProperties(
-        Creature::Animation::CAnimation& animation);
+        const Creature::Animation::CAnimation& animation);
     void DrawCurrentTime(
         const Creature::Animation::CAnimation& animation);
     bool DrawTracks(

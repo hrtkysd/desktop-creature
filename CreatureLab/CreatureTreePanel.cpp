@@ -5,6 +5,8 @@
 #include "CreatureTreePanel.h"
 #include "EditorContext.h"
 #include "ImGuiWindowScope.h"
+#include "PartId.h"
+#include "Skeleton.h"
 
 #include "imgui.h"
 #include "imgui_stdlib.h"
@@ -47,7 +49,7 @@ void CCreatureTreePanel::Draw()
     }
     else
     {
-        const bool isSelected = m_editorContext.GetSelectionType() == SelectionType::Creature;
+        const auto isSelected = m_editorContext.GetSelectionType() == SelectionType::Creature;
 
         if (ImGui::Selectable(creature.GetName().c_str(), isSelected))
         {
@@ -123,6 +125,65 @@ void CCreatureTreePanel::Draw()
         ImGui::TreePop();
     }
 
+    if (ImGui::TreeNode("Parts"))
+    {
+        const auto& skeleton = creature.GetSkeleton();
+
+        for (const auto& id : skeleton.GetRootPartIds())
+        {
+            DrawPart(skeleton, id);
+        }
+
+        ImGui::TreePop();
+    }
     ImGui::TreePop();
     ImGui::PopID();
+}
+
+void CCreatureTreePanel::DrawPart(
+    const Creature::CSkeleton& skeleton,
+    Creature::PartId partId)
+{
+    const auto part = skeleton.FindPartById(partId);
+    if (!part) return;
+
+    const bool isSelected =
+        m_editorContext.GetSelectionType() == SelectionType::Part &&
+        m_editorContext.GetPartId() == partId;
+
+    auto imguiFlags =
+        ImGuiTreeNodeFlags_OpenOnArrow |
+        ImGuiTreeNodeFlags_SpanAvailWidth;
+
+    if (!skeleton.HasChildren(partId))
+    {
+        imguiFlags |=
+            ImGuiTreeNodeFlags_Leaf |
+            ImGuiTreeNodeFlags_NoTreePushOnOpen;
+    }
+
+    if (isSelected) imguiFlags |= ImGuiTreeNodeFlags_Selected;
+
+    const auto isOpen =
+        ImGui::TreeNodeEx(
+            reinterpret_cast<void*>(
+                static_cast<uintptr_t>(partId)),
+            imguiFlags,
+            "%s",
+            part->strName.c_str());
+
+    if (ImGui::IsItemClicked())
+    {
+        m_editorContext.SelectPart(partId);
+    }
+
+    if (isOpen && !(imguiFlags & ImGuiTreeNodeFlags_NoTreePushOnOpen))
+    {
+        for (const auto childId : skeleton.GetChildPartIds(partId))
+        {
+            DrawPart(skeleton, childId);
+        }
+
+        ImGui::TreePop();
+    }
 }

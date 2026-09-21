@@ -1,8 +1,8 @@
 #include "pch.h"
 #include "Animation.h"
 #include "AnimationEditor.h"
-#include "AnimationPlayer.h"
 #include "AnimationPanel.h"
+#include "AnimationPlayer.h"
 #include "AnimationProperty.h"
 #include "EditorContext.h"
 #include "ImGuiWindowScope.h"
@@ -58,81 +58,16 @@ bool CAnimationPanel::Draw(
 
     bool bChanged = false;
 
-    // Animation Section
-    {
-        ImGui::SeparatorText("Animation");
+    bChanged |= DrawAnimationProperties(animation);
 
-        if (ImGui::BeginTable("AnimationProperties", 2))
-        {
-            ImGui::TableSetupColumn(
-                "Label",
-                ImGuiTableColumnFlags_WidthFixed,
-                100.0f);
+    DrawCurrentTime(animation);
 
-            ImGui::TableSetupColumn(
-                "Value",
-                ImGuiTableColumnFlags_WidthStretch);
+    bChanged |= DrawTracks(animation, skeleton);
 
-            ImGui::TableNextRow();
-            ImGui::TableSetColumnIndex(0);
-            ImGui::TextUnformatted("Name");
-
-            ImGui::TableSetColumnIndex(1);
-            ImGui::SetNextItemWidth(-FLT_MIN);
-            auto strName = animation.GetName();
-
-            if (ImGui::InputText(
-                "##AnimationName",
-                &strName))
-            {
-                m_editor.SetName(animation.GetAnimationId(), strName);
-                bChanged = true;
-            }
-
-            ImGui::TableNextRow();
-            ImGui::TableSetColumnIndex(0);
-            ImGui::TextUnformatted("Duration");
-
-            ImGui::TableSetColumnIndex(1);
-            ImGui::SetNextItemWidth(-FLT_MIN);
-
-            auto fDuration = animation.GetDuration();
-            if (ImGui::DragFloat(
-                "##Duration",
-                &fDuration,
-                0.01f,
-                0.0f))
-            {
-                m_editor.SetDuration(animation.GetAnimationId(), fDuration);
-                bChanged = true;
-            }
-
-            ImGui::EndTable();
-        }
-
-        ImGui::Spacing();
-
-        {
-            ImGui::SeparatorText("Current Time");
-
-            auto fCurrentTime = m_animationPlayer.GetCurrentAnimationTime();
-            ImGui::SetNextItemWidth(-FLT_MIN);
-            if (ImGui::SliderFloat(
-                "##CurrentTime",
-                &fCurrentTime,
-                0.0f,
-                animation.GetDuration(),
-                "%.2f"))
-            {
-                m_animationPlayer.SetCurrentAnimationTime(fCurrentTime);
-                bChanged = true;
-            }
-        }
-    }
     return bChanged;
 }
 
-bool CAnimationPanel::DrawAnimationProperties(Creature::Animation::CAnimation& animation)
+bool CAnimationPanel::DrawAnimationProperties(const CAnimation& animation)
 {
     bool bChanged = false;
 
@@ -230,9 +165,6 @@ bool CAnimationPanel::DrawTracks(
     ImGui::Spacing();
     ImGui::SeparatorText("Tracks");
 
-    //
-    // Track list
-    //
     for (const auto& track : animation.GetAnimationTracks())
     {
         const auto& key = track.GetKey();

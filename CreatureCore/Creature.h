@@ -17,8 +17,14 @@ namespace Creature
         class CAnimation;
     }
 
+    namespace IO
+    {
+        class CCreatureIO;
+    }
+
     class CCreature
     {
+        friend class IO::CCreatureIO;
     public:
         CCreature();
         ~CCreature();
@@ -50,7 +56,8 @@ namespace Creature
 
         Animation::CAnimation* FindAnimationById(Animation::AnimationId id);
         const Animation::CAnimation* FindAnimationById(Animation::AnimationId id) const;
-
+    private:
+        Animation::AnimationId AddAnimationWithId(Animation::AnimationId id, const std::string& name);
     private:
         struct Impl;
         std::unique_ptr<Impl> m_impl;
