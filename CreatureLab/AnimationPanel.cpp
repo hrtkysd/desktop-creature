@@ -54,6 +54,12 @@ bool CAnimationPanel::Draw(
     const Creature::Animation::CAnimation& animation,
     const Creature::CSkeleton& skeleton)
 {
+    if (m_animationId != animation.GetAnimationId())
+    {
+        m_animationId = animation.GetAnimationId();
+        m_selectedTrackKey.reset();
+    }
+
     CImGuiWindowScope window("Animation");
 
     bool bChanged = false;

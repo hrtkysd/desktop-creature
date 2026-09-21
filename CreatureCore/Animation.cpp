@@ -61,12 +61,8 @@ const std::vector<CAnimationTrack>& CAnimation::GetAnimationTracks() const
 
 bool CAnimation::AddAnimationTrack(CAnimationTrack&& animationTrack)
 {
-    const auto itFind = std::find_if(m_vecAnimationTrack.begin(), m_vecAnimationTrack.end(), [&animationTrack](const CAnimationTrack& track)
-        {
-            return animationTrack.Matches(track.GetKey());
-        });
-
-    if (itFind != m_vecAnimationTrack.end()) return false;
+    if (!animationTrack.GetKey().IsValid()) return false;
+    if (FindAnimationTrack(animationTrack.GetKey())) return false;
 
     m_vecAnimationTrack.emplace_back(std::move(animationTrack));
     return true;

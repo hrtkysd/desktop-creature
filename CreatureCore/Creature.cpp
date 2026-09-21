@@ -79,7 +79,8 @@ const std::vector<Animation::CAnimation>& Creature::CCreature::GetAnimations() c
 
 AnimationId CCreature::AddAnimation(CAnimation&& animation)
 {
-    const auto id = m_impl->nextAnimationId++;
+    const auto id = GenerateAnimationId();
+    if (id == INVALID_ANIMATION_ID) return INVALID_ANIMATION_ID;
     animation.SetAnimationId(id);
     m_impl->vecAnimation.emplace_back(std::move(animation));
     return id;
@@ -92,9 +93,36 @@ AnimationId CCreature::AddAnimationWithId(AnimationId id, const std::string& nam
     if (FindAnimationById(id) != nullptr) return INVALID_ANIMATION_ID;
 
     m_impl->vecAnimation.emplace_back(CAnimation::NewAnimation(id, name));
-    m_impl->nextAnimationId = std::max(m_impl->nextAnimationId, id + 1);
+
+    UpdateNextAnimationId(id);
 
     return id;
+}
+
+AnimationId CCreature::GenerateAnimationId()
+{
+    const auto id = m_impl->nextAnimationId;
+
+    if (id == INVALID_ANIMATION_ID)
+    {
+        return INVALID_ANIMATION_ID;
+    }
+
+    if (id == std::numeric_limits<AnimationId>::max())
+    {
+        m_impl->nextAnimationId = INVALID_ANIMATION_ID;
+    }
+    else
+    {
+        ++m_impl->nextAnimationId;
+    }
+
+    return id;
+}
+
+void CCreature::UpdateNextAnimationId(AnimationId id)
+{
+    m_impl->nextAnimationId = std::max(m_impl->nextAnimationId, id + 1);
 }
 
 bool CCreature::RemoveAnimation(AnimationId id)
@@ -114,10 +142,14 @@ bool CCreature::RemoveAnimation(AnimationId id)
 
 AnimationId CCreature::AddNewAnimation(const std::string& strName)
 {
-    const auto newId = m_impl->nextAnimationId;
-    m_impl->vecAnimation.emplace_back(CAnimation::NewAnimation(newId, strName));
-    ++m_impl->nextAnimationId;
-    return newId;
+    const auto id = GenerateAnimationId();
+    if (id == INVALID_ANIMATION_ID)
+    {
+        return INVALID_ANIMATION_ID;
+    }
+
+    m_impl->vecAnimation.emplace_back(CAnimation::NewAnimation(id, strName));
+    return id;
 }
 
 CAnimation* CCreature::FindAnimationById(AnimationId id)
