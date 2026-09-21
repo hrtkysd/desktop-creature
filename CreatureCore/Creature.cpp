@@ -79,16 +79,77 @@ const std::vector<Animation::CAnimation>& Creature::CCreature::GetAnimations() c
 
 AnimationId CCreature::AddAnimation(CAnimation&& animation)
 {
-    const auto id = m_impl->nextAnimationId++;
+    const auto id = GenerateAnimationId();
+    if (id == INVALID_ANIMATION_ID) return INVALID_ANIMATION_ID;
     animation.SetAnimationId(id);
     m_impl->vecAnimation.emplace_back(std::move(animation));
     return id;
 }
 
-CAnimation& CCreature::AddNewAnimation(const std::string& strName)
+AnimationId CCreature::AddAnimationWithId(AnimationId id, const std::string& name)
 {
-    const auto newId = m_impl->nextAnimationId++;
-    return m_impl->vecAnimation.emplace_back(CAnimation::NewAnimation(newId, strName));
+    if (id == INVALID_ANIMATION_ID) return INVALID_ANIMATION_ID;
+    if (id == std::numeric_limits<AnimationId>::max()) return INVALID_ANIMATION_ID;
+    if (FindAnimationById(id) != nullptr) return INVALID_ANIMATION_ID;
+
+    m_impl->vecAnimation.emplace_back(CAnimation::NewAnimation(id, name));
+
+    UpdateNextAnimationId(id);
+
+    return id;
+}
+
+AnimationId CCreature::GenerateAnimationId()
+{
+    const auto id = m_impl->nextAnimationId;
+
+    if (id == INVALID_ANIMATION_ID)
+    {
+        return INVALID_ANIMATION_ID;
+    }
+
+    if (id == std::numeric_limits<AnimationId>::max())
+    {
+        m_impl->nextAnimationId = INVALID_ANIMATION_ID;
+    }
+    else
+    {
+        ++m_impl->nextAnimationId;
+    }
+
+    return id;
+}
+
+void CCreature::UpdateNextAnimationId(AnimationId id)
+{
+    m_impl->nextAnimationId = std::max(m_impl->nextAnimationId, id + 1);
+}
+
+bool CCreature::RemoveAnimation(AnimationId id)
+{
+    auto& vecAnimation = m_impl->vecAnimation;
+
+    const auto it = std::find_if(vecAnimation.begin(), vecAnimation.end(), [id](const CAnimation& animation)
+        {
+            return id == animation.GetAnimationId();
+        });
+
+    if (it == vecAnimation.end()) return false;
+
+    vecAnimation.erase(it);
+    return true;
+}
+
+AnimationId CCreature::AddNewAnimation(const std::string& strName)
+{
+    const auto id = GenerateAnimationId();
+    if (id == INVALID_ANIMATION_ID)
+    {
+        return INVALID_ANIMATION_ID;
+    }
+
+    m_impl->vecAnimation.emplace_back(CAnimation::NewAnimation(id, strName));
+    return id;
 }
 
 CAnimation* CCreature::FindAnimationById(AnimationId id)

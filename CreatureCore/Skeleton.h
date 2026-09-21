@@ -29,6 +29,10 @@ namespace Creature
 
         bool AddPartWithId(Part&& part);
         bool RemovePart(PartId id);
+
+        bool HasChildren(Creature::PartId id) const;
+        std::vector<Creature::PartId> GetRootPartIds() const;
+        std::vector<Creature::PartId> GetChildPartIds(Creature::PartId id) const;
     private:
         void CollectDescendants(PartId parentId, std::unordered_set<PartId>& ids) const;
     private:

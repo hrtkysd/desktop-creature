@@ -1,4 +1,8 @@
 #include "pch.h"
+#include "Animation.h"
+#include "AnimationProperty.h"
+#include "AnimationTrack.h"
+#include "AnimationTrackKey.h"
 #include "Appearance.h"
 #include "Creature.h"
 #include "CreatureIO.h"
@@ -10,6 +14,7 @@
 #include <nlohmann/json.hpp>
 
 using namespace Creature;
+using namespace Creature::Animation;
 using namespace Creature::IO;
 using namespace Creature::Math;
 
@@ -61,7 +66,41 @@ bool CCreatureIO::SaveAsFile(const CCreature& creature, const std::filesystem::p
 
         root["parts"].push_back(std::move(partJson));
     }
+    root["animations"] = json::array();
 
+    for (const auto& animation : creature.GetAnimations())
+    {
+        json animationJson;
+
+        animationJson["id"] = animation.GetAnimationId();
+        animationJson["name"] = animation.GetName();
+        animationJson["duration"] = animation.GetDuration();
+        animationJson["tracks"] = json::array();
+
+        for (const auto& track : animation.GetAnimationTracks())
+        {
+            json trackJson;
+            const auto& key = track.GetKey();
+
+            trackJson["partId"] = key.GetPartId();
+            trackJson["property"] = static_cast<int>(key.GetProperty());
+            trackJson["keyFrames"] = json::array();
+
+            for (const auto& keyFrame : track.GetKeyFrames())
+            {
+                json keyFrameJson;
+
+                keyFrameJson["time"] = keyFrame.fTime;
+                keyFrameJson["value"] = keyFrame.fValue;
+                keyFrameJson["interpolation"] = static_cast<int>(keyFrame.eInterpolationToNext);
+                trackJson["keyFrames"].push_back(std::move(keyFrameJson));
+            }
+
+            animationJson["tracks"].push_back(std::move(trackJson));
+        }
+
+        root["animations"].push_back(std::move(animationJson));
+    }
     std::ofstream ofs(path);
 
     if (!ofs) return false;
@@ -95,7 +134,6 @@ bool CCreatureIO::LoadFromFile(const std::filesystem::path& path, CCreature& cre
         Part part;
 
         part.id = partJson["id"].get<PartId>();
-
         part.strName = partJson["name"].get<std::string>();
 
         if (partJson["parentId"].is_null())  part.parentId = INVALID_PART_ID;
@@ -128,7 +166,46 @@ bool CCreatureIO::LoadFromFile(const std::filesystem::path& path, CCreature& cre
                 .get<std::string>());
         }
     }
+    if (root.contains("animations"))
+    {
+        for (const auto& animationJson : root["animations"])
+        {
+            const auto strName = animationJson["name"].get<std::string>();
+            const auto animationId = animationJson["id"].get<AnimationId>();
+            if (loadedCreature.AddAnimationWithId(animationId, strName) == INVALID_ANIMATION_ID)
+            {
+                return false;
+            }
 
+            auto animation = loadedCreature.FindAnimationById(animationId);
+            if (!animation) return false;
+
+            animation->SetDuration(animationJson["duration"].get<float>());
+
+            for (const auto& trackJson : animationJson["tracks"])
+            {
+                const auto partId = trackJson["partId"].get<PartId>();
+                const auto eProperty = static_cast<AnimationProperty>(trackJson["property"].get<int>());
+
+                CAnimationTrack track(CAnimationTrackKey{ partId, eProperty });
+
+                for (const auto& keyFrameJson : trackJson["keyFrames"])
+                {
+                    FloatKeyFrame keyFrame;
+                    keyFrame.fTime = keyFrameJson["time"].get<float>();
+                    keyFrame.fValue = keyFrameJson["value"].get<float>();
+                    keyFrame.eInterpolationToNext
+                        = static_cast<Interpolation>(keyFrameJson["interpolation"].get<int>());
+                    track.AddOrUpdateKeyFrame(keyFrame);
+                }
+
+                if (!animation->AddAnimationTrack(std::move(track)))
+                {
+                    return false;
+                }
+            }
+        }
+    }
     creature = std::move(loadedCreature);
 
     return true;
