@@ -11,8 +11,11 @@ namespace Creature
         {
         public:
             static bool SaveAsFile(
-                const CCreature& creature, const std::filesystem::path& path);
-            static bool LoadFromFile(const std::filesystem::path& path, CCreature& creature);
+                const CCreature& creature,
+                const std::filesystem::path& path);
+            static bool LoadFromFile(
+                const std::filesystem::path& path,
+                CCreature& creature);
         };
     } // namespace IO
 } // namespace Creature

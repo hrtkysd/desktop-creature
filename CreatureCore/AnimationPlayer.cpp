@@ -1,7 +1,9 @@
 #include "pch.h"
 #include "Animation.h"
 #include "AnimationPlayer.h"
+#include "AnimationProperty.h"
 #include "AnimationTrack.h"
+#include "AnimationTrackKey.h"
 #include "CreaturePose.h"
 #include "PartId.h"
 #include "Skeleton.h"
@@ -63,15 +65,16 @@ void CAnimationPlayer::SamplePose(const CAnimation& animation, const CSkeleton& 
     vecPartTransform.clear();
     vecPartTransform.resize(skeleton.Parts().size());
 
-    for (const auto& track : animation.GetAnimationTrack())
+    for (const auto& track : animation.GetAnimationTracks())
     {
-        const auto index = skeleton.FindPartIndexById(track.GetPartId());
+        const auto& trackKey = track.GetKey();
+        const auto index = skeleton.FindPartIndexById(trackKey.GetPartId());
         if (index == INVALID_PART_INDEX) continue;
 
         const auto value = track.Sample(m_fCurrentTime);
         auto& transform = vecPartTransform.at(index);
 
-        switch (track.GetAnimationProperty())
+        switch (trackKey.GetProperty())
         {
         case AnimationProperty::PositionX:
             transform.GetPosition().x = value;

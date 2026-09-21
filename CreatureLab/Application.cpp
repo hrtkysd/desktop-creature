@@ -1,11 +1,11 @@
 #include "pch.h"
 #include "AnimationTrack.h"
+#include "AnimationTrackKey.h"
 #include "Appearance.h"
 #include "Application.h"
 #include "AnimationEditor.h"
 #include "AnimationPanel.h"
 #include "CreaturePose.h"
-#include "CreatureTreePanel.h"
 #include "Skeleton.h"
 #include "Part.h"
 #include "TextureCache.h"
@@ -40,6 +40,7 @@ CApp::CApp()
     , m_menuBar(m_labController)
     , m_previewPanel(m_creatureEditor, m_editorContext)
     , m_creatureTreePanel(m_creatureEditor, m_editorContext)
+    , m_animationPanel(m_animationPlayer, m_animationEditor, m_editorContext)
 {
 }
 
@@ -196,10 +197,7 @@ void CApp::InitializeCreature()
     appearance.SetTexture(leftEarId, L"assets/left_ear.png");
     appearance.SetTexture(rightEarId, L"assets/right_ear.png");
 
-    CAnimationTrack headRotation;
-    headRotation.SetPartId(headId);
-    headRotation.SetAnimationProperty(
-        AnimationProperty::Rotation);
+    CAnimationTrack headRotation(CAnimationTrackKey{ headId, AnimationProperty::Rotation });
     headRotation.AddOrUpdateKeyFrame({ 0.0f,  0.0f });
     headRotation.AddOrUpdateKeyFrame({ 0.5f,  0.1f });
     headRotation.AddOrUpdateKeyFrame({ 1.0f,  0.0f });
@@ -307,7 +305,7 @@ void CApp::Render()
         m_animationPlayer.Update(ImGui::GetIO().DeltaTime);
         m_animationPlayer.SamplePose(*animation, skeleton);
 
-        CAnimationPanel::Draw(*animation, m_animationPlayer, m_animationEditor);
+        m_animationPanel.Draw(*animation, skeleton);
 
         pose = &m_animationPlayer.GetPose();
     }

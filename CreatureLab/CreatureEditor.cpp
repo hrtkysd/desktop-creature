@@ -71,8 +71,7 @@ void CCreatureEditor::SetName(const std::string& strName)
 
 AnimationId CCreatureEditor::AddNewAnimation(const std::string& strName)
 {
-    const auto newAnimation = m_creature.AddNewAnimation(strName);
-    return newAnimation.GetAnimationId();
+    return m_creature.AddNewAnimation(strName);
 }
 
 const CCreature& CCreatureEditor::GetCreature() const
