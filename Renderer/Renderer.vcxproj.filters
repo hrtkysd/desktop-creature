@@ -5,18 +5,12 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Parts">
-      <UniqueIdentifier>{538f5fdb-357a-466a-bde2-4aac36a51a8b}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="TextureLoader.cpp" />
     <ClCompile Include="TextureCache.cpp" />
-    <ClCompile Include="..\CreatureLab\RenderPartItem.cpp">
-      <Filter>Parts</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -24,8 +18,5 @@
     <ClInclude Include="TextureLoader.h" />
     <ClInclude Include="ImageData.h" />
     <ClInclude Include="TextureCache.h" />
-    <ClInclude Include="..\CreatureLab\RenderPartItem.h">
-      <Filter>Parts</Filter>
-    </ClInclude>
   </ItemGroup>
 </Project>
