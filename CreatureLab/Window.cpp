@@ -19,7 +19,7 @@ void CWindow::Attach(HWND hWnd) noexcept
     m_hWnd = hWnd;
 }
 
-bool CWindow::Create(HINSTANCE hInstance, const wchar_t* pszClassName, const wchar_t* pszTitle, int nWidth, int nHeight)
+bool CWindow::Create(HINSTANCE hInstance, const wchar_t* pszClassName, const wchar_t* pszTitle, int nWidth, int nHeight, void* userData)
 {
     m_hWnd = CreateWindowExW(
         0,
@@ -33,6 +33,6 @@ bool CWindow::Create(HINSTANCE hInstance, const wchar_t* pszClassName, const wch
         nullptr,
         nullptr,
         hInstance,
-        this);
+        userData);
     return m_hWnd != nullptr;
 }
