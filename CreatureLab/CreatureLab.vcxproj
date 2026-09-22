@@ -113,6 +113,7 @@
     <ClInclude Include="PreviewPanel.h" />
     <ClInclude Include="PreviewPart.h" />
     <ClInclude Include="PreviewState.h" />
+    <ClInclude Include="RenderPartItem.h" />
     <ClInclude Include="Rotate.h" />
     <ClInclude Include="Window.h" />
   </ItemGroup>
@@ -176,6 +177,7 @@
     <ClCompile Include="PreviewEditor.cpp" />
     <ClCompile Include="PreviewPanel.cpp" />
     <ClCompile Include="PreviewPart.cpp" />
+    <ClCompile Include="RenderPartItem.cpp" />
     <ClCompile Include="Window.cpp" />
     <ClInclude Include="Resize.h" />
   </ItemGroup>

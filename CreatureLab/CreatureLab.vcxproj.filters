@@ -50,6 +50,9 @@
     <Filter Include="Panel\Creature">
       <UniqueIdentifier>{b5676d28-29e8-48bc-a648-c26d4dd56e16}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Panel\Preview\Parts">
+      <UniqueIdentifier>{664876b0-ea75-407c-845a-e12270a870f8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\third_party\imgui\backends\imgui_impl_dx11.h">
@@ -152,6 +155,9 @@
     <ClInclude Include="AnimationEditor.h">
       <Filter>Edit</Filter>
     </ClInclude>
+    <ClInclude Include="RenderPartItem.h">
+      <Filter>Panel\Preview\Parts</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\third_party\imgui\imgui.cpp">
@@ -242,6 +248,9 @@
     </ClCompile>
     <ClCompile Include="AnimationEditor.cpp">
       <Filter>Edit</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderPartItem.cpp">
+      <Filter>Panel\Preview\Parts</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
