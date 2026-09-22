@@ -18,7 +18,8 @@ public:
         const wchar_t* pszClassName,
         const wchar_t* pszTitle,
         int nWidth,
-        int nHeight);
+        int nHeight,
+        void* userData);
 
 private:
     HWND m_hWnd = nullptr;

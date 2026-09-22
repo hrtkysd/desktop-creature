@@ -78,7 +78,7 @@ bool CApp::CreateMainWindow(
 
     if (!RegisterClassExW(&wc)) return false;
 
-    m_window.Create(hInstance, kWindowClassName, kWindowTitle, 1280, 800);
+    m_window.Create(hInstance, kWindowClassName, kWindowTitle, 1280, 800, this);
 
     ShowWindow(m_window.Handle(), nCmdShow);
     UpdateWindow(m_window.Handle());
