@@ -1,8 +1,14 @@
 #include "pch.h"
 #include "EditorContext.h"
+#include "UndoScope.h"
 
 using namespace Creature;
 using namespace Creature::Animation;
+
+CEditorContext::CEditorContext(CUndoBuffer& undoBuffer)
+    : m_undoBuffer(undoBuffer)
+{
+}
 
 void CEditorContext::SelectCreature()
 {
@@ -25,6 +31,36 @@ void CEditorContext::SelectAnimation(Creature::Animation::AnimationId animationI
 SelectionType CEditorContext::GetSelectionType() const noexcept
 {
     return m_eSelectionType;
+}
+
+CUndoScope CEditorContext::CreateUndoScope() noexcept
+{
+    return m_undoBuffer.CreateScope();
+}
+
+void CEditorContext::ClearHistory()
+{
+    m_undoBuffer.Clear();
+}
+
+void CEditorContext::Undo()
+{
+    m_undoBuffer.Undo();
+}
+
+void CEditorContext::Redo()
+{
+    m_undoBuffer.Redo();
+}
+
+bool CEditorContext::CanUndo() const noexcept
+{
+    return m_undoBuffer.CanUndo();
+}
+
+bool CEditorContext::CanRedo() const noexcept
+{
+    return m_undoBuffer.CanRedo();
 }
 
 EditMode CEditorContext::GetEditMode() const noexcept

@@ -4,6 +4,7 @@
 #include "EditorCommand.h"
 #include "EditorContext.h"
 #include "EditorController.h"
+#include "UndoScope.h"
 
 using namespace Creature;
 using namespace Creature::Animation;
@@ -18,7 +19,7 @@ CEditorController::CEditorController(
 {
 }
 
-void CEditorController::Execute(EditorCommand command)
+bool CEditorController::Execute(EditorCommand command)
 {
     switch (command)
     {
@@ -32,9 +33,19 @@ void CEditorController::Execute(EditorCommand command)
         m_animationPlayer.Pause();
         break;
     case EditorCommand::DeletePart:
-        m_editor.GetSkeletonEditor().RemovePart(m_context.GetPartId());
-        break;
+    {
+        auto scope = m_context.CreateUndoScope();
+
+        auto& skeletonEditor = m_editor.GetSkeletonEditor();
+        if (!skeletonEditor.RemovePart(m_context.GetPartId()))
+        {
+            scope.Cancel();
+            return false;
+        }
+    }
+    break;
     default:
         break;
     }
+    return true;
 }

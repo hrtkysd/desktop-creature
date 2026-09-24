@@ -21,14 +21,14 @@ CLabController::CLabController(
 {
 }
 
-void CLabController::SaveAs()
+bool CLabController::SaveAs()
 {
-    m_documentController.Execute(DocumentCommand::SaveAs);
+    return m_documentController.Execute(DocumentCommand::SaveAs);
 }
 
-void CLabController::LoadFrom()
+bool CLabController::LoadFrom()
 {
-    m_documentController.Execute(DocumentCommand::LoadFrom);
+    return m_documentController.Execute(DocumentCommand::LoadFrom);
 }
 
 void CLabController::PlayAnimation()
@@ -56,7 +56,7 @@ EditMode CLabController::GetEditMode() const noexcept
     return m_editorContext.GetEditMode();
 }
 
-CCreatureEditor& CLabController::CreatureEditor()
+bool CLabController::DeletePart()
 {
-    return m_creatureEditor;
+    return m_editorController.Execute(EditorCommand::DeletePart);
 }

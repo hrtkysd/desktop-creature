@@ -4,6 +4,7 @@
 #include "AnimationPanel.h"
 #include "AnimationPlayer.h"
 #include "AnimationProperty.h"
+#include "ContinuousEditUndoScope.h"
 #include "EditorContext.h"
 #include "ImGuiWindowScope.h"
 #include "Skeleton.h"
@@ -104,15 +105,21 @@ bool CAnimationPanel::DrawAnimationProperties(const CAnimation& animation)
     ImGui::TableSetColumnIndex(1);
     ImGui::SetNextItemWidth(-FLT_MIN);
 
-    auto strName = animation.GetName();
-
-    if (ImGui::InputText(
-        "##AnimationName",
-        &strName))
     {
-        m_editor.SetName(animation.GetAnimationId(), strName);
+        auto strName = animation.GetName();
+        const auto edited = ImGui::InputText(
+            "##AnimationName",
+            &strName);
 
-        bChanged = true;
+        CContinuousEditUndoScope scope(m_editorContext, m_undoScope, edited);
+
+        if (edited)
+        {
+            if (m_editor.SetName(animation.GetAnimationId(), strName))
+            {
+                bChanged = true;
+            }
+        }
     }
 
     ImGui::TableNextRow();
@@ -123,21 +130,24 @@ bool CAnimationPanel::DrawAnimationProperties(const CAnimation& animation)
     ImGui::TableSetColumnIndex(1);
     ImGui::SetNextItemWidth(-FLT_MIN);
 
-    auto fDuration = animation.GetDuration();
-
-    if (ImGui::DragFloat(
-        "##Duration",
-        &fDuration,
-        0.01f,
-        0.0f))
     {
-        m_editor.SetDuration(
-            animation.GetAnimationId(),
-            fDuration);
+        auto fDuration = animation.GetDuration();
+        const auto edited = ImGui::DragFloat(
+            "##Duration",
+            &fDuration,
+            0.01f,
+            0.0f);
 
-        bChanged = true;
+        CContinuousEditUndoScope scope(m_editorContext, m_undoScope, edited);
+        if (edited)
+        {
+            m_editor.SetDuration(
+                animation.GetAnimationId(),
+                fDuration);
+
+            bChanged = true;
+        }
     }
-
     ImGui::EndTable();
 
     return bChanged;
@@ -277,13 +287,17 @@ bool CAnimationPanel::DrawAddTrack(const CAnimation& animation)
     ImGui::BeginDisabled(bExists);
 
     bool bChanged = false;
-
     if (ImGui::Button("Add Track"))
     {
+        auto scope = m_editorContext.CreateUndoScope();
         if (m_editor.AddTrack(animation.GetAnimationId(), CAnimationTrack{ key }))
         {
             m_selectedTrackKey = key;
             bChanged = true;
+        }
+        else
+        {
+            scope.Cancel();
         }
     }
 
@@ -312,53 +326,64 @@ bool CAnimationPanel::DrawTrack(const CAnimation& animation, const CAnimationTra
         auto fValue = keyFrame.fValue;
 
         ImGui::SetNextItemWidth(100.0f);
-
-        if (ImGui::DragFloat(
-            "##Value",
-            &fValue,
-            0.01f))
         {
-            auto edited = keyFrame;
-            edited.fValue = fValue;
-            m_editor.AddOrUpdateKeyFrame(animation.GetAnimationId(), trackKey, edited);
+            const auto edited = ImGui::DragFloat(
+                "##Value",
+                &fValue,
+                0.01f);
 
-            bChanged = true;
+            CContinuousEditUndoScope scope(m_editorContext, m_undoScope, edited);
+
+            if (edited)
+            {
+                auto edited = keyFrame;
+                edited.fValue = fValue;
+                m_editor.AddOrUpdateKeyFrame(animation.GetAnimationId(), trackKey, edited);
+
+                bChanged = true;
+            }
         }
-
         ImGui::SameLine();
 
         auto interpolation = keyFrame.eInterpolationToNext;
 
         ImGui::SetNextItemWidth(120.0f);
 
-        if (ImGui::BeginCombo(
-            "##Interpolation",
-            GetInterpolationName(interpolation)))
         {
-            constexpr Interpolation values[]
+            if (ImGui::BeginCombo(
+                "##Interpolation",
+                GetInterpolationName(interpolation)))
             {
-                Interpolation::Linear,
-                Interpolation::SmoothStep,
-                Interpolation::Step
-            };
-
-            for (const auto value : values)
-            {
-                if (ImGui::Selectable(
-                    GetInterpolationName(value),
-                    interpolation == value))
+                constexpr Interpolation values[]
                 {
-                    auto edited = keyFrame;
+                    Interpolation::Linear,
+                    Interpolation::SmoothStep,
+                    Interpolation::Step
+                };
 
-                    edited.eInterpolationToNext = value;
+                for (const auto value : values)
+                {
+                    auto scope = m_editorContext.CreateUndoScope();
+                    if (ImGui::Selectable(
+                        GetInterpolationName(value),
+                        interpolation == value))
+                    {
+                        auto edited = keyFrame;
 
-                    m_editor.AddOrUpdateKeyFrame(animation.GetAnimationId(), trackKey, edited);
+                        edited.eInterpolationToNext = value;
 
-                    bChanged = true;
+                        m_editor.AddOrUpdateKeyFrame(animation.GetAnimationId(), trackKey, edited);
+
+                        bChanged = true;
+                    }
+                    else
+                    {
+                        scope.Cancel();
+                    }
                 }
-            }
 
-            ImGui::EndCombo();
+                ImGui::EndCombo();
+            }
         }
 
         ImGui::PopID();
@@ -368,6 +393,8 @@ bool CAnimationPanel::DrawTrack(const CAnimation& animation, const CAnimationTra
 
     if (ImGui::Button("Add Keyframe"))
     {
+        auto scope = m_editorContext.CreateUndoScope();
+
         const auto fTime = m_animationPlayer.GetCurrentAnimationTime();
 
         FloatKeyFrame keyFrame
@@ -377,19 +404,30 @@ bool CAnimationPanel::DrawTrack(const CAnimation& animation, const CAnimationTra
             Interpolation::SmoothStep
         };
 
-        m_editor.AddOrUpdateKeyFrame(animation.GetAnimationId(), trackKey, keyFrame);
+        if (m_editor.AddOrUpdateKeyFrame(animation.GetAnimationId(), trackKey, keyFrame))
+        {
+            bChanged = true;
+        }
+        else
+        {
+            scope.Cancel();
+        }
 
-        bChanged = true;
     }
 
     ImGui::SameLine();
 
     if (ImGui::Button("Delete Track"))
     {
+        auto scope = m_editorContext.CreateUndoScope();
         if (m_editor.RemoveTrack(animation.GetAnimationId(), trackKey))
         {
             m_selectedTrackKey.reset();
             bChanged = true;
+        }
+        else
+        {
+            scope.Cancel();
         }
     }
 

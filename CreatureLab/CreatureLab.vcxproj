@@ -90,6 +90,7 @@
     <ClInclude Include="..\third_party\imgui\misc\cpp\imgui_stdlib.h" />
     <ClInclude Include="AnimationPanel.h" />
     <ClInclude Include="Application.h" />
+    <ClInclude Include="ContinuousEditUndoScope.h" />
     <ClInclude Include="CreatureTreePanel.h" />
     <ClInclude Include="DocumentCommand.h" />
     <ClInclude Include="DocumentContext.h" />
@@ -113,6 +114,8 @@
     <ClInclude Include="PreviewState.h" />
     <ClInclude Include="RenderPartItem.h" />
     <ClInclude Include="Rotate.h" />
+    <ClInclude Include="UndoBuffer.h" />
+    <ClInclude Include="UndoScope.h" />
     <ClInclude Include="Window.h" />
   </ItemGroup>
   <ItemGroup>
@@ -150,6 +153,7 @@
     </ClCompile>
     <ClCompile Include="AnimationPanel.cpp" />
     <ClCompile Include="Application.cpp" />
+    <ClCompile Include="ContinuousEditUndoScope.cpp" />
     <ClCompile Include="CreatureTreePanel.cpp" />
     <ClCompile Include="DocumentContext.cpp" />
     <ClCompile Include="DocumentController.cpp" />
@@ -174,6 +178,8 @@
     <ClCompile Include="PreviewPanel.cpp" />
     <ClCompile Include="PreviewPart.cpp" />
     <ClCompile Include="RenderPartItem.cpp" />
+    <ClCompile Include="UndoBuffer.cpp" />
+    <ClCompile Include="UndoScope.cpp" />
     <ClCompile Include="Window.cpp" />
     <ClInclude Include="Resize.h" />
   </ItemGroup>

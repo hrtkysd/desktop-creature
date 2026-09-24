@@ -40,6 +40,13 @@ CCreature& CCreature::operator=(CCreature&& rhs) noexcept
     return *this;
 }
 
+CCreature CCreature::Clone()
+{
+    CCreature creature;
+    *creature.m_impl = *m_impl;
+    return creature;
+}
+
 const Genome& CCreature::GetGenome() const
 {
     return m_impl->genome;

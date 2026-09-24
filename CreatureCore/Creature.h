@@ -43,6 +43,7 @@ namespace Creature
         CCreature(CCreature&&) noexcept;
         CCreature& operator=(CCreature&&) noexcept;
     public:
+        CCreature Clone();
         const Genome& GetGenome() const;
         const CSkeleton& GetReadonlySkeleton() const;
         const CAppearance& GetReadonlyAppearance() const;

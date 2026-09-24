@@ -21,7 +21,7 @@ public:
 public:
     const std::filesystem::path& Path() const noexcept;
 
-    void Execute(DocumentCommand command);
+    bool Execute(DocumentCommand command);
 private:
     CWindow& m_appWindow;
     Creature::CCreature& m_creature;

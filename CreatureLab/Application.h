@@ -14,6 +14,7 @@
 #include "LabController.h"
 #include "MenuBar.h"
 #include "PreviewPanel.h"
+#include "UndoBuffer.h"
 #include "Window.h"
 
 #include <windef.h>
@@ -69,6 +70,8 @@ private:
     Creature::Genome m_genome;
     Creature::CCreature m_creature;
     Creature::Editor::CCreatureEditor m_creatureEditor;
+
+    CUndoBuffer m_undoBuffer;
 
     CCreatureTreePanel m_creatureTreePanel;
 

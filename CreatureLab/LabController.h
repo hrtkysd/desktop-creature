@@ -24,8 +24,8 @@ public:
         CEditorController& editorController,
         Creature::Editor::CCreatureEditor& creatureEditor);
 public:
-    void SaveAs();
-    void LoadFrom();
+    bool SaveAs();
+    bool LoadFrom();
 
     void PlayAnimation();
     void PauseAnimation();
@@ -34,7 +34,7 @@ public:
     void SetEditMode(EditMode mode);
     EditMode GetEditMode() const noexcept;
 
-    Creature::Editor::CCreatureEditor& CreatureEditor();
+    bool DeletePart();
 
 private:
     CEditorContext& m_editorContext;

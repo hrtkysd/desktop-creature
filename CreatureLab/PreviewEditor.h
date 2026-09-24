@@ -3,7 +3,9 @@
 #include "Operation.h"
 #include "Resize.h"
 #include "Rotate.h"
+#include "UndoScope.h"
 
+#include <optional>
 #include <vector>
 
 namespace Creature
@@ -56,21 +58,21 @@ private:
         const Creature::Math::CMatrix3x2& previewTransform);
     void EndOperation();
 
-    void BeginSelect(
+    bool BeginSelect(
         const std::vector<CPreviewPart>& vecPartView,
         const Creature::Math::Vec2& mousePosition);
-    void BeginMove(
+    bool BeginMove(
         const std::vector<CPreviewPart>& vecPartView,
         const Creature::Math::Vec2& mousePosition);
-    void BeginScale(
+    bool BeginScale(
         const std::vector<CPreviewPart>& vecPartView,
         const Creature::Math::Vec2& mousePosition);
-    void BeginRotate(
+    bool BeginRotate(
         const Creature::CCreaturePose& pose,
         const Creature::Math::CMatrix3x2& previewTransform,
         const std::vector<CPreviewPart>& vecPartView,
         const Creature::Math::Vec2& mousePosition);
-    void BeginPivot(
+    bool BeginPivot(
         const Creature::CCreaturePose& pose,
         const Creature::Math::CMatrix3x2& previewTransform,
         const std::vector<CPreviewPart>& vecPartView,
@@ -92,6 +94,8 @@ private:
 private:
     Creature::Editor::CSkeletonEditor& m_editor;
     CEditorContext& m_editorContext;
+
+    std::optional<CUndoScope> m_undoScope;
 
     Operation m_operation{};
     ResizeState m_resizeState{};
