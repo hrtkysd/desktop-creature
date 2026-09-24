@@ -162,15 +162,12 @@ void CAnimationPanel::DrawCurrentTime(const CAnimation& animation)
 
     ImGui::SetNextItemWidth(-FLT_MIN);
 
-    const auto edited = ImGui::SliderFloat(
+    if (ImGui::SliderFloat(
         "##CurrentTime",
         &fCurrentTime,
         0.0f,
         animation.GetDuration(),
-        "%.2f");
-
-    CContinuousEditUndoScope scope(m_editorContext, m_undoScope, edited);
-    if (edited)
+        "%.2f"))
     {
         m_animationPlayer.SetCurrentAnimationTime(fCurrentTime);
     }
