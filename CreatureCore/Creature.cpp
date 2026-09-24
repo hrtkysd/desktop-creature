@@ -30,7 +30,14 @@ CCreature::CCreature()
 CCreature::~CCreature() = default;
 
 CCreature::CCreature(CCreature&&) noexcept = default;
-CCreature& CCreature::operator=(CCreature&&) noexcept = default;
+
+CCreature& CCreature::operator=(CCreature&& rhs) noexcept
+{
+    if (this == &rhs) return *this;
+
+    *m_impl = std::move(*rhs.m_impl);
+    return *this;
+}
 
 const Genome& CCreature::GetGenome() const
 {
