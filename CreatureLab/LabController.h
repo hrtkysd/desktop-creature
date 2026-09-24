@@ -2,7 +2,13 @@
 
 #include <cstdint>
 
-class CCreatureEditor;
+namespace Creature
+{
+    namespace Editor
+    {
+        class CCreatureEditor;
+    }
+}
 class CDocumentController;
 class CEditorController;
 class CEditorContext;
@@ -16,7 +22,7 @@ public:
         CEditorContext& editorContext,
         CDocumentController& documentController,
         CEditorController& editorController,
-        CCreatureEditor& creatureEditor);
+        Creature::Editor::CCreatureEditor& creatureEditor);
 public:
     void SaveAs();
     void LoadFrom();
@@ -28,7 +34,7 @@ public:
     void SetEditMode(EditMode mode);
     EditMode GetEditMode() const noexcept;
 
-    CCreatureEditor& CreatureEditor();
+    Creature::Editor::CCreatureEditor& CreatureEditor();
 
 private:
     CEditorContext& m_editorContext;
@@ -36,5 +42,5 @@ private:
     CDocumentController& m_documentController;
     CEditorController& m_editorController;
 
-    CCreatureEditor& m_creatureEditor;
+    Creature::Editor::CCreatureEditor& m_creatureEditor;
 };

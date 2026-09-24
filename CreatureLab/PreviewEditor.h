@@ -10,7 +10,10 @@ namespace Creature
 {
     class CCreature;
     class CCreaturePose;
-
+    namespace Editor
+    {
+        class CSkeletonEditor;
+    }
     namespace Math
     {
         struct RectCorner;
@@ -22,18 +25,16 @@ namespace Creature
 }
 
 class CPreviewPart;
-class CCreatureEditor;
 class CEditorContext;
 
 class CPreviewEditor
 {
 public:
     explicit CPreviewEditor(
-        CCreatureEditor& editor,
+        Creature::Editor::CSkeletonEditor& editor,
         CEditorContext& context);
 
 public:
-    const CCreatureEditor& GetEditor() const noexcept;
     const CEditorContext& GetEditorContext() const noexcept;
 
     void HandleInput(
@@ -89,7 +90,7 @@ private:
         const Creature::CCreaturePose& pose,
         const Creature::Math::CMatrix3x2& previewTransform);
 private:
-    CCreatureEditor& m_editor;
+    Creature::Editor::CSkeletonEditor& m_editor;
     CEditorContext& m_editorContext;
 
     Operation m_operation{};

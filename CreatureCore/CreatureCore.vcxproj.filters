@@ -23,6 +23,9 @@
     <Filter Include="IO">
       <UniqueIdentifier>{4ad1901f-ce8d-46c0-8bcf-25892e7ee1dd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Editor">
+      <UniqueIdentifier>{9488ca15-274b-499c-b11c-737e910955b9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AnimationPlayer.h">
@@ -104,6 +107,21 @@
     <ClInclude Include="AnimationProperty.h">
       <Filter>Animation</Filter>
     </ClInclude>
+    <ClInclude Include="CreatureEditor.h">
+      <Filter>Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="SkeletonEditor.h">
+      <Filter>Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="AppearanceEditor.h">
+      <Filter>Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="AnimationEditor.h">
+      <Filter>Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="ICreatureEditContext.h">
+      <Filter>Editor</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AnimationPlayer.cpp">
@@ -148,6 +166,18 @@
     </ClCompile>
     <ClCompile Include="AnimationTrackKey.cpp">
       <Filter>Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="CreatureEditor.cpp">
+      <Filter>Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="SkeletonEditor.cpp">
+      <Filter>Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="AppearanceEditor.cpp">
+      <Filter>Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimationEditor.cpp">
+      <Filter>Editor</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

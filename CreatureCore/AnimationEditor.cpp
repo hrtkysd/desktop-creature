@@ -7,6 +7,7 @@
 
 using namespace Creature;
 using namespace Creature::Animation;
+using namespace Creature::Editor;
 
 CAnimationEditor::CAnimationEditor(CCreature& creature)
     : m_creature(creature)
@@ -17,7 +18,7 @@ bool CAnimationEditor::SetName(
     AnimationId id,
     const std::string& strName)
 {
-    if (const auto animation = m_creature.FindAnimationById(id))
+    if (auto animation = m_creature.FindAnimationById(id))
     {
         animation->SetName(strName);
         return true;
@@ -29,7 +30,7 @@ bool CAnimationEditor::SetDuration(
     AnimationId id,
     float fDuration)
 {
-    if (const auto animation = m_creature.FindAnimationById(id))
+    if (auto animation = m_creature.FindAnimationById(id))
     {
         animation->SetDuration(fDuration);
         return true;
@@ -37,24 +38,24 @@ bool CAnimationEditor::SetDuration(
     return false;
 }
 
-bool CAnimationEditor::AddAnimationTrack(
+bool CAnimationEditor::AddTrack(
     AnimationId id,
     CAnimationTrack&& animationTrack)
 {
-    if (const auto animation = m_creature.FindAnimationById(id))
+    if (auto animation = m_creature.FindAnimationById(id))
     {
         return animation->AddAnimationTrack(std::move(animationTrack));
     }
     return false;
 }
 
-bool CAnimationEditor::RemoveAnimationTrack(
+bool CAnimationEditor::RemoveTrack(
     AnimationId id,
     const CAnimationTrackKey& trackKey)
 {
-    if (const auto animation = m_creature.FindAnimationById(id))
+    if (auto animation = m_creature.FindAnimationById(id))
     {
-        return animation->RemoveAnimationTrack(trackKey);
+        return animation->RemoveAnimationTrackByKey(trackKey);
     }
     return false;
 }
@@ -69,4 +70,17 @@ bool CAnimationEditor::AddOrUpdateKeyFrame(
         return animation->AddOrUpdateKeyFrame(trackKey, keyFrame);
     }
     return false;
+}
+
+void CAnimationEditor::RemovePart(PartId id)
+{
+    for (auto& animation : m_creature.GetAnimations())
+    {
+        animation.RemoveAnimationTrackByPartId(id);
+    }
+}
+
+const std::vector<CAnimation>& CAnimationEditor::GetAnimation() const
+{
+    return m_creature.GetAnimations();
 }

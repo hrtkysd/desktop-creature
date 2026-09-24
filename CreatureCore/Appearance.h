@@ -8,13 +8,19 @@
 
 namespace Creature
 {
+    namespace Editor
+    {
+        class CAppearanceEditor;
+    }
+
     class CAppearance
     {
+        friend class Editor::CAppearanceEditor;
     public:
-        void SetTexture(PartId partId, const std::filesystem::path& path);
-
         const PartAppearance* FindByPartId(PartId partId) const;
-
+    private:
+        void SetTexture(PartId partId, const std::filesystem::path& path);
+        bool RemovePart(PartId partId);
     private:
         std::vector<PartAppearance> m_vecPart;
     };

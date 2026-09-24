@@ -113,9 +113,6 @@
     <ClInclude Include="LabController.h">
       <Filter>Controller</Filter>
     </ClInclude>
-    <ClInclude Include="CreatureEditor.h">
-      <Filter>Edit</Filter>
-    </ClInclude>
     <ClInclude Include="DocumentController.h">
       <Filter>Controller</Filter>
     </ClInclude>
@@ -151,9 +148,6 @@
     </ClInclude>
     <ClInclude Include="CreatureTreeNodeEdit.h">
       <Filter>Panel\Creature</Filter>
-    </ClInclude>
-    <ClInclude Include="AnimationEditor.h">
-      <Filter>Edit</Filter>
     </ClInclude>
     <ClInclude Include="RenderPartItem.h">
       <Filter>Panel\Preview\Parts</Filter>
@@ -222,9 +216,6 @@
     <ClCompile Include="DocumentController.cpp">
       <Filter>Controller</Filter>
     </ClCompile>
-    <ClCompile Include="CreatureEditor.cpp">
-      <Filter>Edit</Filter>
-    </ClCompile>
     <ClCompile Include="Window.cpp">
       <Filter>Document</Filter>
     </ClCompile>
@@ -245,9 +236,6 @@
     </ClCompile>
     <ClCompile Include="CreatureTreeNodeEdit.cpp">
       <Filter>Panel\Creature</Filter>
-    </ClCompile>
-    <ClCompile Include="AnimationEditor.cpp">
-      <Filter>Edit</Filter>
     </ClCompile>
     <ClCompile Include="RenderPartItem.cpp">
       <Filter>Panel\Preview\Parts</Filter>

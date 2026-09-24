@@ -5,7 +5,6 @@
 #include "CreatureTreePanel.h"
 #include "EditorContext.h"
 #include "ImGuiWindowScope.h"
-#include "PartId.h"
 #include "Skeleton.h"
 
 #include "imgui.h"
@@ -13,6 +12,7 @@
 
 using namespace Creature;
 using namespace Creature::Animation;
+using namespace Creature::Editor;
 
 CCreatureTreePanel::CCreatureTreePanel(
     CCreatureEditor& editor,
@@ -98,7 +98,7 @@ void CCreatureTreePanel::Draw()
             }
         }
 
-        for (const auto& animation : creature.GetAnimations())
+        for (const auto& animation : creature.GetReadonlyAnimations())
         {
             ImGui::PushID(animation.GetAnimationId());
 
@@ -127,7 +127,7 @@ void CCreatureTreePanel::Draw()
 
     if (ImGui::TreeNode("Parts"))
     {
-        const auto& skeleton = creature.GetSkeleton();
+        const auto& skeleton = creature.GetReadonlySkeleton();
 
         for (const auto& id : skeleton.GetRootPartIds())
         {
