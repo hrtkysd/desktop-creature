@@ -4,7 +4,6 @@
 #include "AnimationProperty.h"
 #include "AnimationTrackKey.h"
 
-#include <cstdint>
 #include <optional>
 
 namespace Creature
@@ -14,9 +13,13 @@ namespace Creature
     {
         class CAnimation;
         class CAnimationPlayer;
+        class CAnimationTrack;
+    }
+    namespace Editor
+    {
+        class CAnimationEditor;
     }
 }
-class CAnimationEditor;
 class CEditorContext;
 
 class CAnimationPanel
@@ -24,7 +27,7 @@ class CAnimationPanel
 public:
     explicit CAnimationPanel(
         Creature::Animation::CAnimationPlayer& animationPlayer,
-        CAnimationEditor& animationEditor,
+        Creature::Editor::CAnimationEditor& editor,
         CEditorContext& editorContext);
 public:
     bool Draw(
@@ -46,7 +49,7 @@ private:
 
 private:
     Creature::Animation::CAnimationPlayer& m_animationPlayer;
-    CAnimationEditor& m_editor;
+    Creature::Editor::CAnimationEditor& m_editor;
     CEditorContext& m_editorContext;
 
     Creature::Animation::AnimationId m_animationId =

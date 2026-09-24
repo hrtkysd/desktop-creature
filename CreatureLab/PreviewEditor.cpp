@@ -1,7 +1,5 @@
 #include "pch.h"
 #include "Angle.h"
-#include "Creature.h"
-#include "CreatureEditor.h"
 #include "CreaturePose.h"
 #include "EditorContext.h"
 #include "Part.h"
@@ -9,10 +7,14 @@
 #include "PreviewEditor.h"
 #include "PreviewPart.h"
 #include "Skeleton.h"
+#include "SkeletonEditor.h"
 
 #include "imgui.h"
 
+#include <memory>
+
 using namespace Creature;
+using namespace Creature::Editor;
 using namespace Creature::Math;
 
 namespace
@@ -50,7 +52,7 @@ namespace
             });
 
         return itFind != vecPartView.end()
-            ? &(*itFind)
+            ? std::addressof(*itFind)
             : nullptr;
     }
 
@@ -67,7 +69,7 @@ namespace
             });
 
         return itFind != vecPreviewPart.crend()
-            ? &(*itFind)
+            ? std::addressof(*itFind)
             : nullptr;
     }
 
@@ -119,16 +121,11 @@ namespace
 }
 
 CPreviewEditor::CPreviewEditor(
-    CCreatureEditor& editor,
+    CSkeletonEditor& editor,
     CEditorContext& context)
     : m_editor(editor)
     , m_editorContext(context)
 {
-}
-
-const CCreatureEditor& CPreviewEditor::GetEditor() const noexcept
-{
-    return m_editor;
 }
 
 const CEditorContext& CPreviewEditor::GetEditorContext() const noexcept
@@ -279,8 +276,7 @@ void CPreviewEditor::BeginScale(
         selectedView->GetPartId()
     };
 
-    const auto& creature = m_editor.GetCreature();
-    const auto& skeleton = creature.GetSkeleton();
+    const auto& skeleton = m_editor.GetSkeleton();
     auto part = skeleton.FindPartById(selectedView->GetPartId());
     if (!part) return;
 
@@ -323,8 +319,7 @@ void CPreviewEditor::BeginRotate(
 
     m_editorContext.SelectPart(hitView->GetPartId());
 
-    const auto& creature = m_editor.GetCreature();
-    const auto& skeleton = creature.GetSkeleton();
+    const auto& skeleton = m_editor.GetSkeleton();
     const auto part = skeleton.FindPartById(hitView->GetPartId());
     if (!part) return;
 
@@ -384,8 +379,7 @@ void CPreviewEditor::BeginPivot(
         Select(HitTestPart(vecPartView, mousePosition));
         return;
     }
-    const auto& creature = m_editor.GetCreature();
-    const auto& skeleton = creature.GetSkeleton();
+    const auto& skeleton = m_editor.GetSkeleton();
     const auto part = skeleton.FindPartById(selectedView->GetPartId());
     if (!part) return;
 
@@ -415,8 +409,7 @@ void CPreviewEditor::MovePart(
     const CCreaturePose& pose,
     const CMatrix3x2& previewTransform)
 {
-    const auto& creature = m_editor.GetCreature();
-    const auto& skeleton = creature.GetSkeleton();
+    const auto& skeleton = m_editor.GetSkeleton();
 
     auto part = skeleton.FindPartById(m_operation.partId);
     if (!part) return;
@@ -455,8 +448,7 @@ void CPreviewEditor::ResizePart(
     const std::vector<CPreviewPart>& vecPartView,
     const CMatrix3x2& previewTransform)
 {
-    const auto& creature = m_editor.GetCreature();
-    const auto& skeleton = creature.GetSkeleton();
+    const auto& skeleton = m_editor.GetSkeleton();
 
     auto part = skeleton.FindPartById(m_operation.partId);
     if (!part) return;
@@ -530,8 +522,7 @@ void CPreviewEditor::RotatePart(
     const CCreaturePose& pose,
     const CMatrix3x2& previewTransform)
 {
-    const auto& creature = m_editor.GetCreature();
-    const auto& skeleton = creature.GetSkeleton();
+    const auto& skeleton = m_editor.GetSkeleton();
 
     const auto part = skeleton.FindPartById(m_operation.partId);
     if (!part) return;
@@ -566,9 +557,7 @@ void CPreviewEditor::MovePivot(
     const CCreaturePose& pose,
     const CMatrix3x2& previewTransform)
 {
-    const auto& creature = m_editor.GetCreature();
-    const auto& skeleton = creature.GetSkeleton();
-
+    const auto& skeleton = m_editor.GetSkeleton();
     const auto part = skeleton.FindPartById(m_operation.partId);
     if (!part) return;
 

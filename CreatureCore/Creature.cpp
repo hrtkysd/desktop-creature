@@ -5,6 +5,7 @@
 #include "Genome.h"
 #include "Skeleton.h"
 
+#include <memory>
 #include <string>
 #include <utility>
 
@@ -30,7 +31,14 @@ CCreature::CCreature()
 CCreature::~CCreature() = default;
 
 CCreature::CCreature(CCreature&&) noexcept = default;
-CCreature& CCreature::operator=(CCreature&&) noexcept = default;
+
+CCreature& CCreature::operator=(CCreature&& rhs) noexcept
+{
+    if (this == &rhs) return *this;
+
+    *m_impl = std::move(*rhs.m_impl);
+    return *this;
+}
 
 const Genome& CCreature::GetGenome() const
 {
@@ -42,7 +50,7 @@ Genome& CCreature::GetGenome()
     return m_impl->genome;
 }
 
-const CSkeleton& CCreature::GetSkeleton() const
+const CSkeleton& CCreature::GetReadonlySkeleton() const
 {
     return m_impl->skeleton;
 }
@@ -52,7 +60,7 @@ CSkeleton& CCreature::GetSkeleton()
     return m_impl->skeleton;
 }
 
-const CAppearance& CCreature::GetAppearance() const
+const CAppearance& CCreature::GetReadonlyAppearance() const
 {
     return m_impl->appearance;
 }
@@ -60,6 +68,11 @@ const CAppearance& CCreature::GetAppearance() const
 CAppearance& CCreature::GetAppearance()
 {
     return m_impl->appearance;
+}
+
+std::vector<CAnimation>& Creature::CCreature::GetAnimations()
+{
+    return m_impl->vecAnimation;
 }
 
 const std::string& CCreature::GetName() const
@@ -72,7 +85,7 @@ void CCreature::SetName(const std::string& strName)
     m_impl->strName = strName;
 }
 
-const std::vector<Animation::CAnimation>& Creature::CCreature::GetAnimations() const
+const std::vector<Animation::CAnimation>& Creature::CCreature::GetReadonlyAnimations() const
 {
     return m_impl->vecAnimation;
 }
@@ -154,10 +167,10 @@ AnimationId CCreature::AddNewAnimation(const std::string& strName)
 
 CAnimation* CCreature::FindAnimationById(AnimationId id)
 {
-    return const_cast<CAnimation*>(std::as_const(*this).FindAnimationById(id));
+    return const_cast<CAnimation*>(std::as_const(*this).FindReadonlyAnimationById(id));
 }
 
-const CAnimation* CCreature::FindAnimationById(AnimationId id) const
+const CAnimation* CCreature::FindReadonlyAnimationById(AnimationId id) const
 {
     if (id == INVALID_ANIMATION_ID) return nullptr;
 
@@ -167,6 +180,6 @@ const CAnimation* CCreature::FindAnimationById(AnimationId id) const
             return animation.GetAnimationId() == id;
         });
     return itFind != vecAnimation.cend()
-        ? &(*itFind)
+        ? std::addressof(*itFind)
         : nullptr;
 }

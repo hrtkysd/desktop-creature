@@ -3,6 +3,7 @@
 #include "AnimationTrack.h"
 
 #include <algorithm>
+#include <memory>
 
 using namespace Creature;
 using namespace Creature::Animation;
@@ -12,7 +13,11 @@ CAnimation::CAnimation(AnimationId id, const std::string& strName)
 {
 }
 
-CAnimation::CAnimation(AnimationId id, const std::string& strName, float fDuration, const std::vector<CAnimationTrack>& vecAnimationTrack)
+CAnimation::CAnimation(
+    AnimationId id,
+    const std::string& strName,
+    float fDuration,
+    const std::vector<CAnimationTrack>& vecAnimationTrack)
     : m_animationId(id)
     , m_strName(strName)
     , m_fDuration(fDuration)
@@ -21,16 +26,6 @@ CAnimation::CAnimation(AnimationId id, const std::string& strName, float fDurati
 }
 
 CAnimation::~CAnimation() = default;
-
-CAnimation CAnimation::NewAnimation(AnimationId id, const std::string& strName)
-{
-    return CAnimation(id, strName);
-}
-
-void CAnimation::SetAnimationId(AnimationId id)
-{
-    m_animationId = id;
-}
 
 AnimationId CAnimation::GetAnimationId() const
 {
@@ -42,14 +37,41 @@ const std::string& CAnimation::GetName() const
     return m_strName;
 }
 
-void CAnimation::SetName(const std::string& strName)
-{
-    m_strName = strName;
-}
-
 float CAnimation::GetDuration() const
 {
     return m_fDuration;
+}
+
+const std::vector<CAnimationTrack>& CAnimation::GetAnimationTracks() const
+{
+    return m_vecAnimationTrack;
+}
+
+const CAnimationTrack* CAnimation::FindAnimationTrack(
+    const CAnimationTrackKey& key) const
+{
+    const auto itFind = std::find_if(m_vecAnimationTrack.begin(), m_vecAnimationTrack.end(), [&key](const CAnimationTrack& track)
+        {
+            return track.Matches(key);
+        });
+    return itFind != m_vecAnimationTrack.end()
+        ? std::addressof(*itFind)
+        : nullptr;
+}
+
+CAnimation CAnimation::NewAnimation(AnimationId id, const std::string& strName)
+{
+    return CAnimation(id, strName);
+}
+
+void CAnimation::SetAnimationId(AnimationId id)
+{
+    m_animationId = id;
+}
+
+void CAnimation::SetName(const std::string& strName)
+{
+    m_strName = strName;
 }
 
 bool CAnimation::SetDuration(float fDuration)
@@ -68,9 +90,19 @@ bool CAnimation::SetDuration(float fDuration)
     return true;
 }
 
-const std::vector<CAnimationTrack>& CAnimation::GetAnimationTracks() const
+bool CAnimation::AddOrUpdateKeyFrame(const CAnimationTrackKey& key, const FloatKeyFrame& keyFrame)
 {
-    return m_vecAnimationTrack;
+    if (keyFrame.fTime < 0.0f || keyFrame.fTime > m_fDuration)
+    {
+        return false;
+    }
+
+    if (auto track = FindAnimationTrack(key))
+    {
+        track->AddOrUpdateKeyFrame(keyFrame);
+        return true;
+    }
+    return false;
 }
 
 bool CAnimation::AddAnimationTrack(CAnimationTrack&& animationTrack)
@@ -89,44 +121,39 @@ bool CAnimation::AddAnimationTrack(CAnimationTrack&& animationTrack)
     return true;
 }
 
-bool CAnimation::RemoveAnimationTrack(const CAnimationTrackKey& key)
+bool CAnimation::RemoveAnimationTrackByKey(const CAnimationTrackKey& key)
 {
-    const auto itFind = std::find_if(m_vecAnimationTrack.begin(), m_vecAnimationTrack.end(), [&key](const CAnimationTrack& track)
+    const auto it = std::remove_if(
+        m_vecAnimationTrack.begin(),
+        m_vecAnimationTrack.end(),
+        [&key](const CAnimationTrack& track)
         {
             return track.Matches(key);
         });
-    if (itFind == m_vecAnimationTrack.end()) return false;
-    m_vecAnimationTrack.erase(itFind);
+
+    if (it == m_vecAnimationTrack.end()) return false;
+
+    m_vecAnimationTrack.erase(it);
+    return true;
+}
+
+bool CAnimation::RemoveAnimationTrackByPartId(PartId id)
+{
+    const auto it = std::remove_if(
+        m_vecAnimationTrack.begin(),
+        m_vecAnimationTrack.end(),
+        [id](const CAnimationTrack& track)
+        {
+            return track.GetKey().GetPartId() == id;
+        });
+
+    if (it == m_vecAnimationTrack.end()) return false;
+
+    m_vecAnimationTrack.erase(it, m_vecAnimationTrack.end());
     return true;
 }
 
 CAnimationTrack* CAnimation::FindAnimationTrack(const CAnimationTrackKey& key)
 {
     return const_cast<CAnimationTrack*>(std::as_const(*this).FindAnimationTrack(key));
-}
-
-const CAnimationTrack* CAnimation::FindAnimationTrack(const CAnimationTrackKey& key) const
-{
-    const auto itFind = std::find_if(m_vecAnimationTrack.begin(), m_vecAnimationTrack.end(), [&key](const CAnimationTrack& track)
-        {
-            return track.Matches(key);
-        });
-    return itFind != m_vecAnimationTrack.end()
-        ? &(*itFind)
-        : nullptr;
-}
-
-bool CAnimation::AddOrUpdateKeyFrame(const CAnimationTrackKey& key, const FloatKeyFrame& keyFrame)
-{
-    if (keyFrame.fTime < 0.0f ||
-        keyFrame.fTime > m_fDuration)
-    {
-        return false;
-    }
-
-    auto track = FindAnimationTrack(key);
-    if (!track) return false;
-
-    track->AddOrUpdateKeyFrame(keyFrame);
-    return true;
 }

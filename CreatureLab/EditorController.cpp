@@ -1,16 +1,18 @@
 #include "pch.h"
 #include "AnimationPlayer.h"
-#include "Creature.h"
+#include "CreatureEditor.h"
 #include "EditorCommand.h"
 #include "EditorContext.h"
 #include "EditorController.h"
-#include "Skeleton.h"
 
 using namespace Creature;
 using namespace Creature::Animation;
 
-CEditorController::CEditorController(CCreature& creature, CAnimationPlayer& animationPlayer, CEditorContext& context)
-    : m_creature(creature)
+CEditorController::CEditorController(
+    Creature::Editor::CCreatureEditor& editor,
+    CAnimationPlayer& animationPlayer,
+    CEditorContext& context)
+    : m_editor(editor)
     , m_animationPlayer(animationPlayer)
     , m_context(context)
 {
@@ -30,7 +32,7 @@ void CEditorController::Execute(EditorCommand command)
         m_animationPlayer.Pause();
         break;
     case EditorCommand::DeletePart:
-        m_creature.GetSkeleton().RemovePart(m_context.GetPartId());
+        m_editor.GetSkeletonEditor().RemovePart(m_context.GetPartId());
         break;
     default:
         break;

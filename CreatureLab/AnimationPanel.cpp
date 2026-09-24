@@ -12,6 +12,7 @@
 #include "imgui_stdlib.h"
 
 using namespace Creature;
+using namespace Creature::Editor;
 using namespace Creature::Animation;
 
 namespace
@@ -43,10 +44,10 @@ namespace
 
 CAnimationPanel::CAnimationPanel(
     CAnimationPlayer& animationPlayer,
-    CAnimationEditor& animationEditor,
+    CAnimationEditor& editor,
     CEditorContext& editorContext)
     : m_animationPlayer(animationPlayer)
-    , m_editor(animationEditor)
+    , m_editor(editor)
     , m_editorContext(editorContext)
 {
 }
@@ -279,7 +280,7 @@ bool CAnimationPanel::DrawAddTrack(const CAnimation& animation)
 
     if (ImGui::Button("Add Track"))
     {
-        if (m_editor.AddAnimationTrack(animation.GetAnimationId(), CAnimationTrack{ key }))
+        if (m_editor.AddTrack(animation.GetAnimationId(), CAnimationTrack{ key }))
         {
             m_selectedTrackKey = key;
             bChanged = true;
@@ -385,7 +386,7 @@ bool CAnimationPanel::DrawTrack(const CAnimation& animation, const CAnimationTra
 
     if (ImGui::Button("Delete Track"))
     {
-        if (m_editor.RemoveAnimationTrack(animation.GetAnimationId(), trackKey))
+        if (m_editor.RemoveTrack(animation.GetAnimationId(), trackKey))
         {
             m_selectedTrackKey.reset();
             bChanged = true;

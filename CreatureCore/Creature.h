@@ -17,6 +17,12 @@ namespace Creature
         class CAnimation;
     }
 
+    namespace Editor
+    {
+        class CAnimationEditor;
+        class CCreatureEditor;
+    }
+
     namespace IO
     {
         class CCreatureIO;
@@ -25,6 +31,8 @@ namespace Creature
     class CCreature
     {
         friend class IO::CCreatureIO;
+        friend class Creature::Editor::CAnimationEditor;
+        friend class Creature::Editor::CCreatureEditor;
     public:
         CCreature();
         ~CCreature();
@@ -36,27 +44,26 @@ namespace Creature
         CCreature& operator=(CCreature&&) noexcept;
     public:
         const Genome& GetGenome() const;
-        Genome& GetGenome();
-
-        const CSkeleton& GetSkeleton() const;
-        CSkeleton& GetSkeleton();
-
-        const CAppearance& GetAppearance() const;
-        CAppearance& GetAppearance();
+        const CSkeleton& GetReadonlySkeleton() const;
+        const CAppearance& GetReadonlyAppearance() const;
 
         const std::string& GetName() const;
-        void SetName(const std::string& strName);
 
-        const std::vector<Animation::CAnimation>& GetAnimations() const;
-
+        const std::vector<Animation::CAnimation>& GetReadonlyAnimations() const;
+        const Animation::CAnimation* FindReadonlyAnimationById(Animation::AnimationId id) const;
+    private:
+        Genome& GetGenome();
+        CSkeleton& GetSkeleton();
+        CAppearance& GetAppearance();
+        std::vector<Animation::CAnimation>& GetAnimations();
+    private:
         Animation::AnimationId AddAnimation(Animation::CAnimation&& animation);
         bool RemoveAnimation(Animation::AnimationId id);
 
+        Animation::CAnimation* FindAnimationById(Animation::AnimationId id);
         Animation::AnimationId AddNewAnimation(const std::string& strName);
 
-        Animation::CAnimation* FindAnimationById(Animation::AnimationId id);
-        const Animation::CAnimation* FindAnimationById(Animation::AnimationId id) const;
-    private:
+        void SetName(const std::string& strName);
         Animation::AnimationId AddAnimationWithId(Animation::AnimationId id, const std::string& name);
         Animation::AnimationId GenerateAnimationId();
         void UpdateNextAnimationId(Animation::AnimationId id);

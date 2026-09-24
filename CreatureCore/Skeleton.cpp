@@ -2,9 +2,10 @@
 #include "Skeleton.h"
 
 #include <algorithm>
-#include <unordered_set>
+#include <memory>
 
 using namespace Creature;
+using namespace Creature::Math;
 
 namespace
 {
@@ -19,7 +20,7 @@ namespace
             predicate);
 
         return it != parts.end()
-            ? &(*it)
+            ? std::addressof(*it)
             : nullptr;
     }
 
@@ -34,7 +35,7 @@ namespace
             predicate);
 
         return it != parts.cend()
-            ? &(*it)
+            ? std::addressof(*it)
             : nullptr;
     }
 }
@@ -51,24 +52,98 @@ std::vector<Part>& CSkeleton::Parts() noexcept
 
 Part* CSkeleton::FindPartByName(std::string_view name)
 {
-    return FindPart(m_vecPart, [name](const Creature::Part& part) { return std::string_view(part.strName) == name; });
+    return FindPart(m_vecPart, [name](const Creature::Part& part)
+        {
+            return std::string_view(part.strName) == name;
+        });
 }
 
 const Part* CSkeleton::FindPartByName(const std::string_view name) const
 {
-    return FindPart(m_vecPart, [name](const Part& part) { return std::string_view(part.strName) == name; });
+    return FindPart(m_vecPart, [name](const Part& part)
+        {
+            return std::string_view(part.strName) == name;
+        });
 }
 
 Part* CSkeleton::FindPartById(PartId id)
 {
     if (id == INVALID_PART_ID) return nullptr;
-    return FindPart(m_vecPart, [id](const Part& part) { return part.id == id; });
+    return FindPart(m_vecPart, [id](const Part& part)
+        {
+            return part.id == id;
+        });
+}
+
+bool CSkeleton::SetPartTransform(
+    PartId id,
+    const CTransform2D& transform)
+{
+    auto part = FindPartById(id);
+    if (!part) return false;
+    part->bindTransform = transform;
+    return true;
+}
+
+bool CSkeleton::SetPartPivotAndTransform(
+    PartId id,
+    const Vec2& pivot,
+    const CTransform2D& transform)
+{
+    auto part = FindPartById(id);
+    if (!part) return false;
+    part->pivot = pivot;
+    part->bindTransform = transform;
+    return true;
+}
+
+bool CSkeleton::SetPartRotation(
+    PartId id,
+    float fRotation)
+{
+    auto part = FindPartById(id);
+    if (part == nullptr) return false;
+    part->bindTransform.SetRotation(fRotation);
+    return true;
+}
+
+bool CSkeleton::SetPartPosition(
+    PartId id,
+    const Vec2& position)
+{
+    auto part = FindPartById(id);
+    if (part == nullptr) return false;
+    part->bindTransform.SetPosition(position);
+    return true;
+}
+
+bool CSkeleton::SetPartScale(
+    PartId id,
+    const Vec2& scale)
+{
+    auto part = FindPartById(id);
+    if (part == nullptr) return false;
+    part->bindTransform.SetScale(scale);
+    return true;
+}
+
+bool CSkeleton::SetPartPivot(
+    PartId id,
+    const Vec2& pivot)
+{
+    auto part = FindPartById(id);
+    if (part == nullptr) return false;
+    part->pivot = pivot;
+    return true;
 }
 
 const Part* CSkeleton::FindPartById(PartId id) const
 {
     if (id == INVALID_PART_ID) return nullptr;
-    return FindPart(m_vecPart, [id](const Part& part) { return part.id == id; });
+    return FindPart(m_vecPart, [id](const Part& part)
+        {
+            return part.id == id;
+        });
 }
 
 PartId CSkeleton::AddPart(const std::string_view name, PartId parentId)
@@ -126,9 +201,9 @@ void CSkeleton::CollectDescendants(PartId parentId, std::unordered_set<PartId>& 
     }
 }
 
-bool CSkeleton::RemovePart(PartId id)
+std::unordered_set<PartId> CSkeleton::RemovePart(PartId id)
 {
-    if (FindPartIndexById(id) == INVALID_PART_INDEX) return false;
+    if (FindPartIndexById(id) == INVALID_PART_INDEX) return {};
 
     std::unordered_set<PartId> removeIds;
     removeIds.insert(id);
@@ -145,7 +220,7 @@ bool CSkeleton::RemovePart(PartId id)
             }),
         m_vecPart.end());
 
-    return true;
+    return removeIds;
 }
 
 bool CSkeleton::HasChildren(PartId id) const

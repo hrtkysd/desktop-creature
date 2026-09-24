@@ -2,9 +2,7 @@
 
 #include "AnimationTrackKey.h"
 #include "Interpolation.h"
-#include "PartId.h"
 
-#include <cstdint>
 #include <vector>
 
 namespace Creature

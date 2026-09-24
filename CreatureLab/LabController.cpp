@@ -7,6 +7,8 @@
 #include "EditorController.h"
 #include "LabController.h"
 
+using namespace Creature::Editor;
+
 CLabController::CLabController(
     CEditorContext& editorContext,
     CDocumentController& documentController,

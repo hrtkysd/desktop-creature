@@ -2,8 +2,6 @@
 #include "Animation.h"
 #include "AnimationPlayer.h"
 #include "AnimationProperty.h"
-#include "AnimationTrack.h"
-#include "AnimationTrackKey.h"
 #include "CreaturePose.h"
 #include "PartId.h"
 #include "Skeleton.h"

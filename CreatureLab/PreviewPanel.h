@@ -4,9 +4,13 @@
 
 namespace Creature
 {
-    class CCreature;
+    class CAppearance;
     class CCreaturePose;
-
+    class CSkeleton;
+    namespace Editor
+    {
+        class CSkeletonEditor;
+    }
     namespace Math
     {
         struct RectCorner;
@@ -16,7 +20,6 @@ namespace Creature
     }
 }
 
-class CCreatureEditor;
 class CEditorContext;
 class CRenderPartItem;
 class CTextureCache;
@@ -29,7 +32,7 @@ class CPreviewPanel
 {
 public:
     explicit CPreviewPanel(
-        CCreatureEditor& editor,
+        Creature::Editor::CCreatureEditor& editor,
         CEditorContext& context);
 public:
     void Draw(
@@ -52,4 +55,6 @@ private:
         const Creature::Math::Vec2& position);
 private:
     CPreviewEditor m_previewEditor;
+    const Creature::CSkeleton& m_skeleton;
+    const Creature::CAppearance& m_apperance;
 };

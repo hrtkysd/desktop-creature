@@ -10,6 +10,10 @@ namespace Creature
     {
         class CAnimationPlayer;
     }
+    namespace Editor
+    {
+        class CCreatureEditor;
+    }
 }
 
 class CEditorContext;
@@ -19,14 +23,14 @@ class CEditorController
 {
 public:
     explicit CEditorController(
-        Creature::CCreature& creature,
+        Creature::Editor::CCreatureEditor& editor,
         Creature::Animation::CAnimationPlayer& animationPlayer,
         CEditorContext& context);
 public:
     void Execute(EditorCommand command);
 
 private:
-    Creature::CCreature& m_creature;
+    Creature::Editor::CCreatureEditor& m_editor;
     Creature::Animation::CAnimationPlayer& m_animationPlayer;
     CEditorContext& m_context;
 };

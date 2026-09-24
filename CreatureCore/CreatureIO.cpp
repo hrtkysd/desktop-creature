@@ -4,7 +4,9 @@
 #include "AnimationTrack.h"
 #include "AnimationTrackKey.h"
 #include "Appearance.h"
+#include "AppearanceEditor.h"
 #include "Creature.h"
+#include "CreatureEditor.h"
 #include "CreatureIO.h"
 #include "Part.h"
 #include "Skeleton.h"
@@ -15,6 +17,7 @@
 
 using namespace Creature;
 using namespace Creature::Animation;
+using namespace Creature::Editor;
 using namespace Creature::IO;
 using namespace Creature::Math;
 
@@ -24,8 +27,8 @@ bool CCreatureIO::SaveAsFile(const CCreature& creature, const std::filesystem::p
 {
     json root;
 
-    const auto& skeleton = creature.GetSkeleton();
-    const auto& appearance = creature.GetAppearance();
+    const auto& skeleton = creature.GetReadonlySkeleton();
+    const auto& appearance = creature.GetReadonlyAppearance();
 
     root["version"] = 1;
     root["parts"] = json::array();
@@ -68,7 +71,7 @@ bool CCreatureIO::SaveAsFile(const CCreature& creature, const std::filesystem::p
     }
     root["animations"] = json::array();
 
-    for (const auto& animation : creature.GetAnimations())
+    for (const auto& animation : creature.GetReadonlyAnimations())
     {
         json animationJson;
 
@@ -128,7 +131,7 @@ bool CCreatureIO::LoadFromFile(const std::filesystem::path& path, CCreature& cre
     }
 
     CCreature loadedCreature;
-
+    CCreatureEditor editor(loadedCreature);
     for (const auto& partJson : root["parts"])
     {
         Part part;
@@ -156,11 +159,11 @@ bool CCreatureIO::LoadFromFile(const std::filesystem::path& path, CCreature& cre
                 transform["rotation"].get<float>());
 
         const auto partId = part.id;
-        loadedCreature.GetSkeleton().AddPartWithId(std::move(part));
+        editor.GetSkeletonEditor().AddPartWithId(std::move(part));
 
         if (partJson.contains("texture"))
         {
-            loadedCreature.GetAppearance().SetTexture(
+            editor.GetAppearanceEditor().SetTexture(
                 partId,
                 partJson["texture"]
                 .get<std::string>());
@@ -180,7 +183,7 @@ bool CCreatureIO::LoadFromFile(const std::filesystem::path& path, CCreature& cre
             auto animation = loadedCreature.FindAnimationById(animationId);
             if (!animation) return false;
 
-            animation->SetDuration(animationJson["duration"].get<float>());
+            editor.GetAnimationEditor().SetDuration(animationId, animationJson["duration"].get<float>());
 
             for (const auto& trackJson : animationJson["tracks"])
             {
@@ -199,13 +202,14 @@ bool CCreatureIO::LoadFromFile(const std::filesystem::path& path, CCreature& cre
                     track.AddOrUpdateKeyFrame(keyFrame);
                 }
 
-                if (!animation->AddAnimationTrack(std::move(track)))
+                if (!editor.GetAnimationEditor().AddTrack(animationId, std::move(track)))
                 {
                     return false;
                 }
             }
         }
     }
+    editor.SetName("New Creature");    // TODO: Dummy impl
     creature = std::move(loadedCreature);
 
     return true;
