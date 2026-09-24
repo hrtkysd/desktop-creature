@@ -122,7 +122,6 @@ void CPreviewPanel::Draw(
             }
             else if (editorContext.GetEditMode() == EditMode::Pivot)
             {
-
                 const auto part = m_skeleton.FindPartById(partView.GetPartId());
                 if (part)
                 {

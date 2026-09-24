@@ -2,6 +2,7 @@
 
 #include "AnimationId.h"
 #include "PartId.h"
+#include "UndoBuffer.h"
 
 #include <cstdint>
 
@@ -22,8 +23,12 @@ enum class SelectionType : std::uint8_t
     Animation
 };
 
+class CUndoScope;
+
 class CEditorContext
 {
+public:
+    explicit CEditorContext(CUndoBuffer& undoBuffer);
 public:
     void SelectCreature();
     void SelectPart(Creature::PartId partId);
@@ -31,6 +36,12 @@ public:
         Creature::Animation::AnimationId animationId);
     SelectionType GetSelectionType() const noexcept;
 
+    CUndoScope CreateUndoScope() noexcept;
+    void ClearHistory();
+    void Undo();
+    void Redo();
+    bool CanUndo() const noexcept;
+    bool CanRedo() const noexcept;
 
     EditMode GetEditMode() const noexcept;
     void SetEditMode(EditMode mode);
@@ -43,4 +54,6 @@ private:
     Creature::PartId m_partId = Creature::INVALID_PART_ID;
     EditMode m_eEditMode = EditMode::Select;
     SelectionType m_eSelectionType = SelectionType::None;
+
+    CUndoBuffer& m_undoBuffer;
 };

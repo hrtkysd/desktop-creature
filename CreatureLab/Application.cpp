@@ -28,6 +28,8 @@ extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(
 
 CApp::CApp()
     : m_creatureEditor(m_creature)
+    , m_undoBuffer(m_creature, 100)
+    , m_editorContext(m_undoBuffer)
     , m_documentController(m_window, m_creature, m_documentContext)
     , m_editorController(m_creatureEditor, m_animationPlayer, m_editorContext)
     , m_labController(m_editorContext, m_documentController, m_editorController, m_creatureEditor)

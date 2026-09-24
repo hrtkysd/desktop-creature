@@ -3,6 +3,7 @@
 #include "AnimationId.h"
 #include "AnimationProperty.h"
 #include "AnimationTrackKey.h"
+#include "UndoScope.h"
 
 #include <optional>
 
@@ -51,6 +52,8 @@ private:
     Creature::Animation::CAnimationPlayer& m_animationPlayer;
     Creature::Editor::CAnimationEditor& m_editor;
     CEditorContext& m_editorContext;
+
+    std::optional<CUndoScope> m_undoScope;
 
     Creature::Animation::AnimationId m_animationId =
         Creature::Animation::INVALID_ANIMATION_ID;

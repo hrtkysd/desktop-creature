@@ -176,24 +176,24 @@ void CPreviewEditor::BeginOperation(
     {
     case EditMode::Select:
         BeginSelect(vecPartView, mousePosition);
-        break;
-
+        return;
     case EditMode::Move:
-        BeginMove(vecPartView, mousePosition);
+        if (!BeginMove(vecPartView, mousePosition)) return;
         break;
 
     case EditMode::Scale:
-        BeginScale(vecPartView, mousePosition);
+        if (!BeginScale(vecPartView, mousePosition)) return;
         break;
 
     case EditMode::Rotate:
-        BeginRotate(pose, previewTransform, vecPartView, mousePosition);
+        if (!BeginRotate(pose, previewTransform, vecPartView, mousePosition)) return;
         break;
 
     case EditMode::Pivot:
-        BeginPivot(pose, previewTransform, vecPartView, mousePosition);
+        if (!BeginPivot(pose, previewTransform, vecPartView, mousePosition)) return;
         break;
     }
+    m_undoScope.emplace(m_editorContext.CreateUndoScope());
 }
 
 void CPreviewEditor::UpdateOperation(
@@ -223,16 +223,18 @@ void CPreviewEditor::UpdateOperation(
 void CPreviewEditor::EndOperation()
 {
     m_operation = {};
+    m_undoScope.reset();
 }
 
-void CPreviewEditor::BeginSelect(
+bool CPreviewEditor::BeginSelect(
     const std::vector<CPreviewPart>& vecPartView,
     const Vec2& mousePosition)
 {
     Select(HitTestPart(vecPartView, mousePosition));
+    return true;
 }
 
-void CPreviewEditor::BeginMove(
+bool CPreviewEditor::BeginMove(
     const std::vector<CPreviewPart>& vecPartView,
     const Vec2& mousePosition)
 {
@@ -240,7 +242,7 @@ void CPreviewEditor::BeginMove(
     if (!hitView)
     {
         Select(nullptr);
-        return;
+        return false;
     }
 
     Select(hitView);
@@ -250,9 +252,10 @@ void CPreviewEditor::BeginMove(
         OperationType::Move,
         hitView->GetPartId()
     };
+    return true;
 }
 
-void CPreviewEditor::BeginScale(
+bool CPreviewEditor::BeginScale(
     const std::vector<CPreviewPart>& vecPartView,
     const Vec2& mousePosition)
 {
@@ -260,25 +263,25 @@ void CPreviewEditor::BeginScale(
     if (!selectedView)
     {
         Select(HitTestPart(vecPartView, mousePosition));
-        return;
+        return false;
     }
 
     const auto handle = HitTestResizeHandle(selectedView->GetRect(), mousePosition);
     if (handle == ResizeHandle::None)
     {
         Select(HitTestPart(vecPartView, mousePosition));
-        return;
+        return false;
     }
+
+    const auto& skeleton = m_editor.GetSkeleton();
+    auto part = skeleton.FindPartById(selectedView->GetPartId());
+    if (!part) return false;
 
     m_operation =
     {
         OperationType::Resize,
         selectedView->GetPartId()
     };
-
-    const auto& skeleton = m_editor.GetSkeleton();
-    auto part = skeleton.FindPartById(selectedView->GetPartId());
-    if (!part) return;
 
     const auto& size = selectedView->GetSize();
     const auto direction = GetHandleDirection(handle);
@@ -300,9 +303,11 @@ void CPreviewEditor::BeginScale(
 
     m_resizeState.eHandle = handle;
     m_resizeState.anchor = anchor;
+
+    return true;
 }
 
-void CPreviewEditor::BeginRotate(
+bool CPreviewEditor::BeginRotate(
     const CCreaturePose& pose,
     const CMatrix3x2& previewTransform,
     const std::vector<CPreviewPart>& vecPartView,
@@ -314,14 +319,14 @@ void CPreviewEditor::BeginRotate(
     {
         m_editorContext.SelectPart(INVALID_PART_ID);
         m_operation = {};
-        return;
+        return false;
     }
 
     m_editorContext.SelectPart(hitView->GetPartId());
 
     const auto& skeleton = m_editor.GetSkeleton();
     const auto part = skeleton.FindPartById(hitView->GetPartId());
-    if (!part) return;
+    if (!part) return false;
 
     CMatrix3x2 parentWorld;
     if (part->parentId != INVALID_PART_ID)
@@ -335,7 +340,7 @@ void CPreviewEditor::BeginRotate(
     const auto parentScreen = parentWorld * previewTransform;
 
     CMatrix3x2 inverseParentScreen;
-    if (!parentScreen.TryInverse(inverseParentScreen)) return;
+    if (!parentScreen.TryInverse(inverseParentScreen)) return false;
 
     const auto mouseParent = inverseParentScreen.TransformPoint(
         {
@@ -365,9 +370,11 @@ void CPreviewEditor::BeginRotate(
         OperationType::Rotate,
         part->id
     };
+
+    return true;
 }
 
-void CPreviewEditor::BeginPivot(
+bool CPreviewEditor::BeginPivot(
     const CCreaturePose& pose,
     const CMatrix3x2& previewTransform,
     const std::vector<CPreviewPart>& vecPartView,
@@ -377,11 +384,11 @@ void CPreviewEditor::BeginPivot(
     if (!selectedView)
     {
         Select(HitTestPart(vecPartView, mousePosition));
-        return;
+        return false;
     }
     const auto& skeleton = m_editor.GetSkeleton();
     const auto part = skeleton.FindPartById(selectedView->GetPartId());
-    if (!part) return;
+    if (!part) return false;
 
     const auto world = CPartTransformBuilder::BuildWorld(*part, skeleton, pose);
 
@@ -396,13 +403,14 @@ void CPreviewEditor::BeginPivot(
     if (dx * dx + dy * dy > radius * radius)
     {
         Select(HitTestPart(vecPartView, mousePosition));
-        return;
+        return false;
     }
     m_operation =
     {
         OperationType::Pivot,
         selectedView->GetPartId()
     };
+    return true;
 }
 
 void CPreviewEditor::MovePart(

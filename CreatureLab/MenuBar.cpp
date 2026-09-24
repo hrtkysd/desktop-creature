@@ -7,6 +7,8 @@
 
 #include "imgui.h"
 
+using namespace Creature;
+
 CMenuBar::CMenuBar(CLabController& labController)
     : m_labController(labController)
 {
@@ -24,7 +26,10 @@ void CMenuBar::Draw(CEditorContext& context)
             }
             else if (ImGui::MenuItem("Load From..."))
             {
-                m_labController.LoadFrom();
+                if (m_labController.LoadFrom())
+                {
+                    context.ClearHistory();
+                }
             }
         }
 
@@ -87,6 +92,24 @@ void CMenuBar::Draw(CEditorContext& context)
             {
                 m_labController.SetEditMode(EditMode::Pivot);
             }
+            if (ImGui::MenuItem(
+                "Delete Part",
+                nullptr,
+                false,
+                context.GetPartId() != INVALID_PART_ID))
+            {
+                m_labController.DeletePart();
+            }
+        }
+
+        if (ImGui::MenuItem("Undo", "Ctrl+Z", false, context.CanUndo()))
+        {
+            context.Undo();
+        }
+
+        if (ImGui::MenuItem("Redo", "Ctrl+Y", false, context.CanRedo()))
+        {
+            context.Redo();
         }
     }
 }

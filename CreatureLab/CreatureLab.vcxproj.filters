@@ -20,9 +20,6 @@
     <Filter Include="Panel\Preview">
       <UniqueIdentifier>{1cb3b404-80df-4409-a006-c046c619db58}</UniqueIdentifier>
     </Filter>
-    <Filter Include="misc">
-      <UniqueIdentifier>{1068c082-61c5-4286-bd31-5ba8d6d50048}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Menu">
       <UniqueIdentifier>{f8a46314-0975-4bdc-8271-e1d2644a3dd2}</UniqueIdentifier>
     </Filter>
@@ -52,6 +49,15 @@
     </Filter>
     <Filter Include="Panel\Preview\Parts">
       <UniqueIdentifier>{664876b0-ea75-407c-845a-e12270a870f8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="FileIO">
+      <UniqueIdentifier>{7322d315-3c07-4e04-993f-86eb20377e81}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Misc">
+      <UniqueIdentifier>{1068c082-61c5-4286-bd31-5ba8d6d50048}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Transaction">
+      <UniqueIdentifier>{d1d36d08-ca58-4053-9d4d-cfa0814e4bf1}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -90,16 +96,13 @@
       <Filter>Panel\Preview</Filter>
     </ClInclude>
     <ClInclude Include="ImGuiWindowScope.h">
-      <Filter>misc</Filter>
+      <Filter>Misc</Filter>
     </ClInclude>
     <ClInclude Include="ImGuiMenuScope.h">
-      <Filter>misc</Filter>
+      <Filter>Misc</Filter>
     </ClInclude>
     <ClInclude Include="ImGuiMainMenuBarScope.h">
-      <Filter>misc</Filter>
-    </ClInclude>
-    <ClInclude Include="FileOperation.h">
-      <Filter>misc</Filter>
+      <Filter>Misc</Filter>
     </ClInclude>
     <ClInclude Include="MenuBar.h">
       <Filter>Menu</Filter>
@@ -152,6 +155,18 @@
     <ClInclude Include="RenderPartItem.h">
       <Filter>Panel\Preview\Parts</Filter>
     </ClInclude>
+    <ClInclude Include="FileOperation.h">
+      <Filter>FileIO</Filter>
+    </ClInclude>
+    <ClInclude Include="UndoBuffer.h">
+      <Filter>Transaction</Filter>
+    </ClInclude>
+    <ClInclude Include="UndoScope.h">
+      <Filter>Transaction</Filter>
+    </ClInclude>
+    <ClInclude Include="ContinuousEditUndoScope.h">
+      <Filter>Transaction</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\third_party\imgui\imgui.cpp">
@@ -187,16 +202,13 @@
       <Filter>Panel\Preview</Filter>
     </ClCompile>
     <ClCompile Include="ImGuiWindowScope.cpp">
-      <Filter>misc</Filter>
+      <Filter>Misc</Filter>
     </ClCompile>
     <ClCompile Include="ImGuiMenuScope.cpp">
-      <Filter>misc</Filter>
+      <Filter>Misc</Filter>
     </ClCompile>
     <ClCompile Include="ImGuiMainMenuBarScope.cpp">
-      <Filter>misc</Filter>
-    </ClCompile>
-    <ClCompile Include="FileOperation.cpp">
-      <Filter>misc</Filter>
+      <Filter>Misc</Filter>
     </ClCompile>
     <ClCompile Include="EditorContext.cpp">
       <Filter>Edit</Filter>
@@ -239,6 +251,18 @@
     </ClCompile>
     <ClCompile Include="RenderPartItem.cpp">
       <Filter>Panel\Preview\Parts</Filter>
+    </ClCompile>
+    <ClCompile Include="FileOperation.cpp">
+      <Filter>FileIO</Filter>
+    </ClCompile>
+    <ClCompile Include="UndoScope.cpp">
+      <Filter>Transaction</Filter>
+    </ClCompile>
+    <ClCompile Include="UndoBuffer.cpp">
+      <Filter>Transaction</Filter>
+    </ClCompile>
+    <ClCompile Include="ContinuousEditUndoScope.cpp">
+      <Filter>Transaction</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
