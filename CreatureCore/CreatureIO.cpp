@@ -209,6 +209,7 @@ bool CCreatureIO::LoadFromFile(const std::filesystem::path& path, CCreature& cre
             }
         }
     }
+    editor.SetName("New Creature");    // TODO: Dummy impl
     creature = std::move(loadedCreature);
 
     return true;

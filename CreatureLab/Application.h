@@ -68,6 +68,7 @@ private:
 
     Creature::Genome m_genome;
     Creature::CCreature m_creature;
+    Creature::Editor::CCreatureEditor m_creatureEditor;
 
     CCreatureTreePanel m_creatureTreePanel;
 
@@ -80,8 +81,6 @@ private:
 
     CEditorContext      m_editorContext;
     CDocumentContext    m_documentContext;
-
-    Creature::Editor::CCreatureEditor     m_creatureEditor;
 
     CDocumentController m_documentController;
     CEditorController   m_editorController;
