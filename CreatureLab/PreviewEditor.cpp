@@ -11,6 +11,8 @@
 
 #include "imgui.h"
 
+#include <memory>
+
 using namespace Creature;
 using namespace Creature::Editor;
 using namespace Creature::Math;
@@ -50,7 +52,7 @@ namespace
             });
 
         return itFind != vecPartView.end()
-            ? &(*itFind)
+            ? std::addressof(*itFind)
             : nullptr;
     }
 
@@ -67,7 +69,7 @@ namespace
             });
 
         return itFind != vecPreviewPart.crend()
-            ? &(*itFind)
+            ? std::addressof(*itFind)
             : nullptr;
     }
 

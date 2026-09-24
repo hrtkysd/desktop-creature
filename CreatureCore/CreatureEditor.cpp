@@ -60,7 +60,7 @@ bool CCreatureEditor::RemovePart(PartId id)
 
 const CAnimation* CCreatureEditor::FindAnimationById(AnimationId id) const
 {
-    return m_creature.FindAnimationById(id);
+    return m_creature.FindReadonlyAnimationById(id);
 }
 
 AnimationId CCreatureEditor::AddNewAnimation(const std::string& strName)

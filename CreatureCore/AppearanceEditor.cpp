@@ -5,8 +5,8 @@
 using namespace Creature;
 using namespace Creature::Editor;
 
-CAppearanceEditor::CAppearanceEditor(CAppearance& apperance)
-    : m_appearance(apperance)
+CAppearanceEditor::CAppearanceEditor(CAppearance& appearance)
+    : m_appearance(appearance)
 {
 }
 

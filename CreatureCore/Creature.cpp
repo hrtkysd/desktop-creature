@@ -5,6 +5,7 @@
 #include "Genome.h"
 #include "Skeleton.h"
 
+#include <memory>
 #include <string>
 #include <utility>
 
@@ -179,6 +180,6 @@ const CAnimation* CCreature::FindReadonlyAnimationById(AnimationId id) const
             return animation.GetAnimationId() == id;
         });
     return itFind != vecAnimation.cend()
-        ? &(*itFind)
+        ? std::addressof(*itFind)
         : nullptr;
 }

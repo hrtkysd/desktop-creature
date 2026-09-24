@@ -18,13 +18,6 @@ namespace Creature
         class CAnimation;
     }
 
-    namespace Math
-    {
-        class CTransform2D;
-
-        struct Vec2;
-    }
-
     namespace Editor
     {
         class CCreatureEditor : private ICreatureEditContext

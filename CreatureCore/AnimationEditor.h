@@ -37,7 +37,7 @@ namespace Creature
                 const Animation::FloatKeyFrame& frame);
             void RemovePart(Creature::PartId id);
 
-            const std::vector<Animation::CAnimation>& GetAnimation() const;
+            const std::vector<Animation::CAnimation>& GetAnimations() const;
         private:
             Creature::CCreature& m_creature;
         };

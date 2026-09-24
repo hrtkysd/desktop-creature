@@ -4,9 +4,9 @@
 
 namespace Creature
 {
-    class CCreature;
+    class CAppearance;
     class CCreaturePose;
-
+    class CSkeleton;
     namespace Editor
     {
         class CSkeletonEditor;

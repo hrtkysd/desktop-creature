@@ -14,7 +14,7 @@ namespace Creature
         {
         public:
             CAppearanceEditor() = delete;
-            explicit CAppearanceEditor(Creature::CAppearance& apperance);
+            explicit CAppearanceEditor(Creature::CAppearance& appearance);
         public:
             const Creature::CAppearance& GetAppearance() const;
             void SetTexture(Creature::PartId partId, const std::filesystem::path& path);

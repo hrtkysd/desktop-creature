@@ -3,6 +3,7 @@
 #include "AnimationTrack.h"
 
 #include <algorithm>
+#include <memory>
 
 using namespace Creature;
 using namespace Creature::Animation;

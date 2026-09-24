@@ -80,7 +80,7 @@ void CAnimationEditor::RemovePart(PartId id)
     }
 }
 
-const std::vector<CAnimation>& CAnimationEditor::GetAnimation() const
+const std::vector<CAnimation>& CAnimationEditor::GetAnimations() const
 {
-    return m_creature.GetAnimations();
+    return m_creature.GetReadonlyAnimations();
 }

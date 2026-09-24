@@ -2,6 +2,8 @@
 #include "Appearance.h"
 #include "PartAppearance.h"
 
+#include <memory>
+
 using namespace Creature;
 
 void CAppearance::SetTexture(PartId partId, const std::filesystem::path& path)

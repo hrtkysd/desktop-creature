@@ -2,6 +2,7 @@
 #include "Skeleton.h"
 
 #include <algorithm>
+#include <memory>
 
 using namespace Creature;
 using namespace Creature::Math;

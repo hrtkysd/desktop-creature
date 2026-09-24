@@ -3,6 +3,7 @@
 #include "ICreatureEditContext.h"
 #include "PartId.h"
 
+#include <string_view>
 #include <unordered_set>
 
 namespace Creature
