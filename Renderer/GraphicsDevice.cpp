@@ -98,6 +98,19 @@ void CGraphicsDevice::SetViewport(std::uint32_t width, std::uint32_t height)
     viewport.MaxDepth = 1.0f;
 
     m_deviceContext->RSSetViewports(1, &viewport);
+
+    m_viewportWidth = width;
+    m_viewportHeight = height;
+}
+
+std::uint32_t CGraphicsDevice::GetViewportWidth() const
+{
+    return m_viewportWidth;
+}
+
+std::uint32_t CGraphicsDevice::GetViewportHeight() const
+{
+    return m_viewportHeight;
 }
 
 bool CGraphicsDevice::BeginFrame()

@@ -23,6 +23,10 @@ public:
     void SetViewport(
         std::uint32_t width,
         std::uint32_t height);
+
+    std::uint32_t GetViewportWidth() const;
+    std::uint32_t GetViewportHeight() const;
+
     bool BeginFrame();
     void Present();
 
@@ -36,4 +40,8 @@ private:
 
     Microsoft::WRL::ComPtr<IDXGISwapChain> m_swapChain;
     Microsoft::WRL::ComPtr<ID3D11RenderTargetView> m_renderTargetView;
+
+    std::uint32_t m_viewportWidth = 0;
+    std::uint32_t m_viewportHeight = 0;
+
 };
