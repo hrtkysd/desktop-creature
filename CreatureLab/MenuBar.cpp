@@ -128,8 +128,8 @@ void CMenuBar::HandleShortcutKey(CEditorContext& context)
         m_labController.Undo();
     }
 
-    if (ImGui::Shortcut(ImGuiMod_Ctrl | ImGuiKey_Y, inputFlgs) ||
-        ImGui::Shortcut(ImGuiMod_Ctrl | ImGuiMod_Shift | ImGuiKey_Z, inputFlgs) &&
+    if ((ImGui::Shortcut(ImGuiMod_Ctrl | ImGuiKey_Y, inputFlgs) ||
+        ImGui::Shortcut(ImGuiMod_Ctrl | ImGuiMod_Shift | ImGuiKey_Z, inputFlgs)) &&
         context.CanRedo())
     {
         m_labController.Redo();
