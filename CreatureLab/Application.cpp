@@ -358,9 +358,12 @@ LRESULT CApp::HandleMessage(
     {
     case WM_SIZE:
     {
-        const auto width = static_cast<UINT>(LOWORD(lParam));
-        const auto height = static_cast<UINT>(HIWORD(lParam));
-        m_graphics.Resize(width, height);
+        if (wParam != SIZE_MINIMIZED)
+        {
+            const auto width = static_cast<UINT>(LOWORD(lParam));
+            const auto height = static_cast<UINT>(HIWORD(lParam));
+            m_graphics.Resize(width, height);
+        }
     }
     return 0;
     case WM_SYSCOMMAND:
