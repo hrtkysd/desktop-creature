@@ -177,6 +177,9 @@ void CSpriteRenderer::Begin()
 
 void CSpriteRenderer::Draw(const CSpriteRenderDescription& desc)
 {
+    const auto& texture = desc.GetTexture();
+    if (!texture) return;
+
     D3D11_MAPPED_SUBRESOURCE mapped{};
 
     auto context = m_graphicsDevice.GetContext();
@@ -223,7 +226,7 @@ void CSpriteRenderer::Draw(const CSpriteRenderDescription& desc)
         m_constantBuffer.Get(),
         0);
 
-    auto textureView = desc.GetTexture()->GetShaderResourceView();
+    auto textureView = texture->GetShaderResourceView();
     context->PSSetShaderResources(0, 1, &textureView);
 
     context->Draw(6, 0);
