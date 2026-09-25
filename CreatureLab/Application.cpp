@@ -49,8 +49,7 @@ bool CApp::Initialize(
     m_hInstance = hInstance;
 
     if (!CreateMainWindow(hInstance, nCmdShow)) return false;
-    if (!CreateDeviceD3D()) return false;
-    if (!CreateRenderTarget()) return false;
+    if (!CreateGraphics()) return false;
 
     InitializeCreature();
 
@@ -82,67 +81,18 @@ bool CApp::CreateMainWindow(
     return true;
 }
 
-bool CApp::CreateDeviceD3D()
+bool CApp::CreateGraphics()
 {
-    DXGI_SWAP_CHAIN_DESC desc{};
+    RECT rect{};
+    GetClientRect(m_window.Handle(), &rect);
 
-    desc.BufferCount = 2;
-    desc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-    desc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-    desc.OutputWindow = m_window.Handle();
-    desc.SampleDesc.Count = 1;
-    desc.Windowed = TRUE;
-    desc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
+    const auto width = static_cast<std::uint32_t>(rect.right - rect.left);
+    const auto height = static_cast<std::uint32_t>(rect.bottom - rect.top);
+    if (!m_graphics.Initialize(m_window.Handle(), width, height)) return false;
 
-    constexpr D3D_FEATURE_LEVEL featureLevels[] =
-    {
-        D3D_FEATURE_LEVEL_11_0,
-        D3D_FEATURE_LEVEL_10_0,
-    };
+    m_textureCache = std::make_shared<CTextureCache>(m_graphics.GetDevice());
 
-    D3D_FEATURE_LEVEL featureLevel{};
-
-    const auto hr = D3D11CreateDeviceAndSwapChain(
-        nullptr,
-        D3D_DRIVER_TYPE_HARDWARE,
-        nullptr,
-        0,
-        featureLevels,
-        static_cast<UINT>(std::size(featureLevels)),
-        D3D11_SDK_VERSION,
-        &desc,
-        m_swapChain.GetAddressOf(),
-        m_device.GetAddressOf(),
-        &featureLevel,
-        m_deviceContext.GetAddressOf());
-
-    if (FAILED(hr) || !m_device) return false;
-
-    m_textureCache = std::make_shared<CTextureCache>(m_device.Get());
     return true;
-}
-
-bool CApp::CreateRenderTarget()
-{
-    Microsoft::WRL::ComPtr<ID3D11Texture2D> backBuffer;
-
-    auto hr = m_swapChain->GetBuffer(
-        0,
-        IID_PPV_ARGS(backBuffer.GetAddressOf()));
-
-    if (FAILED(hr)) return false;
-
-    hr = m_device->CreateRenderTargetView(
-        backBuffer.Get(),
-        nullptr,
-        m_renderTargetView.GetAddressOf());
-
-    return SUCCEEDED(hr);
-}
-
-void CApp::CleanupRenderTarget()
-{
-    m_renderTargetView.Reset();
 }
 
 bool CApp::InitializeImGui()
@@ -163,8 +113,8 @@ bool CApp::InitializeImGui()
     }
 
     if (!ImGui_ImplDX11_Init(
-        m_device.Get(),
-        m_deviceContext.Get()))
+        m_graphics.GetDevice(),
+        m_graphics.GetContext()))
     {
         ImGui_ImplWin32_Shutdown();
         return false;
@@ -312,28 +262,11 @@ void CApp::Render()
     m_previewPanel.Draw(*pose, *m_textureCache);
     ImGui::Render();
 
-    constexpr float clearColor[] =
-    {
-        0.1f,
-        0.1f,
-        0.1f,
-        1.0f
-    };
-
-    const auto pRenderTarget = m_renderTargetView.Get();
-
-    m_deviceContext->OMSetRenderTargets(
-        1,
-        &pRenderTarget,
-        nullptr);
-
-    m_deviceContext->ClearRenderTargetView(
-        m_renderTargetView.Get(),
-        clearColor);
+    if (!m_graphics.BeginFrame()) return;
 
     ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 
-    m_swapChain->Present(1, 0);
+    m_graphics.Present();
 }
 
 void CApp::Shutdown()
@@ -347,11 +280,7 @@ void CApp::Shutdown()
         m_bImGuiInitialized = false;
     }
 
-    CleanupRenderTarget();
-
-    m_swapChain.Reset();
-    m_deviceContext.Reset();
-    m_device.Reset();
+    m_graphics.Shutdown();
 
     if (m_hInstance)
     {
@@ -428,24 +357,15 @@ LRESULT CApp::HandleMessage(
     switch (message)
     {
     case WM_SIZE:
-        if (m_device && wParam != SIZE_MINIMIZED)
+    {
+        if (wParam != SIZE_MINIMIZED)
         {
-            CleanupRenderTarget();
-
             const auto width = static_cast<UINT>(LOWORD(lParam));
             const auto height = static_cast<UINT>(HIWORD(lParam));
-
-            const auto hr = m_swapChain->ResizeBuffers(
-                0,
-                width,
-                height,
-                DXGI_FORMAT_UNKNOWN,
-                0);
-            if (SUCCEEDED(hr)) CreateRenderTarget();
+            m_graphics.Resize(width, height);
         }
-
-        return 0;
-
+    }
+    return 0;
     case WM_SYSCOMMAND:
         if ((wParam & 0xFFF0) == SC_KEYMENU) return 0;
         break;

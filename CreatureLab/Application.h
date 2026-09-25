@@ -11,6 +11,7 @@
 #include "EditorContext.h"
 #include "EditorController.h"
 #include "Genome.h"
+#include "GraphicsDevice.h"
 #include "LabController.h"
 #include "MenuBar.h"
 #include "PreviewPanel.h"
@@ -36,12 +37,11 @@ public:
 
 private:
     bool CreateMainWindow(HINSTANCE hInstance, int nCmdShow);
-    bool CreateDeviceD3D();
-    bool CreateRenderTarget();
+    bool CreateGraphics();
+
     bool InitializeImGui();
     void InitializeCreature();
 
-    void CleanupRenderTarget();
     void Shutdown();
 
     void Render();
@@ -62,10 +62,7 @@ private:
     HINSTANCE m_hInstance = nullptr;
     CWindow m_window;
 
-    Microsoft::WRL::ComPtr<ID3D11Device> m_device;
-    Microsoft::WRL::ComPtr<ID3D11DeviceContext> m_deviceContext;
-    Microsoft::WRL::ComPtr<IDXGISwapChain> m_swapChain;
-    Microsoft::WRL::ComPtr<ID3D11RenderTargetView> m_renderTargetView;
+    CGraphicsDevice m_graphics;
 
     Creature::Genome m_genome;
     Creature::CCreature m_creature;
