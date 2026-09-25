@@ -45,13 +45,6 @@ bool CGraphicsDevice::Initialize(
 
     if (FAILED(hr) || !m_device) return false;
 
-    Microsoft::WRL::ComPtr<ID3D11Texture2D> backBuffer;
-    hr = m_swapChain->GetBuffer(
-        0,
-        IID_PPV_ARGS(backBuffer.GetAddressOf()));
-
-    if (FAILED(hr)) return false;
-
     if (!CreateRenderTarget()) return false;
 
     SetViewport(width, height);
@@ -73,7 +66,8 @@ bool CGraphicsDevice::Resize(std::uint32_t width, std::uint32_t height)
         height,
         DXGI_FORMAT_UNKNOWN,
         0);
-    if (SUCCEEDED(hr)) CreateRenderTarget();
+    if (FAILED(hr)) return false;
+    if (!CreateRenderTarget()) return false;
 
     SetViewport(width, height);
 
@@ -105,6 +99,11 @@ void CGraphicsDevice::SetViewport(std::uint32_t width, std::uint32_t height)
 
 void CGraphicsDevice::BeginFrame()
 {
+    if (!m_deviceContext || !m_renderTargetView)
+    {
+        return;
+    }
+
     constexpr float clearColor[] = { 0.0f, 0.0f, 0.0f, 0.0f };
 
     m_deviceContext->ClearRenderTargetView(
@@ -121,6 +120,7 @@ void CGraphicsDevice::BeginFrame()
 
 void CGraphicsDevice::Present()
 {
+    if (!m_swapChain) return;
     m_swapChain->Present(1, 0);
 }
 
@@ -134,12 +134,17 @@ void CGraphicsDevice::Shutdown()
 
 void CGraphicsDevice::Clear()
 {
-    m_deviceContext->OMSetRenderTargets(0, nullptr, nullptr);
+    if (m_deviceContext)
+    {
+        m_deviceContext->OMSetRenderTargets(0, nullptr, nullptr);
+    }
     m_renderTargetView.Reset();
 }
 
 bool CGraphicsDevice::CreateRenderTarget()
 {
+    if (!m_swapChain || !m_device) return false;
+
     Microsoft::WRL::ComPtr<ID3D11Texture2D> backBuffer;
 
     auto hr = m_swapChain->GetBuffer(
