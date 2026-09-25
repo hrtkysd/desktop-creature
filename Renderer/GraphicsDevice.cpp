@@ -74,19 +74,22 @@ bool CGraphicsDevice::Resize(std::uint32_t width, std::uint32_t height)
     return true;
 }
 
-ID3D11Device& CGraphicsDevice::GetDevice()
+ID3D11Device* CGraphicsDevice::GetDevice()
 {
-    return *(m_device.Get());
+    if (!m_device) return nullptr;
+    return m_device.Get();
 }
 
-ID3D11DeviceContext& CGraphicsDevice::GetContext()
+ID3D11DeviceContext* CGraphicsDevice::GetContext()
 {
-    return *(m_deviceContext.Get());
+    if (!m_deviceContext) return nullptr;
+    return m_deviceContext.Get();
 }
 
 void CGraphicsDevice::SetViewport(std::uint32_t width, std::uint32_t height)
 {
     if (width == 0 || height == 0) return;
+    if (!m_deviceContext) return;
 
     D3D11_VIEWPORT viewport{};
     viewport.Width = static_cast<float>(width);

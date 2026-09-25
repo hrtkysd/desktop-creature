@@ -90,7 +90,7 @@ bool CApp::CreateGraphics()
     const auto height = static_cast<std::uint32_t>(rect.bottom - rect.top);
     if (!m_graphics.Initialize(m_window.Handle(), width, height)) return false;
 
-    m_textureCache = std::make_shared<CTextureCache>(&m_graphics.GetDevice());
+    m_textureCache = std::make_shared<CTextureCache>(m_graphics.GetDevice());
 
     return true;
 }
@@ -113,8 +113,8 @@ bool CApp::InitializeImGui()
     }
 
     if (!ImGui_ImplDX11_Init(
-        &m_graphics.GetDevice(),
-        &m_graphics.GetContext()))
+        m_graphics.GetDevice(),
+        m_graphics.GetContext()))
     {
         ImGui_ImplWin32_Shutdown();
         return false;

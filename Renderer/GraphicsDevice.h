@@ -17,8 +17,8 @@ public:
         std::uint32_t width,
         std::uint32_t height);
 
-    ID3D11Device& GetDevice();
-    ID3D11DeviceContext& GetContext();
+    ID3D11Device* GetDevice();
+    ID3D11DeviceContext* GetContext();
 
     void SetViewport(
         std::uint32_t width,
