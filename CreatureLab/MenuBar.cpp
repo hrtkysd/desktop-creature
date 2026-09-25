@@ -120,16 +120,16 @@ void CMenuBar::Draw(CEditorContext& context)
 
 void CMenuBar::HandleShortcutKey(CEditorContext& context)
 {
-    const auto& io = ImGui::GetIO();
-
-    if (io.WantTextInput || !io.KeyCtrl) return;
-
-    if (!io.KeyShift && ImGui::IsKeyPressed(ImGuiKey_Z, false) && context.CanUndo())
+    if (ImGui::Shortcut(ImGuiMod_Ctrl | ImGuiKey_Z) &&
+        context.CanUndo())
     {
         m_labController.Undo();
+        return;
     }
-    else if (ImGui::IsKeyPressed(ImGuiKey_Y, false) ||
-        (io.KeyShift && ImGui::IsKeyPressed(ImGuiKey_Z, false) && context.CanRedo()))
+
+    if (ImGui::Shortcut(ImGuiMod_Ctrl | ImGuiKey_Y) ||
+        ImGui::Shortcut(ImGuiMod_Ctrl | ImGuiMod_Shift | ImGuiKey_Z) &&
+        context.CanRedo())
     {
         m_labController.Redo();
     }
