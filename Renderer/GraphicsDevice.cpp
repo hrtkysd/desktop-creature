@@ -100,11 +100,11 @@ void CGraphicsDevice::SetViewport(std::uint32_t width, std::uint32_t height)
     m_deviceContext->RSSetViewports(1, &viewport);
 }
 
-void CGraphicsDevice::BeginFrame()
+bool CGraphicsDevice::BeginFrame()
 {
     if (!m_deviceContext || !m_renderTargetView)
     {
-        return;
+        return false;
     }
 
     constexpr float clearColor[] = { 0.0f, 0.0f, 0.0f, 0.0f };
@@ -119,6 +119,8 @@ void CGraphicsDevice::BeginFrame()
         1,
         &renderTarget,
         nullptr);
+
+    return true;
 }
 
 void CGraphicsDevice::Present()

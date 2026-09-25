@@ -23,7 +23,7 @@ public:
     void SetViewport(
         std::uint32_t width,
         std::uint32_t height);
-    void BeginFrame();
+    bool BeginFrame();
     void Present();
 
     void Shutdown();

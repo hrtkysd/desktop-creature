@@ -262,7 +262,7 @@ void CApp::Render()
     m_previewPanel.Draw(*pose, *m_textureCache);
     ImGui::Render();
 
-    m_graphics.BeginFrame();
+    if (!m_graphics.BeginFrame()) return;
 
     ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 
