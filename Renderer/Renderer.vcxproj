@@ -85,7 +85,6 @@
     <ClInclude Include="GraphicsDevice.h" />
     <ClInclude Include="ImageData.h" />
     <ClInclude Include="pch.h" />
-    <ClInclude Include="Renderer.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="TextureLoader.h" />
   </ItemGroup>

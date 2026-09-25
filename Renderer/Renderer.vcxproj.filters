@@ -41,7 +41,6 @@
     <ClInclude Include="ImageData.h">
       <Filter>Texture</Filter>
     </ClInclude>
-    <ClInclude Include="Renderer.h" />
     <ClInclude Include="GraphicsDevice.h">
       <Filter>Graphics</Filter>
     </ClInclude>
