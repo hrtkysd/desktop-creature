@@ -11,6 +11,12 @@
     <Filter Include="Graphics">
       <UniqueIdentifier>{ef648be8-f479-4316-b383-c3fe3aac8664}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Sprite">
+      <UniqueIdentifier>{c454f91f-eec1-427d-b0de-6ed86761f8a6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="hlsl">
+      <UniqueIdentifier>{18a3458f-e32c-464a-9f35-805e1784cf37}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -25,6 +31,12 @@
     </ClCompile>
     <ClCompile Include="GraphicsDevice.cpp">
       <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="SpriteRenderDescription.cpp">
+      <Filter>Sprite</Filter>
+    </ClCompile>
+    <ClCompile Include="SpriteRenderer.cpp">
+      <Filter>Sprite</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -44,5 +56,19 @@
     <ClInclude Include="GraphicsDevice.h">
       <Filter>Graphics</Filter>
     </ClInclude>
+    <ClInclude Include="SpriteRenderDescription.h">
+      <Filter>Sprite</Filter>
+    </ClInclude>
+    <ClInclude Include="SpriteRenderer.h">
+      <Filter>Sprite</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="hlsl\SpritePS.hlsl">
+      <Filter>hlsl</Filter>
+    </FxCompile>
+    <FxCompile Include="hlsl\SpriteVS.hlsl">
+      <Filter>hlsl</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

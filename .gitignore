@@ -46,6 +46,7 @@ ARM64/
 *.dll
 *.lib
 *.exp
+*.cso
 
 # IntelliSense / code analysis
 
