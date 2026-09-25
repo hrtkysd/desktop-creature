@@ -12,12 +12,8 @@ public:
     explicit CSpriteRenderer(CGraphicsDevice& graphics);
 public:
     bool Initialize();
-
     void Begin();
-
     void Draw(const CSpriteRenderDescription& desc);
-
-    void End();
 
 private:
     bool CreateVertexBuffer();

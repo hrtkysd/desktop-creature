@@ -31,6 +31,16 @@ CSpriteRenderDescription& CSpriteRenderDescription::SetUv(const Vec2& uvMin, con
     return *this;
 }
 
+const Vec2& CSpriteRenderDescription::GetMinUV() const
+{
+    return m_uvMin;
+}
+
+const Vec2& CSpriteRenderDescription::GetMaxUV() const
+{
+    return m_uvMax;
+}
+
 const std::shared_ptr<const CTexture>& CSpriteRenderDescription::GetTexture() const
 {
     return m_texture;

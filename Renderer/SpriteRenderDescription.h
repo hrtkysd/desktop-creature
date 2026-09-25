@@ -20,6 +20,9 @@ public:
         const Creature::Math::Vec2& uvMin,
         const Creature::Math::Vec2& uvMax);
 
+    const Creature::Math::Vec2& GetMinUV() const;
+    const Creature::Math::Vec2& GetMaxUV() const;
+
     const std::shared_ptr<const CTexture>& GetTexture() const;
     const Creature::Math::CTransform2D& GetTransform() const;
     const Creature::Math::Vec2& GetPivot() const;

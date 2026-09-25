@@ -19,6 +19,9 @@ namespace
         DirectX::XMFLOAT4X4  transform{};
         float fOpacity = 1.0f;
         float fPadding[3]{};
+
+        DirectX::XMFLOAT2 uvMin{ 0.0f, 0.0f };
+        DirectX::XMFLOAT2 uvMax{ 1.0f, 1.0f };
     };
 
     DirectX::XMMATRIX CreateSpriteMatrix(
@@ -26,8 +29,10 @@ namespace
         float viewportWidth,
         float viewportHeight)
     {
-        const auto& transform = desc.GetTransform();
         const auto& texture = desc.GetTexture();
+        if (texture == nullptr) return {};
+
+        const auto& transform = desc.GetTransform();
 
         const float width = static_cast<float>(texture->GetWidth());
         const float height = static_cast<float>(texture->GetHeight());
@@ -160,6 +165,14 @@ void CSpriteRenderer::Begin()
         m_pixelShader.Get(),
         nullptr,
         0);
+
+    auto sampler = m_samplerState.Get();
+    context->PSSetSamplers(0, 1, &sampler);
+
+    context->OMSetBlendState(
+        m_blendState.Get(),
+        nullptr,
+        0xffffffff);
 }
 
 void CSpriteRenderer::Draw(const CSpriteRenderDescription& desc)
@@ -168,17 +181,20 @@ void CSpriteRenderer::Draw(const CSpriteRenderDescription& desc)
 
     auto context = m_graphicsDevice.GetContext();
 
-    context->Map(
+    const auto hr = context->Map(
         m_constantBuffer.Get(),
         0,
         D3D11_MAP_WRITE_DISCARD,
         0,
         &mapped);
+    if (FAILED(hr)) return;
 
     SpriteConstants constant
     {
         {},
         desc.GetOpacity(),
+        {},
+        {},
         {}
     };
 
@@ -196,11 +212,19 @@ void CSpriteRenderer::Draw(const CSpriteRenderDescription& desc)
         &constant.transform,
         spriteMatrix);
 
+    const auto& minUv = desc.GetMinUV();
+    constant.uvMin = { minUv.x, minUv.y };
+    const auto& maxUv = desc.GetMaxUV();
+    constant.uvMax = { maxUv.x, maxUv.y };
+
     memcpy_s(mapped.pData, sizeof(SpriteConstants), &constant, sizeof(constant));
 
     context->Unmap(
         m_constantBuffer.Get(),
         0);
+
+    auto textureView = desc.GetTexture()->GetShaderResourceView();
+    context->PSSetShaderResources(0, 1, &textureView);
 
     context->Draw(6, 0);
 }
