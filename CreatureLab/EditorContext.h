@@ -27,6 +27,7 @@ class CUndoScope;
 
 class CEditorContext
 {
+    friend class CEditorController;
 public:
     explicit CEditorContext(CUndoBuffer& undoBuffer);
 public:
@@ -38,8 +39,6 @@ public:
 
     CUndoScope CreateUndoScope() noexcept;
     void ClearHistory();
-    void Undo();
-    void Redo();
     bool CanUndo() const noexcept;
     bool CanRedo() const noexcept;
 
@@ -48,7 +47,9 @@ public:
 
     Creature::PartId GetPartId() const noexcept;
     Creature::Animation::AnimationId GetAnimationId() const noexcept;
-
+private:
+    void Undo();
+    void Redo();
 private:
     Creature::Animation::AnimationId m_animationId;
     Creature::PartId m_partId = Creature::INVALID_PART_ID;

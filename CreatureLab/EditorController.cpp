@@ -44,6 +44,12 @@ bool CEditorController::Execute(EditorCommand command)
         }
     }
     break;
+    case EditorCommand::Undo:
+        m_context.Undo();
+        break;
+    case EditorCommand::Redo:
+        m_context.Redo();
+        break;
     default:
         break;
     }

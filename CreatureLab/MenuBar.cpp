@@ -16,6 +16,8 @@ CMenuBar::CMenuBar(CLabController& labController)
 
 void CMenuBar::Draw(CEditorContext& context)
 {
+    HandleShortcutKey(context);
+
     if (CImGuiMainMenuBarScope menuBar{})
     {
         if (CImGuiMenuScope fileMenu{ "File" })
@@ -100,16 +102,35 @@ void CMenuBar::Draw(CEditorContext& context)
             {
                 m_labController.DeletePart();
             }
-        }
 
-        if (ImGui::MenuItem("Undo", "Ctrl+Z", false, context.CanUndo()))
-        {
-            context.Undo();
-        }
+            ImGui::Separator();
 
-        if (ImGui::MenuItem("Redo", "Ctrl+Y", false, context.CanRedo()))
-        {
-            context.Redo();
+            if (ImGui::MenuItem("Undo", "Ctrl+Z", false, context.CanUndo()))
+            {
+                m_labController.Undo();
+            }
+
+            if (ImGui::MenuItem("Redo", "Ctrl+Y", false, context.CanRedo()))
+            {
+                m_labController.Redo();
+            }
         }
+    }
+}
+
+void CMenuBar::HandleShortcutKey(CEditorContext& context)
+{
+    const auto& io = ImGui::GetIO();
+
+    if (io.WantTextInput || !io.KeyCtrl) return;
+
+    if (!io.KeyShift && ImGui::IsKeyPressed(ImGuiKey_Z, false) && context.CanUndo())
+    {
+        m_labController.Undo();
+    }
+    else if (ImGui::IsKeyPressed(ImGuiKey_Y, false) ||
+        (io.KeyShift && ImGui::IsKeyPressed(ImGuiKey_Z, false) && context.CanRedo()))
+    {
+        m_labController.Redo();
     }
 }
