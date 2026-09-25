@@ -3,6 +3,9 @@ cbuffer SpriteConstants : register(b0)
     row_major float4x4 transform;
     float opacity;
     float3 padding;
+
+    float2 uvMin;
+    float2 uvMax;
 };
 
 struct PSInput

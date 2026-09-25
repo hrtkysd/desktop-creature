@@ -3,6 +3,8 @@ cbuffer SpriteConstants : register(b0)
     row_major float4x4 transform;
     float opacity;
     float3 padding;
+    float2 uvMin;
+    float2 uvMax;
 };
 
 struct VSInput
@@ -24,7 +26,8 @@ VSOutput main(VSInput input)
     output.position =
         mul(float4(input.position, 0.0f, 1.0f), transform);
 
-    output.uv = input.uv;
+    output.uv = lerp(uvMin, uvMax, input.uv);
+
 
     return output;
 }
