@@ -60,3 +60,13 @@ bool CLabController::DeletePart()
 {
     return m_editorController.Execute(EditorCommand::DeletePart);
 }
+
+void CLabController::Undo()
+{
+    m_editorController.Execute(EditorCommand::Undo);
+}
+
+void CLabController::Redo()
+{
+    m_editorController.Execute(EditorCommand::Redo);
+}

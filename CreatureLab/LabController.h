@@ -36,6 +36,9 @@ public:
 
     bool DeletePart();
 
+    void Undo();
+    void Redo();
+
 private:
     CEditorContext& m_editorContext;
 
