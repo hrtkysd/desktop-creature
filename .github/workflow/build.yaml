@@ -1,0 +1,17 @@
+strategy:
+  matrix:
+    configuration: [Debug, Release]
+
+steps:
+  - uses: actions/checkout@v4
+    with:
+      submodules: recursive
+
+  - uses: microsoft/setup-msbuild@v2
+
+  - name: Build
+    run: >
+      msbuild DesktopCreature.sln
+      /m
+      /p:Configuration=${{ matrix.configuration }}
+      /p:Platform=x64
