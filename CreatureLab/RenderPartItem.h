@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Part.h"
+#include "PartId.h"
 #include "TransformRect.h"
 
 #include <memory>
@@ -16,7 +16,7 @@ public:
         const std::shared_ptr<CTexture>& texture);
 public:
     Creature::PartId GetPartId() const;
-    const Creature::Math::CTransformRect GetRect() const;
+    const Creature::Math::CTransformRect& GetRect() const;
     const std::shared_ptr<CTexture>& GetTexture() const;
 
     bool IsPtInView(const Creature::Math::Vec2& pt) const;

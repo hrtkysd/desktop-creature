@@ -17,7 +17,7 @@ PartId CRenderPartItem::GetPartId() const
     return m_partId;
 }
 
-const CTransformRect CRenderPartItem::GetRect() const
+const CTransformRect& CRenderPartItem::GetRect() const
 {
     return m_rcPart;
 }

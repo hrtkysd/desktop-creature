@@ -1,14 +1,27 @@
 #include "pch.h"
 #include "SpriteRenderDescription.h"
 #include "Texture.h"
+#include "Transform2D.h"
 
 using namespace Creature::Math;
 
 CSpriteRenderDescription::CSpriteRenderDescription(
     std::shared_ptr<const CTexture> texture,
-    const CTransform2D& transform)
+    const Creature::Math::Vec2& size,
+    const CTransform2D& transform,
+    const Vec2& pivot)
+    : CSpriteRenderDescription(texture, size,
+        CMatrix3x2::CreateTranslation({ -pivot.x, -pivot.y })* transform.ToMatrix())
+{
+}
+
+CSpriteRenderDescription::CSpriteRenderDescription(
+    std::shared_ptr<const CTexture> texture,
+    const Creature::Math::Vec2& size,
+    const CMatrix3x2& matrix)
     : m_texture(texture)
-    , m_transform(transform)
+    , m_size(size)
+    , m_matrix(matrix)
 {
 }
 
@@ -41,19 +54,19 @@ const Vec2& CSpriteRenderDescription::GetMaxUV() const
     return m_uvMax;
 }
 
+const Vec2& CSpriteRenderDescription::GetSize() const
+{
+    return m_size;
+}
+
 const std::shared_ptr<const CTexture>& CSpriteRenderDescription::GetTexture() const
 {
     return m_texture;
 }
 
-const CTransform2D& CSpriteRenderDescription::GetTransform() const
+const CMatrix3x2& CSpriteRenderDescription::GetMatrix() const
 {
-    return m_transform;
-}
-
-const Vec2& CSpriteRenderDescription::GetPivot() const
-{
-    return m_pivot;
+    return m_matrix;
 }
 
 float CSpriteRenderDescription::GetOpacity() const

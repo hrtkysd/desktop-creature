@@ -60,6 +60,19 @@ CMatrix3x2 CMatrix3x2::CreateRotation(float rotation)
     return result;
 }
 
+std::array<float, 6> Creature::Math::CMatrix3x2::ToArray() const
+{
+    return
+    {
+        m_fM11,
+        m_fM12,
+        m_fM21,
+        m_fM22,
+        m_fM31,
+        m_fM32
+    };
+}
+
 Vec2 CMatrix3x2::TransformPoint(const Vec2& point) const
 {
     return
