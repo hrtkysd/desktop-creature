@@ -21,7 +21,7 @@ jobs:
 
       - name: Build
         run: >
-          msbuild DesktopCreature.sln
+          msbuild Creature.sln
           /m
           /p:Configuration=Debug
           /p:Platform=x64
