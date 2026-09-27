@@ -9,7 +9,10 @@
 #include "PreviewPart.h"
 #include "RectCorner.h"
 #include "RenderPartItem.h"
+#include "RenderTarget.h"
 #include "Skeleton.h"
+#include "SpriteRenderDescription.h"
+#include "SpriteRenderer.h"
 #include "Texture.h"
 #include "TextureCache.h"
 #include "TransformRect.h"
@@ -37,18 +40,14 @@ namespace
         };
     }
 
-    bool IsMouseCursorInPanel()
+    bool IsMouseCursorInPanel(const ImVec2& imageOrigin, const ImVec2& imageSize)
     {
-        const auto origin = ImGui::GetCursorScreenPos();
-        const auto area = ImGui::GetContentRegionAvail();
-
         const auto mouse = ImGui::GetMousePos();
-
         return
-            mouse.x >= origin.x &&
-            mouse.x <= origin.x + area.x &&
-            mouse.y >= origin.y &&
-            mouse.y <= origin.y + area.y;
+            mouse.x >= imageOrigin.x &&
+            mouse.x <= imageOrigin.x + imageSize.x &&
+            mouse.y >= imageOrigin.y &&
+            mouse.y <= imageOrigin.y + imageSize.y;
     }
 }
 
@@ -61,87 +60,147 @@ CPreviewPanel::CPreviewPanel(
 {
 }
 
-void CPreviewPanel::Draw(
+void CPreviewPanel::DrawUi(
     const CCreaturePose& pose,
-    CTextureCache& textureCache)
+    CTextureCache& textureCache,
+    const CRenderTarget& renderTarget)
 {
     CImGuiWindowScope scope("Preview");
 
-    const ImVec2 origin = ImGui::GetCursorScreenPos();
-    const ImVec2 area = ImGui::GetContentRegionAvail();
+    const ImVec2 panelOrigin = ImGui::GetCursorScreenPos();
+    const ImVec2 panelArea = ImGui::GetContentRegionAvail();
 
-    const ImVec2 center
+    const Vec2 previewSize
     {
-        origin.x + area.x * 0.5f,
-        origin.y + area.y * 0.5f
+        static_cast<float>(renderTarget.Width()),
+        static_cast<float>(renderTarget.Height())
     };
 
-    constexpr float scale = 0.25f;
+    constexpr float creatureScale = 0.25f;
 
-    const auto previewTransform =
-        CMatrix3x2::CreateScale({ scale, scale })
-        *
-        CMatrix3x2::CreateTranslation({
-            center.x,
-            center.y
+    const Vec2 previewCenter
+    {
+        previewSize.x * 0.5f,
+        previewSize.y * 0.5f
+    };
+
+    const auto creatureToPreview =
+        CMatrix3x2::CreateScale({ creatureScale, creatureScale }) *
+        CMatrix3x2::CreateTranslation(previewCenter);
+
+    m_vecRenderItem = BuildPartViews(
+        pose,
+        creatureToPreview,
+        textureCache);
+
+    const float imageScale = std::min(
+        panelArea.x / previewSize.x,
+        panelArea.y / previewSize.y);
+
+    const ImVec2 imageSize
+    {
+        previewSize.x * imageScale,
+        previewSize.y * imageScale
+    };
+
+    const ImVec2 imageOrigin
+    {
+        panelOrigin.x + (panelArea.x - imageSize.x) * 0.5f,
+        panelOrigin.y + (panelArea.y - imageSize.y) * 0.5f
+    };
+
+    ImGui::SetCursorScreenPos(imageOrigin);
+    ImGui::Image(reinterpret_cast<ImTextureID>(renderTarget.SRV()), imageSize);
+
+    const auto previewToScreen =
+        CMatrix3x2::CreateScale({ imageScale, imageScale }) *
+        CMatrix3x2::CreateTranslation({ imageOrigin.x, imageOrigin.y });
+
+    const auto creatureToScreen =
+        creatureToPreview * previewToScreen;
+    std::vector<CPreviewPart> vecPreviewPart;
+    vecPreviewPart.reserve(m_vecRenderItem.size());
+
+    for (const auto& item : m_vecRenderItem)
+    {
+        CTransformRect screenRect(
+            item.GetRect().Size(),
+            item.GetRect().Matrix() * previewToScreen);
+
+        vecPreviewPart.emplace_back(
+            item.GetPartId(),
+            std::move(screenRect),
+            Vec2
+            {
+                static_cast<float>(item.GetTexture()->GetWidth()),
+                static_cast<float>(item.GetTexture()->GetHeight())
             });
+    }
 
-    const auto vecPartView = BuildPartViews(pose, previewTransform, textureCache);
-
-    std::vector<CPreviewPart> vecEditPreview;
-    vecEditPreview.reserve(vecPartView.size());
-    std::transform(vecPartView.begin(), vecPartView.end(), std::back_inserter(vecEditPreview), [](const CRenderPartItem& renderItem)
-        {
-            return ToPreviewPart(renderItem);
-        });
-
-    m_previewEditor.HandleInput(pose, previewTransform, vecEditPreview, IsMouseCursorInPanel());
+    m_previewEditor.HandleInput(
+        pose,
+        creatureToScreen,
+        vecPreviewPart,
+        IsMouseCursorInPanel(imageOrigin, imageSize));
 
     const auto& editorContext = m_previewEditor.GetEditorContext();
-    const auto drawList = ImGui::GetWindowDrawList();
-    for (const auto& partView : vecPartView)
+    auto drawList = ImGui::GetWindowDrawList();
+
+    for (const auto& item : m_vecRenderItem)
     {
-        const auto corner = partView.GetRect().Corner();
-        drawList->AddImageQuad(
-            partView.GetTexture()->GetShaderResourceView(),
-            ImVec2{ corner.topLeft.x,     corner.topLeft.y },
-            ImVec2{ corner.topRight.x,    corner.topRight.y },
-            ImVec2{ corner.bottomRight.x, corner.bottomRight.y },
-            ImVec2{ corner.bottomLeft.x,  corner.bottomLeft.y });
+        if (editorContext.GetPartId() != item.GetPartId())
+            continue;
 
-        if (editorContext.GetPartId() == partView.GetPartId())
+        CTransformRect screenRect(
+            item.GetRect().Size(),
+            item.GetRect().Matrix() * previewToScreen);
+
+        const auto corner = screenRect.Corner();
+
+        DrawSelectPartFrameRect(drawList, corner, item);
+
+        if (editorContext.GetEditMode() == EditMode::Scale)
         {
-            DrawSelectPartFrameRect(drawList, corner, partView);
-
-            if (editorContext.GetEditMode() == EditMode::Scale)
+            DrawResizeHandle(drawList, corner.topLeft);
+            DrawResizeHandle(drawList, corner.topRight);
+            DrawResizeHandle(drawList, corner.bottomRight);
+            DrawResizeHandle(drawList, corner.bottomLeft);
+        }
+        else if (editorContext.GetEditMode() == EditMode::Pivot)
+        {
+            const auto part = m_skeleton.FindPartById(item.GetPartId());
+            if (part)
             {
-                DrawResizeHandle(drawList, corner.topLeft);
-                DrawResizeHandle(drawList, corner.topRight);
-                DrawResizeHandle(drawList, corner.bottomRight);
-                DrawResizeHandle(drawList, corner.bottomLeft);
-            }
-            else if (editorContext.GetEditMode() == EditMode::Pivot)
-            {
-                const auto part = m_skeleton.FindPartById(partView.GetPartId());
-                if (part)
-                {
-                    const auto worldTransform =
-                        CPartTransformBuilder::BuildWorld(
-                            *part,
-                            m_skeleton,
-                            pose);
+                const auto worldTransform =
+                    CPartTransformBuilder::BuildWorld(
+                        *part,
+                        m_skeleton,
+                        pose);
 
-                    const auto screenTransform =
-                        worldTransform * previewTransform;
+                const auto screenTransform =
+                    worldTransform * creatureToScreen;
+                const auto pivotScreen =
+                    screenTransform.TransformPoint(part->pivot);
 
-                    const auto pivotScreen =
-                        screenTransform.TransformPoint(part->pivot);
-                    DrawPivotHandle(drawList, pivotScreen);
-                }
+                DrawPivotHandle(drawList, pivotScreen);
             }
         }
     }
-    ImGui::Dummy(area);
+}
+
+void CPreviewPanel::RenderPreview(CSpriteRenderer& renderer)
+{
+    for (const auto& partView : m_vecRenderItem)
+    {
+        CSpriteRenderDescription desc
+        {
+            partView.GetTexture(),
+            partView.GetRect().Size(),
+            partView.GetRect().Matrix()
+        };
+
+        renderer.Draw(desc);
+    }
 }
 
 void CPreviewPanel::DrawResizeHandle(

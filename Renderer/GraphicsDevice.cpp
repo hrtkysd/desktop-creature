@@ -1,6 +1,8 @@
 #include "pch.h"
 
 #include "GraphicsDevice.h"
+#include "RenderTarget.h"
+
 #include <iterator>
 
 bool CGraphicsDevice::Initialize(
@@ -113,6 +115,61 @@ std::uint32_t CGraphicsDevice::GetViewportHeight() const
     return m_viewportHeight;
 }
 
+void CGraphicsDevice::SetRenderTarget(const CRenderTarget& target)
+{
+    auto rtv = target.RTV();
+    if (rtv == nullptr) return;
+    m_deviceContext->OMSetRenderTargets(1, &rtv, nullptr);
+}
+
+std::unique_ptr<CRenderTarget> CGraphicsDevice::CreateRenderTarget(
+    std::uint32_t width,
+    std::uint32_t height)
+{
+    D3D11_TEXTURE2D_DESC desc{};
+    desc.Width = width;
+    desc.Height = height;
+    desc.MipLevels = 1;
+    desc.ArraySize = 1;
+    desc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+    desc.SampleDesc.Count = 1;
+    desc.Usage = D3D11_USAGE_DEFAULT;
+    desc.BindFlags =
+        D3D11_BIND_RENDER_TARGET |
+        D3D11_BIND_SHADER_RESOURCE;
+
+    Microsoft::WRL::ComPtr<ID3D11Texture2D> texture;
+
+    auto hr = m_device->CreateTexture2D(
+        &desc,
+        nullptr,
+        texture.GetAddressOf());
+
+    if (FAILED(hr)) return nullptr;
+
+    Microsoft::WRL::ComPtr<ID3D11RenderTargetView> rtv;
+    hr = m_device->CreateRenderTargetView(
+        texture.Get(),
+        nullptr,
+        rtv.GetAddressOf());
+
+    if (FAILED(hr)) return nullptr;
+
+    Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> srv;
+    hr = m_device->CreateShaderResourceView(
+        texture.Get(),
+        nullptr,
+        srv.GetAddressOf());
+
+    if (FAILED(hr)) return nullptr;
+
+    return std::make_unique<CRenderTarget>(
+        std::move(rtv),
+        std::move(srv),
+        width,
+        height);
+}
+
 bool CGraphicsDevice::BeginFrame()
 {
     if (!m_deviceContext || !m_renderTargetView)
@@ -120,17 +177,17 @@ bool CGraphicsDevice::BeginFrame()
         return false;
     }
 
+    auto rtv = m_renderTargetView.Get();
+
     constexpr float clearColor[] = { 0.0f, 0.0f, 0.0f, 0.0f };
 
     m_deviceContext->ClearRenderTargetView(
-        m_renderTargetView.Get(),
+        rtv,
         clearColor);
-
-    auto renderTarget = m_renderTargetView.Get();
 
     m_deviceContext->OMSetRenderTargets(
         1,
-        &renderTarget,
+        &rtv,
         nullptr);
 
     return true;

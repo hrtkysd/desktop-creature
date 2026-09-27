@@ -2,7 +2,11 @@
 #include "AnimationTrack.h"
 #include "AnimationTrackKey.h"
 #include "Application.h"
+#include "Appearance.h"
 #include "CreaturePose.h"
+#include "RenderTarget.h"
+#include "RenderTargetScope.h"
+#include "Texture.h"
 #include "TextureCache.h"
 
 // third party
@@ -28,6 +32,7 @@ extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(
 
 CApp::CApp()
     : m_creatureEditor(m_creature)
+    , m_spriteRenderer(m_graphics)
     , m_undoBuffer(m_creature, 100)
     , m_editorContext(m_undoBuffer)
     , m_documentController(m_window, m_creature, m_documentContext)
@@ -89,6 +94,12 @@ bool CApp::CreateGraphics()
     const auto width = static_cast<std::uint32_t>(rect.right - rect.left);
     const auto height = static_cast<std::uint32_t>(rect.bottom - rect.top);
     if (!m_graphics.Initialize(m_window.Handle(), width, height)) return false;
+
+    auto renderTarget = m_graphics.CreateRenderTarget(width, height);
+    if (!renderTarget) return false;
+    m_previewRenderTarget = std::move(renderTarget);
+
+    if (!m_spriteRenderer.Initialize()) return false;
 
     m_textureCache = std::make_shared<CTextureCache>(m_graphics.GetDevice());
 
@@ -257,12 +268,28 @@ void CApp::Render()
 
         pose = &m_animationPlayer.GetPose();
     }
+    m_graphics.BeginFrame();
 
+    m_previewPanel.DrawUi(
+        *pose,
+        *m_textureCache,
+        *m_previewRenderTarget);
 
-    m_previewPanel.Draw(*pose, *m_textureCache);
     ImGui::Render();
 
-    if (!m_graphics.BeginFrame()) return;
+    {
+        CRenderTargetScope scope(
+            m_graphics.GetContext(),
+            *m_previewRenderTarget,
+            { 0.0f, 0.0f, 0.0f, 0.0f });
+
+        m_graphics.SetViewport(
+            m_previewRenderTarget->Width(),
+            m_previewRenderTarget->Height());
+
+        m_spriteRenderer.Begin();
+        m_previewPanel.RenderPreview(m_spriteRenderer);
+    }
 
     ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 

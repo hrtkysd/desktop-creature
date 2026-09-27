@@ -14,13 +14,15 @@ namespace Creature
             CTransformRect();
             explicit CTransformRect(
                 const Vec2& size,
-                const CMatrix3x2& transform);
+                const CMatrix3x2& matrix);
         public:
+            const CMatrix3x2& Matrix() const;
             RectCorner Corner() const;
+            const Vec2& Size() const;
             bool Contains(const Vec2& point) const;
         private:
             Vec2 m_size{};
-            CMatrix3x2 m_transform;
+            CMatrix3x2 m_matrix;
         };
     } // namespace Math
 } // namespace Creature

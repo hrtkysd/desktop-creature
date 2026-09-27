@@ -1,5 +1,7 @@
 #pragma once
 
+#include <array>
+
 namespace Creature
 {
     namespace Math
@@ -22,7 +24,7 @@ namespace Creature
             static CMatrix3x2 CreateTranslation(const Vec2& position);
             static CMatrix3x2 CreateScale(const Vec2& scale);
             static CMatrix3x2 CreateRotation(float rotation);
-
+            std::array<float, 6> ToArray() const;
             Vec2 TransformPoint(const Vec2& point) const;
             bool TryInverse(CMatrix3x2& inverse) const;
 

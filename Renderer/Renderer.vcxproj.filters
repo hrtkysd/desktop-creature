@@ -38,6 +38,12 @@
     <ClCompile Include="SpriteRenderer.cpp">
       <Filter>Sprite</Filter>
     </ClCompile>
+    <ClCompile Include="RenderTarget.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderTargetScope.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -61,6 +67,12 @@
     </ClInclude>
     <ClInclude Include="SpriteRenderer.h">
       <Filter>Sprite</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderTarget.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderTargetScope.h">
+      <Filter>Graphics</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

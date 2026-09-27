@@ -10,6 +10,7 @@
 #include <iterator>
 #include <vector>
 
+using namespace Creature::Math;
 using namespace Microsoft::WRL;
 
 namespace
@@ -24,47 +25,42 @@ namespace
         DirectX::XMFLOAT2 uvMax{ 1.0f, 1.0f };
     };
 
+    DirectX::XMMATRIX ToXMMATRIX(
+        const CMatrix3x2& matrix)
+    {
+        const auto m = matrix.ToArray();
+        return DirectX::XMMATRIX(
+            m[0], m[1], 0.0f, 0.0f,
+            m[2], m[3], 0.0f, 0.0f,
+            0.0f, 0.0f, 1.0f, 0.0f,
+            m[4], m[5], 0.0f, 1.0f);
+    }
+
     DirectX::XMMATRIX CreateSpriteMatrix(
         const CSpriteRenderDescription& desc,
         float viewportWidth,
         float viewportHeight)
     {
         const auto& texture = desc.GetTexture();
-        if (texture == nullptr) return {};
+        if (!texture) return DirectX::XMMatrixIdentity();
 
-        const auto& transform = desc.GetTransform();
+        const auto& matrix = desc.GetMatrix();
 
-        const float width = static_cast<float>(texture->GetWidth());
-        const float height = static_cast<float>(texture->GetHeight());
+        const float width =
+            static_cast<float>(texture->GetWidth());
 
-        const auto pivot = desc.GetPivot();
-        const auto textureScale =
+        const float height =
+            static_cast<float>(texture->GetHeight());
+
+        const auto& size = desc.GetSize();
+
+        const auto spriteScale =
             DirectX::XMMatrixScaling(
-                width,
-                height,
+                size.x,
+                size.y,
                 1.0f);
 
-        const auto pivotTranslation =
-            DirectX::XMMatrixTranslation(
-                -pivot.x,
-                -pivot.y,
-                0.0f);
-
-        const auto scale =
-            DirectX::XMMatrixScaling(
-                transform.GetScale().x,
-                transform.GetScale().y,
-                1.0f);
-
-        const auto rotation =
-            DirectX::XMMatrixRotationZ(
-                transform.GetRotation());
-
-        const auto translation =
-            DirectX::XMMatrixTranslation(
-                transform.GetPosition().x,
-                transform.GetPosition().y,
-                0.0f);
+        const auto transform = ToXMMATRIX(matrix);
 
         const auto projection =
             DirectX::XMMatrixOrthographicOffCenterLH(
@@ -75,11 +71,8 @@ namespace
                 0.0f,
                 1.0f);
 
-        return textureScale
-            * pivotTranslation
-            * scale
-            * rotation
-            * translation
+        return spriteScale
+            * transform
             * projection;
     }
 
@@ -236,13 +229,13 @@ bool CSpriteRenderer::CreateVertexBuffer()
 {
     constexpr SpriteVertex vertices[] =
     {
-        { 0.0f, 0.0f, 0.0f, 0.0f },
-        { 1.0f, 0.0f, 1.0f, 0.0f },
-        { 0.0f, 1.0f, 0.0f, 1.0f },
+        { -0.5f, -0.5f, 0.0f, 0.0f },
+        {  0.5f, -0.5f, 1.0f, 0.0f },
+        { -0.5f,  0.5f, 0.0f, 1.0f },
 
-        { 0.0f, 1.0f, 0.0f, 1.0f },
-        { 1.0f, 0.0f, 1.0f, 0.0f },
-        { 1.0f, 1.0f, 1.0f, 1.0f },
+        { -0.5f,  0.5f, 0.0f, 1.0f },
+        {  0.5f, -0.5f, 1.0f, 0.0f },
+        {  0.5f,  0.5f, 1.0f, 1.0f },
     };
 
     D3D11_BUFFER_DESC desc{};

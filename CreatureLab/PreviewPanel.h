@@ -1,16 +1,14 @@
 #pragma once
 
 #include "PreviewEditor.h"
+#include "RenderPartItem.h"
 
 namespace Creature
 {
     class CAppearance;
     class CCreaturePose;
     class CSkeleton;
-    namespace Editor
-    {
-        class CSkeletonEditor;
-    }
+
     namespace Math
     {
         struct RectCorner;
@@ -21,8 +19,9 @@ namespace Creature
 }
 
 class CEditorContext;
-class CRenderPartItem;
+class CSpriteRenderer;
 class CTextureCache;
+class CRenderTarget;
 
 struct ImDrawList;
 
@@ -35,9 +34,11 @@ public:
         Creature::Editor::CCreatureEditor& editor,
         CEditorContext& context);
 public:
-    void Draw(
+    void DrawUi(
         const Creature::CCreaturePose& pose,
-        CTextureCache& textureCache);
+        CTextureCache& textureCache,
+        const CRenderTarget& renderTarget);
+    void RenderPreview(CSpriteRenderer& renderer);
 private:
     void DrawSelectPartFrameRect(
         ImDrawList* drawList,
@@ -57,4 +58,6 @@ private:
     CPreviewEditor m_previewEditor;
     const Creature::CSkeleton& m_skeleton;
     const Creature::CAppearance& m_apperance;
+
+    std::vector<CRenderPartItem> m_vecRenderItem;
 };

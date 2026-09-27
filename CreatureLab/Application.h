@@ -15,11 +15,13 @@
 #include "LabController.h"
 #include "MenuBar.h"
 #include "PreviewPanel.h"
+#include "SpriteRenderer.h"
 #include "UndoBuffer.h"
 #include "Window.h"
 
 #include <windef.h>
 
+class CRenderTarget;
 class CTextureCache;
 
 class CApp final
@@ -63,11 +65,12 @@ private:
     CWindow m_window;
 
     CGraphicsDevice m_graphics;
+    std::unique_ptr<CRenderTarget> m_previewRenderTarget;
 
     Creature::Genome m_genome;
     Creature::CCreature m_creature;
     Creature::Editor::CCreatureEditor m_creatureEditor;
-
+    CSpriteRenderer m_spriteRenderer;
     CUndoBuffer m_undoBuffer;
 
     CCreatureTreePanel m_creatureTreePanel;
