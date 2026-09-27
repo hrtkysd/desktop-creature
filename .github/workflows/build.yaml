@@ -1,7 +1,12 @@
+name: Build
+
 on:
   push:
-    branches: [ main ]
+    branches: [main]
+
   pull_request:
+    branches: [main]
+
 jobs:
   build-debug:
     name: Build Debug
@@ -16,7 +21,7 @@ jobs:
 
       - name: Build
         run: >
-          msbuild DesktopCreature.sln
+          msbuild Creature.sln
           /m
           /p:Configuration=Debug
           /p:Platform=x64
@@ -34,7 +39,7 @@ jobs:
 
       - name: Build
         run: >
-          msbuild DesktopCreature.sln
+          msbuild Creature.sln
           /m
           /p:Configuration=Release
           /p:Platform=x64
