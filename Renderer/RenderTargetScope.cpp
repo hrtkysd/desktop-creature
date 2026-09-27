@@ -13,9 +13,9 @@ CRenderTargetScope::CRenderTargetScope(
     m_context->OMGetRenderTargets(
         1,
         &prev,
-        nullptr);
+        nullptr)
 
-    m_prevRenderTarget.Attach(prev);
+        m_prevRenderTarget.Attach(prev);
 
     UINT count = 1;
     m_context->RSGetViewports(
