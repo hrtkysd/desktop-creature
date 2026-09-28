@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "Application.h"
+#include "ComInitializer.h"
 
 int WINAPI wWinMain(
     HINSTANCE hInstance,
@@ -10,15 +11,10 @@ int WINAPI wWinMain(
     UNREFERENCED_PARAMETER(hPrevInstance);
     UNREFERENCED_PARAMETER(pCmdLine);
 
-    const auto hr = CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED);
-    if (FAILED(hr)) return 0;
+    CComInitializer comInit;
+    if (!comInit.Succeeded()) return 0;
 
     CApp app;
     if (!app.Initialize(hInstance, nCmdShow)) return -1;
-
-    const auto result = app.Run();
-
-    CoUninitialize();
-
-    return result;
+    return app.Run();
 }

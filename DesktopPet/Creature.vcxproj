@@ -76,11 +76,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\Common\ComInitializer.cpp" />
     <ClCompile Include="..\Common\FileOperation.cpp" />
     <ClCompile Include="BehaviorController.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\Common\ComInitializer.h" />
     <ClInclude Include="..\Common\FileOperation.h" />
     <ClInclude Include="BehaviorController.h" />
   </ItemGroup>

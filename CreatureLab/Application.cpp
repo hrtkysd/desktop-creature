@@ -262,7 +262,8 @@ void CApp::Render()
 
         pose = &m_animationPlayer.GetPose();
     }
-    m_graphicsRenderer.BeginFrame();
+
+    if (!m_graphicsRenderer.BeginFrame()) return;
 
     const auto contentSize = m_previewPanel.GetPreviewContentSize();
     const auto contentWidth = static_cast<std::uint32_t>(contentSize.x);
@@ -270,8 +271,10 @@ void CApp::Render()
     if (contentWidth > 0 && contentHeight > 0 &&
         (contentWidth != m_previewRenderTarget->Width() || contentHeight != m_previewRenderTarget->Height()))
     {
-        m_previewRenderTarget =
-            m_graphicsRenderer.CreateRenderTarget(contentWidth, contentHeight);
+        if (auto newRenderTarget = m_graphicsRenderer.CreateRenderTarget(contentWidth, contentHeight))
+        {
+            m_previewRenderTarget = std::move(newRenderTarget);
+        }
     }
 
     m_previewPanel.DrawUi(

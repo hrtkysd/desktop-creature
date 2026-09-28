@@ -26,12 +26,18 @@
     <ClCompile Include="..\Common\FileOperation.cpp">
       <Filter>Common</Filter>
     </ClCompile>
+    <ClCompile Include="..\Common\ComInitializer.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BehaviorController.h">
       <Filter>Creature\Behavior</Filter>
     </ClInclude>
     <ClInclude Include="..\Common\FileOperation.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\ComInitializer.h">
       <Filter>Common</Filter>
     </ClInclude>
   </ItemGroup>

@@ -2,6 +2,7 @@
 #include "AnimationPlayer.h"
 #include "Appearance.h"
 #include "BehaviorController.h"
+#include "ComInitializer.h"
 #include "Creature.h"
 #include "CreatureIO.h"
 #include "CreaturePose.h"
@@ -52,7 +53,7 @@ LRESULT CALLBACK WindowProc(
 
         const auto& pose = g_player.GetPose();
 
-        g_renderer.BeginFrame();
+        if (!g_renderer.BeginFrame()) return 0;
         g_renderer.BeginSprite();
 
         for (const auto& part : skeleton.Parts())
@@ -140,8 +141,8 @@ int WINAPI wWinMain(
     PWSTR,
     int)
 {
-    const auto hr = CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED);
-    if (FAILED(hr)) return 0;
+    CComInitializer comInit;
+    if (!comInit.Succeeded()) return 0;
 
     constexpr wchar_t CLASS_NAME[] =
         L"DesktopCreature";
@@ -199,8 +200,6 @@ int WINAPI wWinMain(
         TranslateMessage(&msg);
         DispatchMessage(&msg);
     }
-
-    CoUninitialize();
 
     return 0;
 }
