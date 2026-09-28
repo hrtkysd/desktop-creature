@@ -122,6 +122,9 @@
     <ClInclude Include="ICreatureEditContext.h">
       <Filter>Editor</Filter>
     </ClInclude>
+    <ClInclude Include="FileOperation.h">
+      <Filter>IO</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AnimationPlayer.cpp">
@@ -178,6 +181,9 @@
     </ClCompile>
     <ClCompile Include="AnimationEditor.cpp">
       <Filter>Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="FileOperation.cpp">
+      <Filter>IO</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

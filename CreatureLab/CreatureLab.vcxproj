@@ -98,7 +98,6 @@
     <ClInclude Include="EditorCommand.h" />
     <ClInclude Include="EditorContext.h" />
     <ClInclude Include="EditorController.h" />
-    <ClInclude Include="FileOperation.h" />
     <ClInclude Include="GenomePanel.h" />
     <ClInclude Include="ImGuiMainMenuBarScope.h" />
     <ClInclude Include="ImGuiMenuScope.h" />
@@ -159,7 +158,6 @@
     <ClCompile Include="DocumentController.cpp" />
     <ClCompile Include="EditorContext.cpp" />
     <ClCompile Include="EditorController.cpp" />
-    <ClCompile Include="FileOperation.cpp" />
     <ClCompile Include="GenomePanel.cpp" />
     <ClCompile Include="ImGuiMainMenuBarScope.cpp" />
     <ClCompile Include="ImGuiMenuScope.cpp" />

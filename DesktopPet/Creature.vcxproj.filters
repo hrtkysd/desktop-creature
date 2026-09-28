@@ -19,12 +19,6 @@
     <ClCompile Include="BehaviorController.cpp">
       <Filter>Creature\Behavior</Filter>
     </ClCompile>
-    <ClCompile Include="CreatureRenderer.h">
-      <Filter>Render</Filter>
-    </ClCompile>
-    <ClCompile Include="CreatureRenderer.cpp">
-      <Filter>Render</Filter>
-    </ClCompile>
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>

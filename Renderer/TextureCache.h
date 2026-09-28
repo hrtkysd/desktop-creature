@@ -4,8 +4,7 @@
 #include <memory>
 #include <unordered_map>
 
-struct ID3D11Device;
-
+interface ID3D11Device;
 class CTexture;
 
 class CTextureCache

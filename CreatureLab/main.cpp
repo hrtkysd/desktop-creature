@@ -9,9 +9,16 @@ int WINAPI wWinMain(
 {
     UNREFERENCED_PARAMETER(hPrevInstance);
     UNREFERENCED_PARAMETER(pCmdLine);
-    CApp app;
 
+    const auto hr = CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED);
+    if (FAILED(hr)) return 0;
+
+    CApp app;
     if (!app.Initialize(hInstance, nCmdShow)) return -1;
 
-    return app.Run();
+    const auto result = app.Run();
+
+    CoUninitialize();
+
+    return result;
 }

@@ -1,11 +1,10 @@
 #pragma once
 
+#include "RenderTarget.h"
+
 #include <cstdint>
-
-#include <memory>
+#include <optional>
 #include <wrl/client.h>
-
-class CRenderTarget;
 
 interface ID3D11Device;
 interface ID3D11DeviceContext;
@@ -14,6 +13,8 @@ interface IDXGISwapChain;
 
 class CGraphicsDevice
 {
+public:
+    ~CGraphicsDevice();
 public:
     bool Initialize(
         HWND hWnd,
@@ -34,17 +35,18 @@ public:
     std::uint32_t GetViewportHeight() const;
 
     void SetRenderTarget(const CRenderTarget& target);
-    std::unique_ptr<CRenderTarget> CreateRenderTarget(
+    std::optional<CRenderTarget> CreateRenderTarget(
         std::uint32_t width,
         std::uint32_t height);
 
     bool BeginFrame();
     void Present();
 
-    void Shutdown();
 private:
+    void Shutdown();
+
     void Clear();
-    bool CreateRenderTarget();
+    bool CreateRenderTargetView();
 private:
     Microsoft::WRL::ComPtr<ID3D11Device> m_device;
     Microsoft::WRL::ComPtr<ID3D11DeviceContext> m_deviceContext;

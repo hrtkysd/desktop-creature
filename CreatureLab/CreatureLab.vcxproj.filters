@@ -50,9 +50,6 @@
     <Filter Include="Panel\Preview\Parts">
       <UniqueIdentifier>{664876b0-ea75-407c-845a-e12270a870f8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="FileIO">
-      <UniqueIdentifier>{7322d315-3c07-4e04-993f-86eb20377e81}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Misc">
       <UniqueIdentifier>{1068c082-61c5-4286-bd31-5ba8d6d50048}</UniqueIdentifier>
     </Filter>
@@ -155,9 +152,6 @@
     <ClInclude Include="RenderPartItem.h">
       <Filter>Panel\Preview\Parts</Filter>
     </ClInclude>
-    <ClInclude Include="FileOperation.h">
-      <Filter>FileIO</Filter>
-    </ClInclude>
     <ClInclude Include="UndoBuffer.h">
       <Filter>Transaction</Filter>
     </ClInclude>
@@ -251,9 +245,6 @@
     </ClCompile>
     <ClCompile Include="RenderPartItem.cpp">
       <Filter>Panel\Preview\Parts</Filter>
-    </ClCompile>
-    <ClCompile Include="FileOperation.cpp">
-      <Filter>FileIO</Filter>
     </ClCompile>
     <ClCompile Include="UndoScope.cpp">
       <Filter>Transaction</Filter>
