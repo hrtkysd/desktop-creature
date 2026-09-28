@@ -264,6 +264,16 @@ void CApp::Render()
     }
     m_graphicsRenderer.BeginFrame();
 
+    const auto contentSize = m_previewPanel.GetPreviewContentSize();
+    const auto contentWidth = static_cast<std::uint32_t>(contentSize.x);
+    const auto contentHeight = static_cast<std::uint32_t>(contentSize.y);
+    if (contentWidth > 0 && contentHeight > 0 &&
+        (contentWidth != m_previewRenderTarget->Width() || contentHeight != m_previewRenderTarget->Height()))
+    {
+        m_previewRenderTarget =
+            m_graphicsRenderer.CreateRenderTarget(contentWidth, contentHeight);
+    }
+
     m_previewPanel.DrawUi(
         *pose,
         *m_textureCache,

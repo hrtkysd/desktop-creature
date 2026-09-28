@@ -49,7 +49,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)CreatureCore;$(SolutionDir)Renderer;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)CreatureCore;$(SolutionDir)Renderer;$(SolutionDir)Common</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -65,7 +65,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)CreatureCore;$(SolutionDir)Renderer;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)CreatureCore;$(SolutionDir)Renderer;$(SolutionDir)Common</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -76,10 +76,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\Common\FileOperation.cpp" />
     <ClCompile Include="BehaviorController.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\Common\FileOperation.h" />
     <ClInclude Include="BehaviorController.h" />
   </ItemGroup>
   <ItemGroup>

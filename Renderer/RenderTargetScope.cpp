@@ -6,7 +6,6 @@ CRenderTargetScope::CRenderTargetScope(
     ID3D11DeviceContext* context,
     const CRenderTarget& target)
     : m_context(context)
-    , m_prevRenderTarget(target.RTV())
 {
     ID3D11RenderTargetView* prev = nullptr;
 

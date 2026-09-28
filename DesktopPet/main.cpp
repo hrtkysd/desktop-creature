@@ -1,16 +1,16 @@
 #include "Animation.h"
 #include "AnimationPlayer.h"
 #include "Appearance.h"
+#include "BehaviorController.h"
 #include "Creature.h"
 #include "CreatureIO.h"
 #include "CreaturePose.h"
-#include "BehaviorController.h"
 #include "FileOperation.h"
 #include "GraphicsRenderer.h"
-#include "Skeleton.h"
-#include "Texture.h"
 #include "PartTransformBuilder.h"
+#include "Skeleton.h"
 #include "SpriteRenderDescription.h"
+#include "Texture.h"
 #include "TextureCache.h"
 
 #include <optional>
@@ -143,7 +143,6 @@ int WINAPI wWinMain(
     const auto hr = CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED);
     if (FAILED(hr)) return 0;
 
-
     constexpr wchar_t CLASS_NAME[] =
         L"DesktopCreature";
 
@@ -172,9 +171,8 @@ int WINAPI wWinMain(
         nullptr
     );
     if (!hWnd) return 0;
-
-    const auto filePath = IO::CFileOperation::ShowOpenCreatureDialog(hWnd);
-    if (filePath.empty()) return 0;
+    const auto filepath = CFileOperation::ShowOpenCreatureDialog(hWnd);
+    if (filepath.empty()) return 0;
 
     SetLayeredWindowAttributes(
         hWnd,
@@ -183,9 +181,8 @@ int WINAPI wWinMain(
         LWA_COLORKEY);
 
     ShowWindow(hWnd, SW_SHOW);
-    SetTimer(hWnd, 1, 16, nullptr); // about 60 fps.
 
-    if (!IO::CCreatureIO::LoadFromFile(filePath, g_creature))
+    if (!IO::CCreatureIO::LoadFromFile(filepath, g_creature))
     {
         return 0;
     }
@@ -193,6 +190,8 @@ int WINAPI wWinMain(
     if (!g_renderer.Initialize(hWnd, 1280, 760)) return 0;
     g_cache.emplace(g_renderer.GetDevice());
     g_player.Play();
+
+    SetTimer(hWnd, 1, 16, nullptr); // about 60 fps.
 
     MSG msg{};
     while (GetMessage(&msg, nullptr, 0, 0))

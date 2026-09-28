@@ -49,7 +49,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)CreatureCore;$(SolutionDir)Renderer;$(SolutionDir)third_party\imgui;$(SolutionDir)third_party\imgui\misc\cpp;$(SolutionDir)third_party\imgui\backends</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)CreatureCore;$(SolutionDir)Renderer;$(SolutionDir)Common;$(SolutionDir)third_party\imgui;$(SolutionDir)third_party\imgui\misc\cpp;$(SolutionDir)third_party\imgui\backends</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
@@ -68,7 +68,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)CreatureCore;$(SolutionDir)Renderer;$(SolutionDir)third_party\imgui;$(SolutionDir)third_party\imgui\misc\cpp;$(SolutionDir)third_party\imgui\backends</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)CreatureCore;$(SolutionDir)Renderer;$(SolutionDir)Common;$(SolutionDir)third_party\imgui;$(SolutionDir)third_party\imgui\misc\cpp;$(SolutionDir)third_party\imgui\backends</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
@@ -82,6 +82,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\Common\FileOperation.h" />
     <ClInclude Include="..\third_party\imgui\backends\imgui_impl_dx11.h" />
     <ClInclude Include="..\third_party\imgui\backends\imgui_impl_win32.h" />
     <ClInclude Include="..\third_party\imgui\imconfig.h" />
@@ -118,6 +119,10 @@
     <ClInclude Include="Window.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\Common\FileOperation.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="..\third_party\imgui\backends\imgui_impl_dx11.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>

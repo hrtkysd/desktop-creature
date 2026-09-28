@@ -56,6 +56,9 @@
     <Filter Include="Transaction">
       <UniqueIdentifier>{d1d36d08-ca58-4053-9d4d-cfa0814e4bf1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Common">
+      <UniqueIdentifier>{ef13ecc5-8290-4ba9-b266-f17fa8e4da1c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\third_party\imgui\backends\imgui_impl_dx11.h">
@@ -161,6 +164,9 @@
     <ClInclude Include="ContinuousEditUndoScope.h">
       <Filter>Transaction</Filter>
     </ClInclude>
+    <ClInclude Include="..\Common\FileOperation.h">
+      <Filter>Common</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\third_party\imgui\imgui.cpp">
@@ -254,6 +260,9 @@
     </ClCompile>
     <ClCompile Include="ContinuousEditUndoScope.cpp">
       <Filter>Transaction</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\FileOperation.cpp">
+      <Filter>Common</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

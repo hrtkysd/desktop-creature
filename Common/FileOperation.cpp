@@ -1,12 +1,9 @@
-#include "pch.h"
 #include "FileOperation.h"
 
 #include <shobjidl.h>
 #include <wrl/client.h>
 
 using Microsoft::WRL::ComPtr;
-
-using namespace Creature::IO;
 
 namespace
 {

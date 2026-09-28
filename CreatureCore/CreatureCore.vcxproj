@@ -94,7 +94,6 @@
     <ClInclude Include="AppearanceEditor.h" />
     <ClInclude Include="CreatureEditor.h" />
     <ClInclude Include="CreatureIO.h" />
-    <ClInclude Include="FileOperation.h" />
     <ClInclude Include="ICreatureEditContext.h" />
     <ClInclude Include="Interpolation.h" />
     <ClInclude Include="MathUtils.h" />
@@ -126,7 +125,6 @@
     <ClCompile Include="CreatureEditor.cpp" />
     <ClCompile Include="CreatureIO.cpp" />
     <ClCompile Include="CreaturePose.cpp" />
-    <ClCompile Include="FileOperation.cpp" />
     <ClCompile Include="GenomeGenerator.cpp" />
     <ClInclude Include="PartPose.h" />
     <ClInclude Include="Matrix3x2.h" />
