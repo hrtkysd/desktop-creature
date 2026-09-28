@@ -5,6 +5,11 @@
 
 #include <iterator>
 
+CGraphicsDevice::~CGraphicsDevice()
+{
+    Shutdown();
+}
+
 bool CGraphicsDevice::Initialize(
     HWND hWnd,
     std::uint32_t width,
@@ -45,9 +50,9 @@ bool CGraphicsDevice::Initialize(
         &featureLevel,
         m_deviceContext.GetAddressOf());
 
-    if (FAILED(hr) || !m_device) return false;
+    if (FAILED(hr) || !m_device || !m_deviceContext) return false;
 
-    if (!CreateRenderTarget()) return false;
+    if (!CreateRenderTargetView()) return false;
 
     SetViewport(width, height);
 
@@ -69,7 +74,7 @@ bool CGraphicsDevice::Resize(std::uint32_t width, std::uint32_t height)
         DXGI_FORMAT_UNKNOWN,
         0);
     if (FAILED(hr)) return false;
-    if (!CreateRenderTarget()) return false;
+    if (!CreateRenderTargetView()) return false;
 
     SetViewport(width, height);
 
@@ -122,7 +127,7 @@ void CGraphicsDevice::SetRenderTarget(const CRenderTarget& target)
     m_deviceContext->OMSetRenderTargets(1, &rtv, nullptr);
 }
 
-std::unique_ptr<CRenderTarget> CGraphicsDevice::CreateRenderTarget(
+std::optional<CRenderTarget> CGraphicsDevice::CreateRenderTarget(
     std::uint32_t width,
     std::uint32_t height)
 {
@@ -145,7 +150,7 @@ std::unique_ptr<CRenderTarget> CGraphicsDevice::CreateRenderTarget(
         nullptr,
         texture.GetAddressOf());
 
-    if (FAILED(hr)) return nullptr;
+    if (FAILED(hr)) return std::nullopt;
 
     Microsoft::WRL::ComPtr<ID3D11RenderTargetView> rtv;
     hr = m_device->CreateRenderTargetView(
@@ -153,7 +158,7 @@ std::unique_ptr<CRenderTarget> CGraphicsDevice::CreateRenderTarget(
         nullptr,
         rtv.GetAddressOf());
 
-    if (FAILED(hr)) return nullptr;
+    if (FAILED(hr)) return std::nullopt;
 
     Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> srv;
     hr = m_device->CreateShaderResourceView(
@@ -161,9 +166,9 @@ std::unique_ptr<CRenderTarget> CGraphicsDevice::CreateRenderTarget(
         nullptr,
         srv.GetAddressOf());
 
-    if (FAILED(hr)) return nullptr;
+    if (FAILED(hr)) return std::nullopt;
 
-    return std::make_unique<CRenderTarget>(
+    return CRenderTarget(
         std::move(rtv),
         std::move(srv),
         width,
@@ -216,7 +221,7 @@ void CGraphicsDevice::Clear()
     m_renderTargetView.Reset();
 }
 
-bool CGraphicsDevice::CreateRenderTarget()
+bool CGraphicsDevice::CreateRenderTargetView()
 {
     if (!m_swapChain || !m_device) return false;
 

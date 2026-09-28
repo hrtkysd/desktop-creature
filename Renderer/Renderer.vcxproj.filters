@@ -17,6 +17,9 @@
     <Filter Include="hlsl">
       <UniqueIdentifier>{18a3458f-e32c-464a-9f35-805e1784cf37}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Renderer">
+      <UniqueIdentifier>{5965c91a-df37-4645-a56a-06bf7a6801db}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -43,6 +46,9 @@
     </ClCompile>
     <ClCompile Include="RenderTargetScope.cpp">
       <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="GraphicsRenderer.cpp">
+      <Filter>Renderer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -73,6 +79,9 @@
     </ClInclude>
     <ClInclude Include="RenderTargetScope.h">
       <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphicsRenderer.h">
+      <Filter>Renderer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

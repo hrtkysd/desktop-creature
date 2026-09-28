@@ -6,16 +6,16 @@ CRenderTargetScope::CRenderTargetScope(
     ID3D11DeviceContext* context,
     const CRenderTarget& target)
     : m_context(context)
-    , m_prevRenderTarget(target.RTV())
 {
-    ID3D11RenderTargetView* prev = nullptr;
-
+    ID3D11RenderTargetView* prevRTV = nullptr;
+    ID3D11DepthStencilView* prevDSV = nullptr;
     m_context->OMGetRenderTargets(
         1,
-        &prev,
-        nullptr);
+        &prevRTV,
+        &prevDSV);
 
-    m_prevRenderTarget.Attach(prev);
+    m_prevRenderTarget.Attach(prevRTV);
+    m_prevDepthStencil.Attach(prevDSV);
 
     UINT count = 1;
     m_context->RSGetViewports(
@@ -43,11 +43,12 @@ CRenderTargetScope::CRenderTargetScope(
 CRenderTargetScope::~CRenderTargetScope()
 {
     auto rtv = m_prevRenderTarget.Get();
+    auto dsv = m_prevDepthStencil.Get();
 
     m_context->OMSetRenderTargets(
         1,
         &rtv,
-        nullptr);
+        dsv);
 
     m_context->RSSetViewports(
         1,

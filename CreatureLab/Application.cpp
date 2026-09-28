@@ -4,10 +4,8 @@
 #include "Application.h"
 #include "Appearance.h"
 #include "CreaturePose.h"
-#include "RenderTarget.h"
 #include "RenderTargetScope.h"
 #include "Texture.h"
-#include "TextureCache.h"
 
 // third party
 #include "imgui.h"
@@ -32,7 +30,6 @@ extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(
 
 CApp::CApp()
     : m_creatureEditor(m_creature)
-    , m_spriteRenderer(m_graphics)
     , m_undoBuffer(m_creature, 100)
     , m_editorContext(m_undoBuffer)
     , m_documentController(m_window, m_creature, m_documentContext)
@@ -93,15 +90,12 @@ bool CApp::CreateGraphics()
 
     const auto width = static_cast<std::uint32_t>(rect.right - rect.left);
     const auto height = static_cast<std::uint32_t>(rect.bottom - rect.top);
-    if (!m_graphics.Initialize(m_window.Handle(), width, height)) return false;
+    if (!m_graphicsRenderer.Initialize(m_window.Handle(), width, height)) return false;
 
-    auto renderTarget = m_graphics.CreateRenderTarget(width, height);
-    if (!renderTarget) return false;
-    m_previewRenderTarget = std::move(renderTarget);
-
-    if (!m_spriteRenderer.Initialize()) return false;
-
-    m_textureCache = std::make_shared<CTextureCache>(m_graphics.GetDevice());
+    auto renderTarget = m_graphicsRenderer.CreateRenderTarget(width, height);
+    if (!renderTarget.has_value()) return false;
+    m_previewRenderTarget.emplace(*renderTarget);
+    m_textureCache.emplace(m_graphicsRenderer.GetDevice());
 
     return true;
 }
@@ -124,8 +118,8 @@ bool CApp::InitializeImGui()
     }
 
     if (!ImGui_ImplDX11_Init(
-        m_graphics.GetDevice(),
-        m_graphics.GetContext()))
+        m_graphicsRenderer.GetDevice(),
+        m_graphicsRenderer.GetContext()))
     {
         ImGui_ImplWin32_Shutdown();
         return false;
@@ -268,7 +262,20 @@ void CApp::Render()
 
         pose = &m_animationPlayer.GetPose();
     }
-    m_graphics.BeginFrame();
+
+    if (!m_graphicsRenderer.BeginFrame()) return;
+
+    const auto contentSize = m_previewPanel.GetPreviewContentSize();
+    const auto contentWidth = static_cast<std::uint32_t>(contentSize.x);
+    const auto contentHeight = static_cast<std::uint32_t>(contentSize.y);
+    if (contentWidth > 0 && contentHeight > 0 &&
+        (contentWidth != m_previewRenderTarget->Width() || contentHeight != m_previewRenderTarget->Height()))
+    {
+        if (auto newRenderTarget = m_graphicsRenderer.CreateRenderTarget(contentWidth, contentHeight))
+        {
+            m_previewRenderTarget = std::move(newRenderTarget);
+        }
+    }
 
     m_previewPanel.DrawUi(
         *pose,
@@ -279,21 +286,21 @@ void CApp::Render()
 
     {
         CRenderTargetScope scope(
-            m_graphics.GetContext(),
+            m_graphicsRenderer.GetContext(),
             *m_previewRenderTarget,
             { 0.0f, 0.0f, 0.0f, 0.0f });
 
-        m_graphics.SetViewport(
+        m_graphicsRenderer.SetViewport(
             m_previewRenderTarget->Width(),
             m_previewRenderTarget->Height());
-
-        m_spriteRenderer.Begin();
-        m_previewPanel.RenderPreview(m_spriteRenderer);
+        auto& spriteRenderer = m_graphicsRenderer.SpriteRenderer();
+        spriteRenderer.Begin();
+        m_previewPanel.RenderPreview(spriteRenderer);
     }
 
     ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 
-    m_graphics.Present();
+    m_graphicsRenderer.Present();
 }
 
 void CApp::Shutdown()
@@ -306,8 +313,6 @@ void CApp::Shutdown()
 
         m_bImGuiInitialized = false;
     }
-
-    m_graphics.Shutdown();
 
     if (m_hInstance)
     {
@@ -389,7 +394,7 @@ LRESULT CApp::HandleMessage(
         {
             const auto width = static_cast<UINT>(LOWORD(lParam));
             const auto height = static_cast<UINT>(HIWORD(lParam));
-            m_graphics.Resize(width, height);
+            m_graphicsRenderer.Resize(width, height);
         }
     }
     return 0;

@@ -50,14 +50,14 @@
     <Filter Include="Panel\Preview\Parts">
       <UniqueIdentifier>{664876b0-ea75-407c-845a-e12270a870f8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="FileIO">
-      <UniqueIdentifier>{7322d315-3c07-4e04-993f-86eb20377e81}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Misc">
       <UniqueIdentifier>{1068c082-61c5-4286-bd31-5ba8d6d50048}</UniqueIdentifier>
     </Filter>
     <Filter Include="Transaction">
       <UniqueIdentifier>{d1d36d08-ca58-4053-9d4d-cfa0814e4bf1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Common">
+      <UniqueIdentifier>{ef13ecc5-8290-4ba9-b266-f17fa8e4da1c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -155,9 +155,6 @@
     <ClInclude Include="RenderPartItem.h">
       <Filter>Panel\Preview\Parts</Filter>
     </ClInclude>
-    <ClInclude Include="FileOperation.h">
-      <Filter>FileIO</Filter>
-    </ClInclude>
     <ClInclude Include="UndoBuffer.h">
       <Filter>Transaction</Filter>
     </ClInclude>
@@ -166,6 +163,12 @@
     </ClInclude>
     <ClInclude Include="ContinuousEditUndoScope.h">
       <Filter>Transaction</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\FileOperation.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\ComInitializer.h">
+      <Filter>Common</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -252,9 +255,6 @@
     <ClCompile Include="RenderPartItem.cpp">
       <Filter>Panel\Preview\Parts</Filter>
     </ClCompile>
-    <ClCompile Include="FileOperation.cpp">
-      <Filter>FileIO</Filter>
-    </ClCompile>
     <ClCompile Include="UndoScope.cpp">
       <Filter>Transaction</Filter>
     </ClCompile>
@@ -263,6 +263,12 @@
     </ClCompile>
     <ClCompile Include="ContinuousEditUndoScope.cpp">
       <Filter>Transaction</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\FileOperation.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\ComInitializer.cpp">
+      <Filter>Common</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

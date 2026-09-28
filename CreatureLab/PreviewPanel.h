@@ -2,6 +2,7 @@
 
 #include "PreviewEditor.h"
 #include "RenderPartItem.h"
+#include "Vec2.h"
 
 namespace Creature
 {
@@ -12,7 +13,6 @@ namespace Creature
     namespace Math
     {
         struct RectCorner;
-        struct Vec2;
 
         class CMatrix3x2;
     }
@@ -39,6 +39,7 @@ public:
         CTextureCache& textureCache,
         const CRenderTarget& renderTarget);
     void RenderPreview(CSpriteRenderer& renderer);
+    const Creature::Math::Vec2& GetPreviewContentSize() const;
 private:
     void DrawSelectPartFrameRect(
         ImDrawList* drawList,
@@ -58,6 +59,6 @@ private:
     CPreviewEditor m_previewEditor;
     const Creature::CSkeleton& m_skeleton;
     const Creature::CAppearance& m_apperance;
-
+    Creature::Math::Vec2 m_contentSize{};
     std::vector<CRenderPartItem> m_vecRenderItem;
 };

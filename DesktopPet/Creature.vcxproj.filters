@@ -14,22 +14,31 @@
     <Filter Include="Render">
       <UniqueIdentifier>{7adcfe67-5f91-4c97-aa12-d41db13e45be}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Common">
+      <UniqueIdentifier>{29c6f5d9-4911-4609-8325-7052c04393a8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BehaviorController.cpp">
       <Filter>Creature\Behavior</Filter>
     </ClCompile>
-    <ClCompile Include="CreatureRenderer.h">
-      <Filter>Render</Filter>
-    </ClCompile>
-    <ClCompile Include="CreatureRenderer.cpp">
-      <Filter>Render</Filter>
-    </ClCompile>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="..\Common\FileOperation.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\ComInitializer.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BehaviorController.h">
       <Filter>Creature\Behavior</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\FileOperation.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\ComInitializer.h">
+      <Filter>Common</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -1,21 +1,33 @@
 #include "Animation.h"
-#include "Creature.h"
-#include "CreaturePose.h"
-#include "CreatureRenderer.h"
+#include "AnimationPlayer.h"
+#include "Appearance.h"
 #include "BehaviorController.h"
-#include "Features.h"
-#include "Genome.h"
+#include "ComInitializer.h"
+#include "Creature.h"
+#include "CreatureIO.h"
+#include "CreaturePose.h"
+#include "FileOperation.h"
+#include "GraphicsRenderer.h"
+#include "PartTransformBuilder.h"
+#include "Skeleton.h"
+#include "SpriteRenderDescription.h"
+#include "Texture.h"
+#include "TextureCache.h"
 
-#include <cmath>
+#include <optional>
 #include <Windows.h>
-#include <chrono>
 
-constexpr int CREATURE_WIDTH = 64;
-constexpr int CREATURE_HEIGHT = 64;
+constexpr int CREATURE_WIDTH = 1280;
+constexpr int CREATURE_HEIGHT = 760;
 
-//Creature::CCreature g_creature(95647);
 CBehaviorController g_controller;
 
+using namespace Creature;
+
+Animation::CAnimationPlayer g_player;
+CCreature g_creature;
+CGraphicsRenderer g_renderer;
+std::optional<CTextureCache> g_cache;
 
 LRESULT CALLBACK WindowProc(
     HWND hwnd,
@@ -29,52 +41,59 @@ LRESULT CALLBACK WindowProc(
     {
         constexpr float deltaTime = 1.0f / 60.0f;
 
-        POINT mousePos{};
-        GetCursorPos(&mousePos);
+        const auto& animations = g_creature.GetReadonlyAnimations();
+        if (animations.empty()) return 0;
 
-        InputState input{};
+        const auto& animation = animations.front();
+        const auto& skeleton = g_creature.GetReadonlySkeleton();
+        const auto& creatureAppearance = g_creature.GetReadonlyAppearance();
 
-        input.mouseX =
-            static_cast<float>(mousePos.x);
+        g_player.Update(deltaTime);
+        g_player.SamplePose(animation, skeleton);
 
-        input.mouseY =
-            static_cast<float>(mousePos.y);
+        const auto& pose = g_player.GetPose();
 
-        input.leftButtonDown =
-            (GetAsyncKeyState(VK_LBUTTON) & 0x8000) != 0;
+        if (!g_renderer.BeginFrame()) return 0;
+        g_renderer.BeginSprite();
 
-        //
-        // 意思決定
-        //
-        //g_controller.Update(
-        //    g_creature,
-        //    input,
-        //    deltaTime
-        //);
+        for (const auto& part : skeleton.Parts())
+        {
+            const auto appearance = creatureAppearance.FindByPartId(part.id);
+            if (!appearance) continue;
 
-        //
-        // 実際の位置更新
-        //
-        //g_creature.Update(deltaTime);
+            auto texture = g_cache->Load(appearance->texturePath);
+            if (!texture) continue;
 
-        //
-        // Win32 Windowへ反映
-        //
-    /*    SetWindowPos(
-            hwnd,
-            HWND_TOPMOST,
-            static_cast<int>(g_creature.GetPositionX()),
-            static_cast<int>(g_creature.GetPositionY()),
-            CREATURE_WIDTH,
-            CREATURE_HEIGHT,
-            SWP_NOACTIVATE
-        );*/
+            constexpr float creatureScale = 0.1f;
 
-        InvalidateRect(
-            hwnd,
-            nullptr,
-            FALSE
-        );
+            const auto creatureToScreen =
+                Math::CMatrix3x2::CreateScale(
+                    { creatureScale, creatureScale }) *
+                Math::CMatrix3x2::CreateTranslation(
+                    { 640.0f, 380.0f });
+
+            const auto worldTransform =
+                Math::CPartTransformBuilder::BuildWorld(
+                    part,
+                    skeleton,
+                    pose);
+
+            const auto screenTransform =
+                worldTransform * creatureToScreen;
+            CSpriteRenderDescription desc
+            {
+                texture,
+                {
+                    static_cast<float>(texture->GetWidth()),
+                    static_cast<float>(texture->GetHeight())
+                },
+                screenTransform,
+            };
+
+            g_renderer.DrawSprite(desc);
+        }
+
+        g_renderer.Present();
         return 0;
     }
 
@@ -86,9 +105,6 @@ LRESULT CALLBACK WindowProc(
         RECT client{};
         GetClientRect(hwnd, &client);
 
-        //
-        // ColorKeyで透明になる背景
-        //
         HBRUSH background =
             CreateSolidBrush(RGB(0, 0, 0));
 
@@ -98,21 +114,12 @@ LRESULT CALLBACK WindowProc(
             background);
 
         DeleteObject(background);
-
-   /*     const auto& pose =
-            g_creature
-            .GetAnimation()
-            .GetPose();
-
-        CCreatureRenderer::Draw(hdc, client, g_creature.GetGenome(), pose);*/
-
         EndPaint(hwnd, &ps);
 
         return 0;
     }
 
     case WM_NCHITTEST:
-        // マウス操作を背後のアプリに通す
         return HTTRANSPARENT;
 
     case WM_DESTROY:
@@ -134,60 +141,60 @@ int WINAPI wWinMain(
     PWSTR,
     int)
 {
+    CComInitializer comInit;
+    if (!comInit.Succeeded()) return 0;
+
     constexpr wchar_t CLASS_NAME[] =
         L"DesktopCreature";
 
     WNDCLASS wc{};
-
     wc.lpfnWndProc = WindowProc;
     wc.hInstance = instance;
     wc.lpszClassName = CLASS_NAME;
 
     RegisterClass(&wc);
 
-    HWND hwnd = CreateWindowEx(
+    HWND hWnd = CreateWindowEx(
         WS_EX_LAYERED |
         WS_EX_TOPMOST |
         WS_EX_TOOLWINDOW |
         WS_EX_NOACTIVATE,
-
         CLASS_NAME,
         L"Creature",
-
         WS_POPUP,
-
         100,
         500,
         CREATURE_WIDTH,
         CREATURE_HEIGHT,
-
         nullptr,
         nullptr,
         instance,
         nullptr
     );
-
-    if (!hwnd)
-        return 0;
+    if (!hWnd) return 0;
+    const auto filepath = CFileOperation::ShowOpenCreatureDialog(hWnd);
+    if (filepath.empty()) return 0;
 
     SetLayeredWindowAttributes(
-        hwnd,
+        hWnd,
         RGB(0, 0, 0),
         0,
-        LWA_COLORKEY
-    );
+        LWA_COLORKEY);
 
-    ShowWindow(hwnd, SW_SHOW);
+    ShowWindow(hWnd, SW_SHOW);
 
-    SetTimer(
-        hwnd,
-        1,
-        16, // 約60fps
-        nullptr
-    );
+    if (!IO::CCreatureIO::LoadFromFile(filepath, g_creature))
+    {
+        return 0;
+    }
+
+    if (!g_renderer.Initialize(hWnd, 1280, 760)) return 0;
+    g_cache.emplace(g_renderer.GetDevice());
+    g_player.Play();
+
+    SetTimer(hWnd, 1, 16, nullptr); // about 60 fps.
 
     MSG msg{};
-
     while (GetMessage(&msg, nullptr, 0, 0))
     {
         TranslateMessage(&msg);

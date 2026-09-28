@@ -1,7 +1,7 @@
 #pragma once
 
 #include <filesystem>
-#include <windef.h>
+#include <Windows.h>
 
 class CFileOperation
 {

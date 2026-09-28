@@ -11,18 +11,17 @@
 #include "EditorContext.h"
 #include "EditorController.h"
 #include "Genome.h"
-#include "GraphicsDevice.h"
+#include "GraphicsRenderer.h"
 #include "LabController.h"
 #include "MenuBar.h"
 #include "PreviewPanel.h"
-#include "SpriteRenderer.h"
+#include "RenderTarget.h"
+#include "TextureCache.h"
 #include "UndoBuffer.h"
 #include "Window.h"
 
+#include <optional>
 #include <windef.h>
-
-class CRenderTarget;
-class CTextureCache;
 
 class CApp final
 {
@@ -64,18 +63,17 @@ private:
     HINSTANCE m_hInstance = nullptr;
     CWindow m_window;
 
-    CGraphicsDevice m_graphics;
-    std::unique_ptr<CRenderTarget> m_previewRenderTarget;
+    CGraphicsRenderer m_graphicsRenderer;
+    std::optional<CRenderTarget> m_previewRenderTarget;
 
     Creature::Genome m_genome;
     Creature::CCreature m_creature;
     Creature::Editor::CCreatureEditor m_creatureEditor;
-    CSpriteRenderer m_spriteRenderer;
     CUndoBuffer m_undoBuffer;
 
     CCreatureTreePanel m_creatureTreePanel;
 
-    std::shared_ptr<CTextureCache> m_textureCache;
+    std::optional<CTextureCache> m_textureCache;
 
     Creature::Animation::CAnimationPlayer m_animationPlayer;
     Creature::Animation::AnimationId m_idleAnimationId = Creature::Animation::INVALID_ANIMATION_ID;

@@ -16,7 +16,6 @@
 #include "Texture.h"
 #include "TextureCache.h"
 #include "TransformRect.h"
-#include "Vec2.h"
 
 #include "imgui.h"
 
@@ -69,6 +68,12 @@ void CPreviewPanel::DrawUi(
 
     const ImVec2 panelOrigin = ImGui::GetCursorScreenPos();
     const ImVec2 panelArea = ImGui::GetContentRegionAvail();
+
+    m_contentSize =
+    {
+        std::max(0.0f, panelArea.x),
+        std::max(0.0f, panelArea.y)
+    };
 
     const Vec2 previewSize
     {
@@ -201,6 +206,11 @@ void CPreviewPanel::RenderPreview(CSpriteRenderer& renderer)
 
         renderer.Draw(desc);
     }
+}
+
+const Vec2& CPreviewPanel::GetPreviewContentSize() const
+{
+    return m_contentSize;
 }
 
 void CPreviewPanel::DrawResizeHandle(
