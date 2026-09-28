@@ -11,9 +11,6 @@
     <Filter Include="Creature\Behavior">
       <UniqueIdentifier>{7515adcb-d7da-4bef-aaa8-54f744e8c44c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Render">
-      <UniqueIdentifier>{7adcfe67-5f91-4c97-aa12-d41db13e45be}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Common">
       <UniqueIdentifier>{29c6f5d9-4911-4609-8325-7052c04393a8}</UniqueIdentifier>
     </Filter>
@@ -29,6 +26,7 @@
     <ClCompile Include="..\Common\ComInitializer.cpp">
       <Filter>Common</Filter>
     </ClCompile>
+    <ClCompile Include="pch.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BehaviorController.h">
@@ -40,5 +38,6 @@
     <ClInclude Include="..\Common\ComInitializer.h">
       <Filter>Common</Filter>
     </ClInclude>
+    <ClInclude Include="pch.h" />
   </ItemGroup>
 </Project>
