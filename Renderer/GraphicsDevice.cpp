@@ -50,7 +50,7 @@ bool CGraphicsDevice::Initialize(
         &featureLevel,
         m_deviceContext.GetAddressOf());
 
-    if (FAILED(hr) || !m_device || m_deviceContext) return false;
+    if (FAILED(hr) || !m_device || !m_deviceContext) return false;
 
     if (!CreateRenderTargetView()) return false;
 
