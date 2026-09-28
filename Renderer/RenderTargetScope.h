@@ -20,6 +20,7 @@ public:
 
 private:
     Microsoft::WRL::ComPtr<ID3D11RenderTargetView> m_prevRenderTarget;
+    Microsoft::WRL::ComPtr<ID3D11DepthStencilView> m_prevDepthStencil;
 
     D3D11_VIEWPORT m_prevViewport{};
     ID3D11DeviceContext* m_context = nullptr;
