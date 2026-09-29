@@ -40,6 +40,12 @@ jobs:
           languages: c-cpp
           build-mode: manual
 
+      - name: Restore NuGet packages
+        run: >
+          msbuild Creature.sln
+          /t:Restore
+          /p:RestorePackagesConfig=true
+
       - name: Build
         run: >
           msbuild Creature.sln
