@@ -341,8 +341,6 @@ LRESULT CALLBACK CApp::WndProc(
             hWnd,
             GWLP_USERDATA,
             reinterpret_cast<LONG_PTR>(pApp));
-
-        pApp->m_window.Attach(hWnd);
     }
     else
     {
