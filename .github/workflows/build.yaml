@@ -19,6 +19,12 @@ jobs:
 
       - uses: microsoft/setup-msbuild@v2
 
+      - name: Restore NuGet packages
+        run: >
+          msbuild Creature.sln
+          /t:Restore
+          /p:RestorePackagesConfig=true
+
       - name: Build
         run: >
           msbuild Creature.sln
