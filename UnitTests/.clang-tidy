@@ -1,0 +1,2 @@
+Checks: '-bugprone-throwing-static-initialization'
+InheritParentConfig: true

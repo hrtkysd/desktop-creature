@@ -22,13 +22,22 @@ jobs:
 
       - uses: microsoft/setup-msbuild@v2
 
+      - name: Restore NuGet packages
+        run: >
+          msbuild Creature.sln
+          /t:Restore
+          /p:RestorePackagesConfig=true
+
       - name: Build
         run: >
           msbuild Creature.sln
           /m
           /p:Configuration=Debug
           /p:Platform=x64
-
+          
+      - name: Run Unit Tests
+        run: .\x64\Debug\CreatureCoreUnitTest.exe
+  
   build-release:
     name: Build Release
     runs-on: windows-2025
@@ -39,6 +48,12 @@ jobs:
           submodules: recursive
 
       - uses: microsoft/setup-msbuild@v2
+
+      - name: Restore NuGet packages
+        run: >
+          msbuild Creature.sln
+          /t:Restore
+          /p:RestorePackagesConfig=true
 
       - name: Build
         run: >
@@ -59,6 +74,12 @@ jobs:
       - uses: microsoft/setup-msbuild@v2
         with:
           msbuild-architecture: x64
+
+      - name: Restore NuGet packages
+        run: >
+          msbuild Creature.sln
+          /t:Restore
+          /p:RestorePackagesConfig=true
           
       - name: Run Clang-Tidy
         run: >

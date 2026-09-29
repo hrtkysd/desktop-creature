@@ -30,7 +30,7 @@ namespace Creature
             CSkeletonEditor& GetSkeletonEditor();
             CAppearanceEditor& GetAppearanceEditor();
         public:
-            const Animation::CAnimation* FindAnimationById(Animation::AnimationId id) const;
+            const Animation::CAnimation* FindReadonlyAnimationById(Animation::AnimationId id) const;
             Animation::AnimationId AddNewAnimation(const std::string& strName);
             Animation::AnimationId AddAnimation(Animation::CAnimation&& animation);
             Animation::AnimationId AddAnimationWithId(Animation::AnimationId id, const std::string& name);

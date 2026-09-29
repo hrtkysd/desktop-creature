@@ -336,9 +336,13 @@ bool CAnimationPanel::DrawTrack(const CAnimation& animation, const CAnimationTra
 
             if (edited)
             {
-                auto edited = keyFrame;
-                edited.fValue = fValue;
-                m_editor.AddOrUpdateKeyFrame(animation.GetAnimationId(), trackKey, edited);
+                auto editFrame = keyFrame;
+                editFrame.fValue = fValue;
+
+                if (!m_editor.AddOrUpdateKeyFrame(animation.GetAnimationId(), trackKey, editFrame))
+                {
+                    return false;
+                }
 
                 bChanged = true;
             }
@@ -372,7 +376,11 @@ bool CAnimationPanel::DrawTrack(const CAnimation& animation, const CAnimationTra
 
                         edited.eInterpolationToNext = value;
 
-                        m_editor.AddOrUpdateKeyFrame(animation.GetAnimationId(), trackKey, edited);
+                        if (!m_editor.AddOrUpdateKeyFrame(animation.GetAnimationId(), trackKey, edited))
+                        {
+                            scope.Cancel();
+                            return false;
+                        }
 
                         bChanged = true;
                     }

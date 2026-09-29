@@ -58,7 +58,7 @@ bool CCreatureEditor::RemovePart(PartId id)
     return true;
 }
 
-const CAnimation* CCreatureEditor::FindAnimationById(AnimationId id) const
+const CAnimation* CCreatureEditor::FindReadonlyAnimationById(AnimationId id) const
 {
     return m_creature.FindReadonlyAnimationById(id);
 }

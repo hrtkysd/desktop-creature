@@ -64,6 +64,8 @@ void CAnimationPlayer::SamplePose(const CAnimation& animation, const CSkeleton& 
     for (const auto& track : animation.GetAnimationTracks())
     {
         const auto& trackKey = track.GetKey();
+        if (!trackKey.IsValid()) return;
+
         const auto index = skeleton.FindPartIndexById(trackKey.GetPartId());
         if (index == INVALID_PART_INDEX) continue;
 
