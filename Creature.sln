@@ -15,6 +15,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UnitTests", "UnitTests", "{
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CreatureCoreUnitTest", "UnitTests\CreatureCoreUnitTest\CreatureCoreUnitTest.vcxproj", "{3C33E2E6-5EF7-4AED-817B-6A205E2CC165}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ImGuiWrapper", "third_party\ImGuiWrapper\ImGuiWrapper.vcxproj", "{B11864AC-FA2B-4BBF-8135-A8C09D8F2846}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -63,6 +65,12 @@ Global
 		{3C33E2E6-5EF7-4AED-817B-6A205E2CC165}.Release|x64.Build.0 = Release|x64
 		{3C33E2E6-5EF7-4AED-817B-6A205E2CC165}.Release|x86.ActiveCfg = Release|Win32
 		{3C33E2E6-5EF7-4AED-817B-6A205E2CC165}.Release|x86.Build.0 = Release|Win32
+		{B11864AC-FA2B-4BBF-8135-A8C09D8F2846}.Debug|x64.ActiveCfg = Debug|x64
+		{B11864AC-FA2B-4BBF-8135-A8C09D8F2846}.Debug|x64.Build.0 = Debug|x64
+		{B11864AC-FA2B-4BBF-8135-A8C09D8F2846}.Debug|x86.ActiveCfg = Debug|x64
+		{B11864AC-FA2B-4BBF-8135-A8C09D8F2846}.Release|x64.ActiveCfg = Release|x64
+		{B11864AC-FA2B-4BBF-8135-A8C09D8F2846}.Release|x64.Build.0 = Release|x64
+		{B11864AC-FA2B-4BBF-8135-A8C09D8F2846}.Release|x86.ActiveCfg = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

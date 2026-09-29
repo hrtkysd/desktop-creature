@@ -27,6 +27,13 @@ jobs:
         with:
           msbuild-architecture: x64
 
+      - name: Build ImGui
+        run: >
+          msbuild third_party\ImGuiWrapper\ImGuiWrapper.vcxproj
+          /m
+          /p:Configuration=Release
+          /p:Platform=x64
+
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v4
         with:
