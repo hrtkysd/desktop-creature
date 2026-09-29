@@ -96,15 +96,14 @@ bool CAnimation::AddOrUpdateKeyFrame(const CAnimationTrackKey& key, const FloatK
 
     if (auto track = FindAnimationTrack(key))
     {
-        track->AddOrUpdateKeyFrame(keyFrame);
-        return true;
+        return track->AddOrUpdateKeyFrame(keyFrame);
     }
     return false;
 }
 
 bool CAnimation::AddAnimationTrack(CAnimationTrack&& animationTrack)
 {
-    if (!animationTrack.GetKey().IsValid()) return false;
+    if (!animationTrack.IsValid()) return false;
 
     if (FindAnimationTrack(animationTrack.GetKey())) return false;
 

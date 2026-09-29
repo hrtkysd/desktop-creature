@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="pch.cpp" />
+    <ClCompile Include="AnimationTrackTest.cpp">
+      <Filter>Tests\Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimationEditTest.cpp">
+      <Filter>Tests\Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="MatrixTest.cpp">
+      <Filter>Tests\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimationPlayerTest.cpp">
+      <Filter>Tests\Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="Transform2DTest.cpp">
+      <Filter>Tests\Math</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="pch.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Tests">
+      <UniqueIdentifier>{180f6101-caf4-4c76-b6bb-43f4b19ac122}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tests\Animation">
+      <UniqueIdentifier>{de0e087a-d29b-482c-af61-7a7325e2582d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tests\Math">
+      <UniqueIdentifier>{42314fb4-a3e8-4b62-8151-4465bce3d771}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+</Project>

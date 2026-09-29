@@ -75,3 +75,4 @@ Thumbs.db
 .env
 .env.*
 /CreatureLab/imgui.ini
+/UnitTests/packages/

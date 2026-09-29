@@ -84,7 +84,7 @@ bool CCreatureIO::SaveAsFile(const CCreature& creature, const std::filesystem::p
         {
             json trackJson;
             const auto& key = track.GetKey();
-
+            if (!key.IsValid()) return false;
             trackJson["partId"] = key.GetPartId();
             trackJson["property"] = static_cast<int>(key.GetProperty());
             trackJson["keyFrames"] = json::array();
@@ -199,7 +199,7 @@ bool CCreatureIO::LoadFromFile(const std::filesystem::path& path, CCreature& cre
                     keyFrame.fValue = keyFrameJson["value"].get<float>();
                     keyFrame.eInterpolationToNext
                         = static_cast<Interpolation>(keyFrameJson["interpolation"].get<int>());
-                    track.AddOrUpdateKeyFrame(keyFrame);
+                    if (!track.AddOrUpdateKeyFrame(keyFrame)) return false;
                 }
 
                 if (!editor.GetAnimationEditor().AddTrack(animationId, std::move(track)))

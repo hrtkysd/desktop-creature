@@ -26,7 +26,9 @@ namespace Creature
             const CAnimationTrackKey& GetKey() const noexcept;
 
             const std::vector<FloatKeyFrame>& GetKeyFrames() const;
-            void AddOrUpdateKeyFrame(const FloatKeyFrame& keyFrame);
+            bool AddOrUpdateKeyFrame(const FloatKeyFrame& keyFrame);
+
+            bool IsValid() const;
         public:
             bool Matches(const CAnimationTrackKey& key) const noexcept;
         private:

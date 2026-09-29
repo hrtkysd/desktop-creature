@@ -32,8 +32,7 @@ bool CAnimationEditor::SetDuration(
 {
     if (auto animation = m_creature.FindAnimationById(id))
     {
-        animation->SetDuration(fDuration);
-        return true;
+        return animation->SetDuration(fDuration);
     }
     return false;
 }
