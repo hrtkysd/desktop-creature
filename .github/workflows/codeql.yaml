@@ -27,12 +27,19 @@ jobs:
         with:
           msbuild-architecture: x64
 
+      - name: Restore NuGet packages
+        run: >
+          msbuild Creature.sln
+          /t:Restore
+          /p:RestorePackagesConfig=true
+
       - name: Build ImGui
         run: >
           msbuild third_party\ImGuiWrapper\ImGuiWrapper.vcxproj
           /m
           /p:Configuration=Release
           /p:Platform=x64
+          /p:RunCodeAnalysis=false
 
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v4
@@ -40,17 +47,11 @@ jobs:
           languages: c-cpp
           build-mode: manual
 
-      - name: Restore NuGet packages
-        run: >
-          msbuild Creature.sln
-          /t:Restore
-          /p:RestorePackagesConfig=true
-
       - name: Build
         run: >
           msbuild Creature.sln
           /m
-          /t:Rebuild
+          /t:Build
           /p:Configuration=Release
           /p:Platform=x64
           /p:RunCodeAnalysis=false
