@@ -1,5 +1,4 @@
 #include "pch.h"
-#include "Animation.h"
 #include "AnimationTrackKey.h"
 #include "AnimationProperty.h"
 

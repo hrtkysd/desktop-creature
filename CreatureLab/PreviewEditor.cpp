@@ -11,8 +11,6 @@
 
 #include "imgui.h"
 
-#include <memory>
-
 using namespace Creature;
 using namespace Creature::Editor;
 using namespace Creature::Math;

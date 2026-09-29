@@ -5,10 +5,6 @@
 #include "Genome.h"
 #include "Skeleton.h"
 
-#include <memory>
-#include <string>
-#include <utility>
-
 using namespace Creature;
 using namespace Creature::Animation;
 

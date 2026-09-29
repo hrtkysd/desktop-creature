@@ -6,8 +6,6 @@
 #include "PartId.h"
 #include "Skeleton.h"
 
-#include <cmath>
-
 using namespace Creature;
 using namespace Creature::Animation;
 

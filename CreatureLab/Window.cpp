@@ -7,16 +7,12 @@ CWindow::~CWindow()
 {
     if (m_hWnd == nullptr) return;
     ::DestroyWindow(m_hWnd);
+    m_hWnd = nullptr;
 }
 
 HWND CWindow::Handle() const noexcept
 {
     return m_hWnd;
-}
-
-void CWindow::Attach(HWND hWnd) noexcept
-{
-    m_hWnd = hWnd;
 }
 
 bool CWindow::Create(HINSTANCE hInstance, const wchar_t* pszClassName, const wchar_t* pszTitle, int nWidth, int nHeight, void* userData)

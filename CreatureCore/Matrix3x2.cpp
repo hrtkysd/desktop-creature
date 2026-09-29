@@ -2,8 +2,6 @@
 #include "Matrix3x2.h"
 #include "Vec2.h"
 
-#include <cmath>
-
 using namespace Creature;
 using namespace Creature::Math;
 

@@ -21,7 +21,7 @@
 #include "Window.h"
 
 #include <optional>
-#include <windef.h>
+#include <Windows.h>
 
 class CApp final
 {

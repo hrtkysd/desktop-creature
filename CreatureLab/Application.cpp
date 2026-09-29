@@ -335,14 +335,12 @@ LRESULT CALLBACK CApp::WndProc(
     if (message == WM_NCCREATE)
     {
         const auto createStruct = reinterpret_cast<CREATESTRUCTW*>(lParam);
-        pApp = static_cast<CApp*>(createStruct->lpCreateParams);
+        pApp = reinterpret_cast<CApp*>(createStruct->lpCreateParams);
 
         SetWindowLongPtrW(
             hWnd,
             GWLP_USERDATA,
             reinterpret_cast<LONG_PTR>(pApp));
-
-        pApp->m_window.Attach(hWnd);
     }
     else
     {

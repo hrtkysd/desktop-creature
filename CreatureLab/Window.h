@@ -1,6 +1,6 @@
 #pragma once
 
-#include <windef.h>
+#include <Windows.h>
 
 class CWindow
 {
@@ -12,7 +12,6 @@ public:
     CWindow& operator=(const CWindow&) = delete;
 public:
     HWND Handle() const noexcept;
-    void Attach(HWND hWnd) noexcept;
     bool Create(
         HINSTANCE hInstance,
         const wchar_t* pszClassName,
