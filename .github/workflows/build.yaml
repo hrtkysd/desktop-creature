@@ -25,7 +25,10 @@ jobs:
           /m
           /p:Configuration=Debug
           /p:Platform=x64
-
+          
+      - name: Run Unit Tests
+        run: .\x64\Debug\CreatureCoreTests.exe
+  
   build-release:
     name: Build Release
     runs-on: windows-2025
