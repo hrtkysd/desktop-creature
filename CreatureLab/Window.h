@@ -1,6 +1,6 @@
 #pragma once
 
-#include <windef.h>
+#include <Windows.h>
 
 class CWindow
 {

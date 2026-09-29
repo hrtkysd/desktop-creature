@@ -14,6 +14,9 @@
     <Filter Include="Common">
       <UniqueIdentifier>{29c6f5d9-4911-4609-8325-7052c04393a8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Runtime">
+      <UniqueIdentifier>{81de7ff1-ab8d-48dc-a600-d76f987a3d9d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BehaviorController.cpp">
@@ -27,6 +30,9 @@
       <Filter>Common</Filter>
     </ClCompile>
     <ClCompile Include="pch.cpp" />
+    <ClCompile Include="Application.cpp">
+      <Filter>Runtime</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BehaviorController.h">
@@ -39,5 +45,8 @@
       <Filter>Common</Filter>
     </ClInclude>
     <ClInclude Include="pch.h" />
+    <ClInclude Include="Application.h">
+      <Filter>Runtime</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
