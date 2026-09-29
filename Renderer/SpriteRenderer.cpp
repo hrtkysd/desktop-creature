@@ -46,14 +46,7 @@ namespace
 
         const auto& matrix = desc.GetMatrix();
 
-        const float width =
-            static_cast<float>(texture->GetWidth());
-
-        const float height =
-            static_cast<float>(texture->GetHeight());
-
         const auto& size = desc.GetSize();
-
         const auto spriteScale =
             DirectX::XMMatrixScaling(
                 size.x,

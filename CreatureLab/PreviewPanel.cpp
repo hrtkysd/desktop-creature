@@ -134,7 +134,7 @@ void CPreviewPanel::DrawUi(
 
         vecPreviewPart.emplace_back(
             item.GetPartId(),
-            std::move(screenRect),
+            screenRect,
             Vec2
             {
                 static_cast<float>(item.GetTexture()->GetWidth()),
@@ -316,7 +316,7 @@ std::vector<CRenderPartItem> CPreviewPanel::BuildPartViews(
 
         result.emplace_back(
             part.id,
-            std::move(rect),
+            rect,
             std::move(texture));
     }
 

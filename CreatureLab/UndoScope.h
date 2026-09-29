@@ -15,7 +15,7 @@ public:
     CUndoScope(const CUndoScope&) = delete;
     CUndoScope& operator=(const CUndoScope&) = delete;
 
-    CUndoScope(CUndoScope&&);
+    CUndoScope(CUndoScope&&) noexcept;
     CUndoScope& operator=(CUndoScope&&) = delete;
 public:
     void Cancel();

@@ -131,6 +131,8 @@ LRESULT CALLBACK CAppRuntime::WndProc(
         SetWindowLongPtrW(hWnd, GWLP_USERDATA, 0);
         break;
     }
+    default:
+        break;
     }
 
     return DefWindowProc(
@@ -239,6 +241,8 @@ bool CAppRuntime::Update(float fDeltaTime)
 
 bool CAppRuntime::Render()
 {
+    if (!m_textureCache) return false;
+
     const auto& pose = m_animationPlayer.GetPose();
 
     if (!m_renderer.BeginFrame()) return false;
