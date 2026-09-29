@@ -7,6 +7,9 @@ on:
   pull_request:
     branches: [main]
 
+permissions:
+  contents: read
+
 jobs:
   build-debug:
     name: Build Debug
@@ -52,3 +55,27 @@ jobs:
           /m
           /p:Configuration=Release
           /p:Platform=x64
+
+  clang-tidy:
+    name: Clang-Tidy
+    runs-on: windows-2025
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - uses: microsoft/setup-msbuild@v2
+        with:
+          msbuild-architecture: x64
+          
+      - name: Run Clang-Tidy
+        run: >
+          msbuild Creature.sln
+          /m
+          /t:Rebuild
+          /p:Configuration=Debug
+          /p:Platform=x64
+          /p:RunCodeAnalysis=true
+          /p:EnableClangTidyCodeAnalysis=true
+          /p:EnableMicrosoftCodeAnalysis=false

@@ -267,7 +267,7 @@ PartId CSkeleton::FindPartIdByName(const std::string_view name) const
     return findPart ? findPart->id : INVALID_PART_ID;
 }
 
-int CSkeleton::FindPartIndexById(PartId id) const
+std::uint32_t CSkeleton::FindPartIndexById(PartId id) const
 {
     const auto itFind = std::find_if(m_vecPart.cbegin(), m_vecPart.cend(), [id](const Part& part)
         {

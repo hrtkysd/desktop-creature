@@ -16,7 +16,7 @@ CUndoScope::~CUndoScope()
     m_buffer.Push(std::move(m_before));
 }
 
-CUndoScope::CUndoScope(CUndoScope&& rhs)
+CUndoScope::CUndoScope(CUndoScope&& rhs) noexcept
     : m_buffer(rhs.m_buffer)
     , m_before(std::move(rhs.m_before))
     , m_isActive(rhs.m_isActive)

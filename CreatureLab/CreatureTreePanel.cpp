@@ -100,7 +100,7 @@ void CCreatureTreePanel::Draw()
 
         for (const auto& animation : creature.GetReadonlyAnimations())
         {
-            ImGui::PushID(animation.GetAnimationId());
+            ImGui::PushID(static_cast<int>(animation.GetAnimationId()));
 
             ImGuiTreeNodeFlags flags =
                 ImGuiTreeNodeFlags_Leaf |

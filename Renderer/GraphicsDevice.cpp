@@ -34,8 +34,6 @@ bool CGraphicsDevice::Initialize(
         D3D_FEATURE_LEVEL_10_0,
     };
 
-    D3D_FEATURE_LEVEL featureLevel{};
-
     auto hr = D3D11CreateDeviceAndSwapChain(
         nullptr,
         D3D_DRIVER_TYPE_HARDWARE,
@@ -47,7 +45,7 @@ bool CGraphicsDevice::Initialize(
         &desc,
         m_swapChain.GetAddressOf(),
         m_device.GetAddressOf(),
-        &featureLevel,
+        nullptr,
         m_deviceContext.GetAddressOf());
 
     if (FAILED(hr) || !m_device || !m_deviceContext) return false;
