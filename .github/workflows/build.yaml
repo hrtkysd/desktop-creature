@@ -36,7 +36,7 @@ jobs:
           /p:Platform=x64
           
       - name: Run Unit Tests
-        run: .\x64\Debug\CreatureCoreTests.exe
+        run: .\x64\Debug\CreatureCoreUnitTest.exe
   
   build-release:
     name: Build Release
