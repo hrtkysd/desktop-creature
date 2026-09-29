@@ -323,7 +323,7 @@ bool CSpriteRenderer::CreateConstantBuffer()
 
 bool CSpriteRenderer::CreateSamplerState()
 {
-    D3D11_SAMPLER_DESC desc{};
+    CD3D11_SAMPLER_DESC desc{ D3D11_DEFAULT };
     desc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
     desc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
     desc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
@@ -339,7 +339,7 @@ bool CSpriteRenderer::CreateSamplerState()
 
 bool CSpriteRenderer::CreateBlendState()
 {
-    D3D11_BLEND_DESC desc{};
+    CD3D11_BLEND_DESC desc{ D3D11_DEFAULT };
 
     auto& target = desc.RenderTarget[0];
     target.BlendEnable = TRUE;
