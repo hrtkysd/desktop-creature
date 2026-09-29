@@ -74,6 +74,12 @@ jobs:
       - uses: microsoft/setup-msbuild@v2
         with:
           msbuild-architecture: x64
+
+      - name: Restore NuGet packages
+        run: >
+          msbuild Creature.sln
+          /t:Restore
+          /p:RestorePackagesConfig=true
           
       - name: Run Clang-Tidy
         run: >
