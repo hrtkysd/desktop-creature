@@ -10,8 +10,10 @@ CSpriteRenderDescription::CSpriteRenderDescription(
     const Creature::Math::Vec2& size,
     const CTransform2D& transform,
     const Vec2& pivot)
-    : CSpriteRenderDescription(texture, size,
-        CMatrix3x2::CreateTranslation({ -pivot.x, -pivot.y })* transform.ToMatrix())
+    : CSpriteRenderDescription(std::move(texture), size,
+        CMatrix3x2::CreateTranslation({ -pivot.x, -pivot.y })
+        *
+        transform.ToMatrix())
 {
 }
 
@@ -19,7 +21,7 @@ CSpriteRenderDescription::CSpriteRenderDescription(
     std::shared_ptr<const CTexture> texture,
     const Creature::Math::Vec2& size,
     const CMatrix3x2& matrix)
-    : m_texture(texture)
+    : m_texture(std::move(texture))
     , m_size(size)
     , m_matrix(matrix)
 {

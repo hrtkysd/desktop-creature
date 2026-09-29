@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cstdint>
+
 namespace Creature
 {
     class CCreature;
@@ -13,7 +15,7 @@ struct InputState
     bool leftButtonDown = false;
 };
 
-enum class BehaviorState
+enum class BehaviorState : std::uint8_t
 {
     Idle,
     Walk,

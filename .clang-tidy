@@ -1,0 +1,24 @@
+Checks: >
+  -*,
+  clang-analyzer-*,
+  bugprone-*,
+  -bugprone-easily-swappable-parameters,
+  performance-*,
+  -performance-no-int-to-ptr,
+  modernize-use-nullptr,
+  modernize-use-override,
+  modernize-loop-convert,
+
+
+WarningsAsErrors: >
+  clang-analyzer-*,
+  bugprone-*,
+  performance-*
+
+HeaderFilterRegex: '.*[\\/](CreatureCore|CreatureLab|DesktopPet|Renderer|Common)[\\/].*'
+
+ExtraArgs:
+  # Required for LLVM 17 compatibility with the MSVC UCRT offsetof macro.
+  - '-D_CRT_USE_BUILTIN_OFFSETOF=1'
+  # Avoid DirectXMath cpuid.h errors during clang-tidy analysis.
+  - '-D_XM_NO_INTRINSICS_'

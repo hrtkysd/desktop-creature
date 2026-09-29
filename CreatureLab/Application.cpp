@@ -264,6 +264,7 @@ void CApp::Render()
     }
 
     if (!m_graphicsRenderer.BeginFrame()) return;
+    if (!m_previewRenderTarget) return;
 
     const auto contentSize = m_previewPanel.GetPreviewContentSize();
     const auto contentWidth = static_cast<std::uint32_t>(contentSize.x);
@@ -403,6 +404,7 @@ LRESULT CApp::HandleMessage(
     case WM_DESTROY:
         PostQuitMessage(0);
         return 0;
+    default: break;
     }
 
     return DefWindowProcW(

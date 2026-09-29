@@ -2,6 +2,8 @@
 
 #include "CreaturePose.h"
 
+#include <cstdint>
+
 namespace Creature
 {
     class CSkeleton;
@@ -10,7 +12,7 @@ namespace Creature
     {
         class CAnimation;
 
-        enum class AnimationPlayerState
+        enum class AnimationPlayerState : std::uint8_t
         {
             Stop,
             Play,

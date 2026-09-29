@@ -4,11 +4,6 @@
 
 using namespace Creature;
 
-Animation::CAnimationPlayer g_player;
-CCreature g_creature;
-CGraphicsRenderer g_renderer;
-std::optional<CTextureCache> g_cache;
-
 int WINAPI wWinMain(
     HINSTANCE hInstance,
     HINSTANCE,
