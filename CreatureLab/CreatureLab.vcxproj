@@ -84,12 +84,6 @@
   <ItemGroup>
     <ClInclude Include="..\Common\ComInitializer.h" />
     <ClInclude Include="..\Common\FileOperation.h" />
-    <ClInclude Include="..\third_party\imgui\backends\imgui_impl_dx11.h" />
-    <ClInclude Include="..\third_party\imgui\backends\imgui_impl_win32.h" />
-    <ClInclude Include="..\third_party\imgui\imconfig.h" />
-    <ClInclude Include="..\third_party\imgui\imgui.h" />
-    <ClInclude Include="..\third_party\imgui\imgui_internal.h" />
-    <ClInclude Include="..\third_party\imgui\misc\cpp\imgui_stdlib.h" />
     <ClInclude Include="AnimationPanel.h" />
     <ClInclude Include="Application.h" />
     <ClInclude Include="ContinuousEditUndoScope.h" />
@@ -125,34 +119,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="..\Common\FileOperation.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="..\third_party\imgui\backends\imgui_impl_dx11.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="..\third_party\imgui\backends\imgui_impl_win32.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="..\third_party\imgui\imgui.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="..\third_party\imgui\imgui_draw.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="..\third_party\imgui\imgui_tables.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="..\third_party\imgui\imgui_widgets.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="..\third_party\imgui\misc\cpp\imgui_stdlib.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
@@ -193,6 +159,9 @@
     </ProjectReference>
     <ProjectReference Include="..\Renderer\Renderer.vcxproj">
       <Project>{2c2120c9-9b05-4ba5-a012-b0e0e0850058}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\third_party\ImGuiWrapper\ImGuiWrapper.vcxproj">
+      <Project>{b11864ac-fa2b-4bbf-8135-a8c09d8f2846}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

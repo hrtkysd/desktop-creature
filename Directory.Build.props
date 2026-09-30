@@ -1,8 +1,6 @@
 <Project>
-  <PropertyGroup>
+  <PropertyGroup Condition="'$(MSBuildProjectName)' != 'ImGuiWrapper'">
+    <RunCodeAnalysis>false</RunCodeAnalysis>
     <EnableClangTidyCodeAnalysis>true</EnableClangTidyCodeAnalysis>
-    <EnableMicrosoftCodeAnalysis>false</EnableMicrosoftCodeAnalysis>
-    <!-- Avoid DirectXMath cpuid.h errors during clang-tidy analysis only. -->
-    <ClangTidyAdditionalOptions>-D_XM_NO_INTRINSICS_</ClangTidyAdditionalOptions> 
   </PropertyGroup>
 </Project>

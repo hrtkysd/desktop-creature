@@ -89,5 +89,3 @@ jobs:
           /p:Configuration=Debug
           /p:Platform=x64
           /p:RunCodeAnalysis=true
-          /p:EnableClangTidyCodeAnalysis=true
-          /p:EnableMicrosoftCodeAnalysis=false
