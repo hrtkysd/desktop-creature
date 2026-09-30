@@ -17,21 +17,21 @@ namespace
     {
         auto transform = part.bindTransform;
 
-        transform.GetPosition().x +=
-            poseTransform.GetPosition().x;
-
-        transform.GetPosition().y +=
-            poseTransform.GetPosition().y;
+        transform.SetPosition(
+            {
+                transform.GetPosition().x + poseTransform.GetPosition().x,
+                transform.GetPosition().y + poseTransform.GetPosition().y
+            });
 
         transform.SetRotation(
             transform.GetRotation() +
             poseTransform.GetRotation());
 
-        transform.GetScale().x *=
-            poseTransform.GetScale().x;
-
-        transform.GetScale().y *=
-            poseTransform.GetScale().y;
+        transform.SetScale(
+            {
+                transform.GetScale().x + poseTransform.GetScale().x,
+                transform.GetScale().y + poseTransform.GetScale().y
+            });
 
         return transform;
     }

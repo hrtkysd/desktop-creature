@@ -17,6 +17,9 @@
     <ClCompile Include="Transform2DTest.cpp">
       <Filter>Tests\Math</Filter>
     </ClCompile>
+    <ClCompile Include="CreatureTest.cpp">
+      <Filter>Tests\Creature</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -30,6 +33,9 @@
     </Filter>
     <Filter Include="Tests\Math">
       <UniqueIdentifier>{42314fb4-a3e8-4b62-8151-4465bce3d771}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tests\Creature">
+      <UniqueIdentifier>{95a9e0d0-30f9-4a58-858c-6ed0a95b6461}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

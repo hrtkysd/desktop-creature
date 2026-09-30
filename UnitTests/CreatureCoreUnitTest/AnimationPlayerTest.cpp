@@ -10,6 +10,7 @@
 #include "CreatureEditor.h"
 #include "Skeleton.h"
 #include "SkeletonEditor.h"
+#include "Transform2D.h"
 
 using namespace Creature;
 using namespace Creature::Animation;
@@ -66,12 +67,8 @@ namespace AnimationPlayer
 
         const CAnimation& Animation() const
         {
-            const auto* animation =
-                m_creatureEditor.FindAnimationById(
-                    m_animationId);
-
+            const auto animation = m_creatureEditor.FindAnimationById(m_animationId);
             EXPECT_NE(animation, nullptr);
-
             return *animation;
         }
 
@@ -168,9 +165,7 @@ namespace AnimationPlayer
             Animation(),
             m_creature.GetSkeleton());
 
-        const auto& transforms =
-            m_player.GetPose().GetPartTransform();
-
+        const auto& transforms = m_player.GetPose().GetPartTransform();
         ASSERT_EQ(transforms.size(), 1u);
 
         const auto& transform = transforms.front();

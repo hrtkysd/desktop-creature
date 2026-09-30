@@ -13,11 +13,9 @@ namespace Creature
             CTransform2D();
             CTransform2D(const Vec2& position, const Vec2& scale, float fRotation);
         public:
-            Vec2& GetPosition();
             const Vec2& GetPosition() const;
             void SetPosition(const Vec2& position);
 
-            Vec2& GetScale();
             const Vec2& GetScale() const;
             void SetScale(const Vec2& scale);
 

@@ -75,11 +75,11 @@ void CAnimationPlayer::SamplePose(const CAnimation& animation, const CSkeleton& 
         switch (trackKey.GetProperty())
         {
         case AnimationProperty::PositionX:
-            transform.GetPosition().x = value;
+            transform.SetPosition({ value , transform.GetPosition().y });
             break;
 
         case AnimationProperty::PositionY:
-            transform.GetPosition().y = value;
+            transform.SetPosition({ transform.GetPosition().x , value });
             break;
 
         case AnimationProperty::Rotation:
@@ -87,11 +87,11 @@ void CAnimationPlayer::SamplePose(const CAnimation& animation, const CSkeleton& 
             break;
 
         case AnimationProperty::ScaleX:
-            transform.GetScale().x = value;
+            transform.SetScale({ value, transform.GetScale().y });
             break;
 
         case AnimationProperty::ScaleY:
-            transform.GetScale().y = value;
+            transform.SetScale({ transform.GetScale().x, value });
             break;
         }
     }

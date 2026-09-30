@@ -106,6 +106,7 @@
     <ClCompile Include="AnimationEditTest.cpp" />
     <ClCompile Include="AnimationPlayerTest.cpp" />
     <ClCompile Include="AnimationTrackTest.cpp" />
+    <ClCompile Include="CreatureTest.cpp" />
     <ClCompile Include="MatrixTest.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
