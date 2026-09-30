@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "Animation.h"
+#include "AnimationEditor.h"
 #include "AnimationProperty.h"
 #include "AnimationTrack.h"
 #include "AnimationTrackKey.h"
@@ -10,6 +11,7 @@
 #include "CreatureIO.h"
 #include "Part.h"
 #include "Skeleton.h"
+#include "SkeletonEditor.h"
 #include "Transform2D.h"
 
 #include <fstream>
@@ -27,8 +29,8 @@ bool CCreatureIO::SaveAsFile(const CCreature& creature, const std::filesystem::p
 {
     json root;
 
-    const auto& skeleton = creature.GetReadonlySkeleton();
-    const auto& appearance = creature.GetReadonlyAppearance();
+    const auto& skeleton = creature.GetSkeleton();
+    const auto& appearance = creature.GetAppearance();
 
     root["version"] = 1;
     root["parts"] = json::array();
@@ -71,7 +73,7 @@ bool CCreatureIO::SaveAsFile(const CCreature& creature, const std::filesystem::p
     }
     root["animations"] = json::array();
 
-    for (const auto& animation : creature.GetReadonlyAnimations())
+    for (const auto& animation : creature.GetAnimations())
     {
         json animationJson;
 
@@ -171,6 +173,7 @@ bool CCreatureIO::LoadFromFile(const std::filesystem::path& path, CCreature& cre
     }
     if (root.contains("animations"))
     {
+        auto animationEditor = editor.GetAnimationEditor();
         for (const auto& animationJson : root["animations"])
         {
             const auto strName = animationJson["name"].get<std::string>();
@@ -183,7 +186,7 @@ bool CCreatureIO::LoadFromFile(const std::filesystem::path& path, CCreature& cre
             auto animation = loadedCreature.FindAnimationById(animationId);
             if (!animation) return false;
 
-            editor.GetAnimationEditor().SetDuration(animationId, animationJson["duration"].get<float>());
+            animationEditor.SetDuration(animationId, animationJson["duration"].get<float>());
 
             for (const auto& trackJson : animationJson["tracks"])
             {
@@ -202,7 +205,7 @@ bool CCreatureIO::LoadFromFile(const std::filesystem::path& path, CCreature& cre
                     if (!track.AddOrUpdateKeyFrame(keyFrame)) return false;
                 }
 
-                if (!editor.GetAnimationEditor().AddTrack(animationId, std::move(track)))
+                if (!animationEditor.AddTrack(animationId, std::move(track)))
                 {
                     return false;
                 }

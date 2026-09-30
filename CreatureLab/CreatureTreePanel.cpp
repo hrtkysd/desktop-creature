@@ -98,7 +98,7 @@ void CCreatureTreePanel::Draw()
             }
         }
 
-        for (const auto& animation : creature.GetReadonlyAnimations())
+        for (const auto& animation : creature.GetAnimations())
         {
             ImGui::PushID(static_cast<int>(animation.GetAnimationId()));
 
@@ -127,7 +127,7 @@ void CCreatureTreePanel::Draw()
 
     if (ImGui::TreeNode("Parts"))
     {
-        const auto& skeleton = creature.GetReadonlySkeleton();
+        const auto& skeleton = creature.GetSkeleton();
 
         for (const auto& id : skeleton.GetRootPartIds())
         {

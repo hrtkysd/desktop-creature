@@ -18,7 +18,7 @@ bool CAnimationEditor::SetName(
     AnimationId id,
     const std::string& strName)
 {
-    if (auto animation = m_creature.FindAnimationById(id))
+    if (auto animation = m_creature.FindMutableAnimationById(id))
     {
         animation->SetName(strName);
         return true;
@@ -30,7 +30,7 @@ bool CAnimationEditor::SetDuration(
     AnimationId id,
     float fDuration)
 {
-    if (auto animation = m_creature.FindAnimationById(id))
+    if (auto animation = m_creature.FindMutableAnimationById(id))
     {
         return animation->SetDuration(fDuration);
     }
@@ -41,7 +41,7 @@ bool CAnimationEditor::AddTrack(
     AnimationId id,
     CAnimationTrack&& animationTrack)
 {
-    if (auto animation = m_creature.FindAnimationById(id))
+    if (auto animation = m_creature.FindMutableAnimationById(id))
     {
         return animation->AddAnimationTrack(std::move(animationTrack));
     }
@@ -52,7 +52,7 @@ bool CAnimationEditor::RemoveTrack(
     AnimationId id,
     const CAnimationTrackKey& trackKey)
 {
-    if (auto animation = m_creature.FindAnimationById(id))
+    if (auto animation = m_creature.FindMutableAnimationById(id))
     {
         return animation->RemoveAnimationTrackByKey(trackKey);
     }
@@ -64,7 +64,7 @@ bool CAnimationEditor::AddOrUpdateKeyFrame(
     const CAnimationTrackKey& trackKey,
     const FloatKeyFrame& keyFrame)
 {
-    if (auto animation = m_creature.FindAnimationById(id))
+    if (auto animation = m_creature.FindMutableAnimationById(id))
     {
         return animation->AddOrUpdateKeyFrame(trackKey, keyFrame);
     }
@@ -73,7 +73,7 @@ bool CAnimationEditor::AddOrUpdateKeyFrame(
 
 void CAnimationEditor::RemovePart(PartId id)
 {
-    for (auto& animation : m_creature.GetAnimations())
+    for (auto& animation : m_creature.MutableAnimations())
     {
         animation.RemoveAnimationTrackByPartId(id);
     }
@@ -81,5 +81,5 @@ void CAnimationEditor::RemovePart(PartId id)
 
 const std::vector<CAnimation>& CAnimationEditor::GetAnimations() const
 {
-    return m_creature.GetReadonlyAnimations();
+    return m_creature.GetAnimations();
 }

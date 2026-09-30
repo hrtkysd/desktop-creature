@@ -9,6 +9,7 @@
 #include "Creature.h"
 #include "CreatureEditor.h"
 #include "Skeleton.h"
+#include "SkeletonEditor.h"
 
 using namespace Creature;
 using namespace Creature::Animation;
@@ -45,9 +46,7 @@ namespace AnimationPlayer
             AnimationProperty property,
             float value)
         {
-            auto& editor =
-                m_creatureEditor.GetAnimationEditor();
-
+            auto editor = m_creatureEditor.GetAnimationEditor();
             const CAnimationTrackKey key{
                 m_partId,
                 property
@@ -68,7 +67,7 @@ namespace AnimationPlayer
         const CAnimation& Animation() const
         {
             const auto* animation =
-                m_creatureEditor.FindReadonlyAnimationById(
+                m_creatureEditor.FindAnimationById(
                     m_animationId);
 
             EXPECT_NE(animation, nullptr);
@@ -167,7 +166,7 @@ namespace AnimationPlayer
 
         m_player.SamplePose(
             Animation(),
-            m_creature.GetReadonlySkeleton());
+            m_creature.GetSkeleton());
 
         const auto& transforms =
             m_player.GetPose().GetPartTransform();
@@ -203,7 +202,7 @@ namespace AnimationPlayer
 
         m_player.SamplePose(
             Animation(),
-            m_creature.GetReadonlySkeleton());
+            m_creature.GetSkeleton());
 
         EXPECT_NEAR(
             m_player.GetCurrentAnimationTime(),

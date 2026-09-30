@@ -14,7 +14,7 @@ namespace Creature
     class CCreaturePose;
     namespace Editor
     {
-        class CSkeletonEditor;
+        class CCreatureEditor;
     }
     namespace Math
     {
@@ -33,7 +33,7 @@ class CPreviewEditor
 {
 public:
     explicit CPreviewEditor(
-        Creature::Editor::CSkeletonEditor& editor,
+        Creature::Editor::CCreatureEditor& editor,
         CEditorContext& context);
 
 public:
@@ -92,7 +92,7 @@ private:
         const Creature::CCreaturePose& pose,
         const Creature::Math::CMatrix3x2& previewTransform);
 private:
-    Creature::Editor::CSkeletonEditor& m_editor;
+    Creature::Editor::CCreatureEditor& m_editor;
     CEditorContext& m_editorContext;
 
     std::optional<CUndoScope> m_undoScope;

@@ -51,7 +51,8 @@ private:
     void Undo();
     void Redo();
 private:
-    Creature::Animation::AnimationId m_animationId;
+    Creature::Animation::AnimationId m_animationId
+        = Creature::Animation::INVALID_ANIMATION_ID;
     Creature::PartId m_partId = Creature::INVALID_PART_ID;
     EditMode m_eEditMode = EditMode::Select;
     SelectionType m_eSelectionType = SelectionType::None;

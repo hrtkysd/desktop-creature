@@ -32,7 +32,7 @@ CCreature& CCreature::operator=(CCreature&& rhs) noexcept
 {
     if (this == &rhs) return *this;
 
-    *m_impl = std::move(*rhs.m_impl);
+    m_impl = std::move(rhs.m_impl);
     return *this;
 }
 
@@ -48,32 +48,32 @@ const Genome& CCreature::GetGenome() const
     return m_impl->genome;
 }
 
-Genome& CCreature::GetGenome()
+Genome& CCreature::MutableGenome()
 {
     return m_impl->genome;
 }
 
-const CSkeleton& CCreature::GetReadonlySkeleton() const
+const CSkeleton& CCreature::GetSkeleton() const
 {
     return m_impl->skeleton;
 }
 
-CSkeleton& CCreature::GetSkeleton()
+CSkeleton& CCreature::MutableSkeleton()
 {
     return m_impl->skeleton;
 }
 
-const CAppearance& CCreature::GetReadonlyAppearance() const
+const CAppearance& CCreature::GetAppearance() const
 {
     return m_impl->appearance;
 }
 
-CAppearance& CCreature::GetAppearance()
+CAppearance& CCreature::MutableAppearance()
 {
     return m_impl->appearance;
 }
 
-std::vector<CAnimation>& Creature::CCreature::GetAnimations()
+std::vector<CAnimation>& CCreature::MutableAnimations()
 {
     return m_impl->vecAnimation;
 }
@@ -88,7 +88,7 @@ void CCreature::SetName(const std::string& strName)
     m_impl->strName = strName;
 }
 
-const std::vector<Animation::CAnimation>& Creature::CCreature::GetReadonlyAnimations() const
+const std::vector<Animation::CAnimation>& CCreature::GetAnimations() const
 {
     return m_impl->vecAnimation;
 }
@@ -168,12 +168,12 @@ AnimationId CCreature::AddNewAnimation(const std::string& strName)
     return id;
 }
 
-CAnimation* CCreature::FindAnimationById(AnimationId id)
+CAnimation* CCreature::FindMutableAnimationById(AnimationId id)
 {
-    return const_cast<CAnimation*>(std::as_const(*this).FindReadonlyAnimationById(id));
+    return const_cast<CAnimation*>(std::as_const(*this).FindAnimationById(id));
 }
 
-const CAnimation* CCreature::FindReadonlyAnimationById(AnimationId id) const
+const CAnimation* CCreature::FindAnimationById(AnimationId id) const
 {
     if (id == INVALID_ANIMATION_ID) return nullptr;
 

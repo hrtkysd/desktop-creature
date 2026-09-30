@@ -36,10 +36,11 @@ namespace AnimationEditor
 
     TEST_F(AnimationEditorTests, EmptyTrackCanBeAdded)
     {
-        auto& editor =
+        auto editor =
             m_creatureEditor.GetAnimationEditor();
 
-        const CAnimationTrackKey key{
+        const CAnimationTrackKey key
+        {
             1,
             AnimationProperty::PositionX
         };
@@ -54,12 +55,12 @@ namespace AnimationEditor
 
     TEST_F(AnimationEditorTests, SetDurationAcceptsPositiveDuration)
     {
-        auto& editor = m_creatureEditor.GetAnimationEditor();
+        auto editor = m_creatureEditor.GetAnimationEditor();
 
         ASSERT_TRUE(editor.SetDuration(m_animationId, 1.0f));
 
         const auto animation
-            = m_creatureEditor.FindReadonlyAnimationById(m_animationId);
+            = m_creatureEditor.FindAnimationById(m_animationId);
 
         ASSERT_NE(animation, nullptr);
         EXPECT_FLOAT_EQ(animation->GetDuration(), 1.0f);
@@ -75,7 +76,7 @@ namespace AnimationEditor
         AnimationEditorTests,
         SetDurationRejectsDurationShorterThanExistingKeyFrame)
     {
-        auto& editor = m_creatureEditor.GetAnimationEditor();
+        auto editor = m_creatureEditor.GetAnimationEditor();
 
         ASSERT_TRUE(editor.SetDuration(m_animationId, 2.0f));
 
@@ -100,7 +101,7 @@ namespace AnimationEditor
             editor.SetDuration(m_animationId, 1.0f));
 
         const auto animation =
-            m_creatureEditor.FindReadonlyAnimationById(m_animationId);
+            m_creatureEditor.FindAnimationById(m_animationId);
 
         ASSERT_NE(animation, nullptr);
 
@@ -109,7 +110,7 @@ namespace AnimationEditor
 
     TEST_F(AnimationEditorTests, DuplicateTrackIsRejected)
     {
-        auto& editor = m_creatureEditor.GetAnimationEditor();
+        auto editor = m_creatureEditor.GetAnimationEditor();
 
         const CAnimationTrackKey trackKey
         {
@@ -128,7 +129,7 @@ namespace AnimationEditor
                 CAnimationTrack{ trackKey }));
 
         const auto animation =
-            m_creatureEditor.FindReadonlyAnimationById(m_animationId);
+            m_creatureEditor.FindAnimationById(m_animationId);
 
         ASSERT_NE(animation, nullptr);
         EXPECT_EQ(animation->GetAnimationTracks().size(), 1u);
@@ -136,7 +137,7 @@ namespace AnimationEditor
 
     TEST_F(AnimationEditorTests, KeyFramePastDurationIsRejected)
     {
-        auto& editor = m_creatureEditor.GetAnimationEditor();
+        auto editor = m_creatureEditor.GetAnimationEditor();
 
         ASSERT_TRUE(editor.SetDuration(m_animationId, 1.0f));
 
@@ -160,7 +161,7 @@ namespace AnimationEditor
 
     TEST_F(AnimationEditorTests, NegativeKeyFrameTimeIsRejected)
     {
-        auto& editor = m_creatureEditor.GetAnimationEditor();
+        auto editor = m_creatureEditor.GetAnimationEditor();
 
         ASSERT_TRUE(editor.SetDuration(m_animationId, 1.0f));
 

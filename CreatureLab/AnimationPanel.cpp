@@ -45,14 +45,13 @@ namespace
 
 CAnimationPanel::CAnimationPanel(
     CAnimationPlayer& animationPlayer,
-    CAnimationEditor& editor,
     CEditorContext& editorContext)
     : m_animationPlayer(animationPlayer)
-    , m_editor(editor)
     , m_editorContext(editorContext)
 {
 }
 bool CAnimationPanel::Draw(
+    Creature::Editor::CAnimationEditor& editor,
     const Creature::Animation::CAnimation& animation,
     const Creature::CSkeleton& skeleton)
 {
@@ -66,16 +65,18 @@ bool CAnimationPanel::Draw(
 
     bool bChanged = false;
 
-    bChanged |= DrawAnimationProperties(animation);
+    bChanged |= DrawAnimationProperties(editor, animation);
 
     DrawCurrentTime(animation);
 
-    bChanged |= DrawTracks(animation, skeleton);
+    bChanged |= DrawTracks(editor, animation, skeleton);
 
     return bChanged;
 }
 
-bool CAnimationPanel::DrawAnimationProperties(const CAnimation& animation)
+bool CAnimationPanel::DrawAnimationProperties(
+    CAnimationEditor& editor,
+    const CAnimation& animation)
 {
     bool bChanged = false;
 
@@ -115,7 +116,7 @@ bool CAnimationPanel::DrawAnimationProperties(const CAnimation& animation)
 
         if (edited)
         {
-            if (m_editor.SetName(animation.GetAnimationId(), strName))
+            if (editor.SetName(animation.GetAnimationId(), strName))
             {
                 bChanged = true;
             }
@@ -141,7 +142,7 @@ bool CAnimationPanel::DrawAnimationProperties(const CAnimation& animation)
         CContinuousEditUndoScope scope(m_editorContext, m_undoScope, edited);
         if (edited)
         {
-            m_editor.SetDuration(
+            editor.SetDuration(
                 animation.GetAnimationId(),
                 fDuration);
 
@@ -153,7 +154,8 @@ bool CAnimationPanel::DrawAnimationProperties(const CAnimation& animation)
     return bChanged;
 }
 
-void CAnimationPanel::DrawCurrentTime(const CAnimation& animation)
+void CAnimationPanel::DrawCurrentTime(
+    const CAnimation& animation)
 {
     ImGui::Spacing();
     ImGui::SeparatorText("Current Time");
@@ -174,8 +176,9 @@ void CAnimationPanel::DrawCurrentTime(const CAnimation& animation)
 }
 
 bool CAnimationPanel::DrawTracks(
+    CAnimationEditor& editor,
     const CAnimation& animation,
-    const Creature::CSkeleton& skeleton)
+    const CSkeleton& skeleton)
 {
     bool bChanged = false;
 
@@ -187,8 +190,7 @@ bool CAnimationPanel::DrawTracks(
         const auto& key = track.GetKey();
 
         const bool isSelected =
-            m_selectedTrackKey.has_value() &&
-            *m_selectedTrackKey == key;
+            m_selectedTrackKey.has_value() && *m_selectedTrackKey == key;
 
         ImGui::PushID(
             static_cast<int>(key.GetPartId()));
@@ -216,13 +218,13 @@ bool CAnimationPanel::DrawTracks(
         ImGui::PopID();
     }
 
-    bChanged |= DrawAddTrack(animation);
+    bChanged |= DrawAddTrack(editor, animation);
 
     if (!m_selectedTrackKey) return bChanged;
 
     if (const auto track = animation.FindAnimationTrack(*m_selectedTrackKey))
     {
-        bChanged |= DrawTrack(animation, *track);
+        bChanged |= DrawTrack(editor, animation, *track);
     }
     else
     {
@@ -232,7 +234,9 @@ bool CAnimationPanel::DrawTracks(
     return bChanged;
 }
 
-bool CAnimationPanel::DrawAddTrack(const CAnimation& animation)
+bool CAnimationPanel::DrawAddTrack(
+    CAnimationEditor& editor,
+    const CAnimation& animation)
 {
     const auto partId = m_editorContext.GetPartId();
 
@@ -290,7 +294,7 @@ bool CAnimationPanel::DrawAddTrack(const CAnimation& animation)
     if (ImGui::Button("Add Track"))
     {
         auto scope = m_editorContext.CreateUndoScope();
-        if (m_editor.AddTrack(animation.GetAnimationId(), CAnimationTrack{ key }))
+        if (editor.AddTrack(animation.GetAnimationId(), CAnimationTrack{ key }))
         {
             m_selectedTrackKey = key;
             bChanged = true;
@@ -306,7 +310,10 @@ bool CAnimationPanel::DrawAddTrack(const CAnimation& animation)
     return bChanged;
 }
 
-bool CAnimationPanel::DrawTrack(const CAnimation& animation, const CAnimationTrack& track)
+bool CAnimationPanel::DrawTrack(
+    CAnimationEditor& editor,
+    const CAnimation& animation,
+    const CAnimationTrack& track)
 {
     bool bChanged = false;
 
@@ -339,7 +346,7 @@ bool CAnimationPanel::DrawTrack(const CAnimation& animation, const CAnimationTra
                 auto editFrame = keyFrame;
                 editFrame.fValue = fValue;
 
-                if (!m_editor.AddOrUpdateKeyFrame(animation.GetAnimationId(), trackKey, editFrame))
+                if (!editor.AddOrUpdateKeyFrame(animation.GetAnimationId(), trackKey, editFrame))
                 {
                     return false;
                 }
@@ -376,7 +383,7 @@ bool CAnimationPanel::DrawTrack(const CAnimation& animation, const CAnimationTra
 
                         edited.eInterpolationToNext = value;
 
-                        if (!m_editor.AddOrUpdateKeyFrame(animation.GetAnimationId(), trackKey, edited))
+                        if (!editor.AddOrUpdateKeyFrame(animation.GetAnimationId(), trackKey, edited))
                         {
                             scope.Cancel();
                             return false;
@@ -412,7 +419,7 @@ bool CAnimationPanel::DrawTrack(const CAnimation& animation, const CAnimationTra
             Interpolation::SmoothStep
         };
 
-        if (m_editor.AddOrUpdateKeyFrame(animation.GetAnimationId(), trackKey, keyFrame))
+        if (editor.AddOrUpdateKeyFrame(animation.GetAnimationId(), trackKey, keyFrame))
         {
             bChanged = true;
         }
@@ -428,7 +435,7 @@ bool CAnimationPanel::DrawTrack(const CAnimation& animation, const CAnimationTra
     if (ImGui::Button("Delete Track"))
     {
         auto scope = m_editorContext.CreateUndoScope();
-        if (m_editor.RemoveTrack(animation.GetAnimationId(), trackKey))
+        if (editor.RemoveTrack(animation.GetAnimationId(), trackKey))
         {
             m_selectedTrackKey.reset();
             bChanged = true;

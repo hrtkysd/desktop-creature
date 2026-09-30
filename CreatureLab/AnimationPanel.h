@@ -28,29 +28,32 @@ class CAnimationPanel
 public:
     explicit CAnimationPanel(
         Creature::Animation::CAnimationPlayer& animationPlayer,
-        Creature::Editor::CAnimationEditor& editor,
         CEditorContext& editorContext);
 public:
     bool Draw(
+        Creature::Editor::CAnimationEditor& editor,
         const Creature::Animation::CAnimation& animation,
         const Creature::CSkeleton& skeleton);
 private:
     bool DrawAnimationProperties(
+        Creature::Editor::CAnimationEditor& editor,
         const Creature::Animation::CAnimation& animation);
     void DrawCurrentTime(
         const Creature::Animation::CAnimation& animation);
     bool DrawTracks(
+        Creature::Editor::CAnimationEditor& editor,
         const Creature::Animation::CAnimation& animation,
         const Creature::CSkeleton& skeleton);
     bool DrawAddTrack(
+        Creature::Editor::CAnimationEditor& editor,
         const Creature::Animation::CAnimation& animation);
     bool DrawTrack(
+        Creature::Editor::CAnimationEditor& editor,
         const Creature::Animation::CAnimation& animation,
         const Creature::Animation::CAnimationTrack& track);
 
 private:
     Creature::Animation::CAnimationPlayer& m_animationPlayer;
-    Creature::Editor::CAnimationEditor& m_editor;
     CEditorContext& m_editorContext;
 
     std::optional<CUndoScope> m_undoScope;

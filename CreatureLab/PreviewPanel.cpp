@@ -53,13 +53,13 @@ namespace
 CPreviewPanel::CPreviewPanel(
     CCreatureEditor& editor,
     CEditorContext& context)
-    : m_previewEditor(editor.GetSkeletonEditor(), context)
-    , m_skeleton(editor.GetSkeletonEditor().GetSkeleton())
-    , m_apperance(editor.GetAppearanceEditor().GetAppearance())
+    : m_previewEditor(editor, context)
 {
 }
 
 void CPreviewPanel::DrawUi(
+    const CSkeleton& skeleton,
+    const CAppearance& appearance,
     const CCreaturePose& pose,
     CTextureCache& textureCache,
     const CRenderTarget& renderTarget)
@@ -94,6 +94,8 @@ void CPreviewPanel::DrawUi(
         CMatrix3x2::CreateTranslation(previewCenter);
 
     m_vecRenderItem = BuildPartViews(
+        skeleton,
+        appearance,
         pose,
         creatureToPreview,
         textureCache);
@@ -173,13 +175,13 @@ void CPreviewPanel::DrawUi(
         }
         else if (editorContext.GetEditMode() == EditMode::Pivot)
         {
-            const auto part = m_skeleton.FindPartById(item.GetPartId());
+            const auto part = skeleton.FindPartById(item.GetPartId());
             if (part)
             {
                 const auto worldTransform =
                     CPartTransformBuilder::BuildWorld(
                         *part,
-                        m_skeleton,
+                        skeleton,
                         pose);
 
                 const auto screenTransform =
@@ -288,22 +290,24 @@ void CPreviewPanel::DrawSelectPartFrameRect(
 }
 
 std::vector<CRenderPartItem> CPreviewPanel::BuildPartViews(
+    const CSkeleton& skeleton,
+    const CAppearance& appearance,
     const CCreaturePose& pose,
     const CMatrix3x2& previewTransform,
     CTextureCache& textureCache)
 {
     std::vector<CRenderPartItem> result;
-    result.reserve(m_skeleton.Parts().size());
+    result.reserve(skeleton.Parts().size());
 
-    for (const auto& part : m_skeleton.Parts())
+    for (const auto& part : skeleton.Parts())
     {
-        const auto appearance = m_apperance.FindByPartId(part.id);
-        if (!appearance) continue;
+        const auto partAppearance = appearance.FindByPartId(part.id);
+        if (!partAppearance) continue;
 
-        auto texture = textureCache.Load(appearance->texturePath);
+        auto texture = textureCache.Load(partAppearance->texturePath);
         if (!texture) continue;
 
-        const auto worldTransform = CPartTransformBuilder::BuildWorld(part, m_skeleton, pose);
+        const auto worldTransform = CPartTransformBuilder::BuildWorld(part, skeleton, pose);
         const auto screenTransform = worldTransform * previewTransform;
 
         const Vec2 size
