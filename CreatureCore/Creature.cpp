@@ -168,11 +168,6 @@ AnimationId CCreature::AddNewAnimation(const std::string& strName)
     return id;
 }
 
-CAnimation* CCreature::FindMutableAnimationById(AnimationId id)
-{
-    return const_cast<CAnimation*>(std::as_const(*this).FindAnimationById(id));
-}
-
 const CAnimation* CCreature::FindAnimationById(AnimationId id) const
 {
     if (id == INVALID_ANIMATION_ID) return nullptr;

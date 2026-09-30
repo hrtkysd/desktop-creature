@@ -20,7 +20,6 @@ namespace Creature
 
     namespace Editor
     {
-        class CAnimationEditor;
         class CCreatureEditor;
     }
 
@@ -32,7 +31,6 @@ namespace Creature
     class CCreature
     {
         friend class IO::CCreatureIO;
-        friend class Creature::Editor::CAnimationEditor;
         friend class Creature::Editor::CCreatureEditor;
     public:
         CCreature();
@@ -62,7 +60,6 @@ namespace Creature
         Animation::AnimationId AddAnimation(Animation::CAnimation&& animation);
         bool RemoveAnimation(Animation::AnimationId id);
 
-        Animation::CAnimation* FindMutableAnimationById(Animation::AnimationId id);
         Animation::AnimationId AddNewAnimation(const std::string& strName);
 
         void SetName(const std::string& strName);

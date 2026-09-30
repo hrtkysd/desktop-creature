@@ -8,8 +8,6 @@
 
 namespace Creature
 {
-    class CCreature;
-
     namespace Animation
     {
         class CAnimation;
@@ -23,7 +21,8 @@ namespace Creature
         class CAnimationEditor
         {
         public:
-            explicit CAnimationEditor(CCreature& creature);
+            explicit CAnimationEditor(
+                std::vector<Animation::CAnimation>& vecAnimation);
 
             bool SetName(Animation::AnimationId id, const std::string& name);
             bool SetDuration(Animation::AnimationId id, float duration);
@@ -39,7 +38,9 @@ namespace Creature
 
             const std::vector<Animation::CAnimation>& GetAnimations() const;
         private:
-            Creature::CCreature& m_creature;
+            Animation::CAnimation* FindAnimationById(Animation::AnimationId id);
+        private:
+            std::vector<Creature::Animation::CAnimation>& m_vecAnimation;
         };
     }
 }

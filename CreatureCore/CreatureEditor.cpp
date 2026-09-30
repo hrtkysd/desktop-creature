@@ -23,7 +23,7 @@ const CCreature& CCreatureEditor::GetCreature() const
 
 CAnimationEditor CCreatureEditor::GetAnimationEditor()
 {
-    return CAnimationEditor{ m_creature };
+    return CAnimationEditor{ m_creature.MutableAnimations() };
 }
 
 CSkeletonEditor CCreatureEditor::GetSkeletonEditor()
@@ -39,11 +39,6 @@ CAppearanceEditor CCreatureEditor::GetAppearanceEditor()
 void CCreatureEditor::SetName(const std::string& strName)
 {
     m_creature.SetName(strName);
-}
-
-CAnimation* CCreatureEditor::FindMutableAnimationById(AnimationId id)
-{
-    return m_creature.FindMutableAnimationById(id);
 }
 
 bool CCreatureEditor::RemovePart(PartId id)
