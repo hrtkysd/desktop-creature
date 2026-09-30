@@ -44,7 +44,6 @@ namespace Creature
         private:
             CCreature& m_creature;
         };
-
     }
 }
 
