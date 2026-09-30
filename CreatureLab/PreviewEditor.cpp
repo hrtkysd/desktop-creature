@@ -348,10 +348,11 @@ bool CPreviewEditor::BeginRotate(
         });
 
     const auto& transform = part->bindTransform;
+    const auto& currentPosition = transform.GetPosition();
     const Vec2 pivotParent
     {
-        transform.GetPosition().x + part->pivot.x,
-        transform.GetPosition().y + part->pivot.y
+        currentPosition.x + part->pivot.x,
+        currentPosition.y + part->pivot.y
     };
 
     const auto fAngle = Angle::Normalize(
@@ -444,9 +445,12 @@ void CPreviewEditor::MovePart(
 
     auto transform = part->bindTransform;
 
-    transform.GetPosition().x += currentMouse.x - previousMouse.x;
-    transform.GetPosition().y += currentMouse.y - previousMouse.y;
-
+    const auto& currentPosition = transform.GetPosition();
+    transform.SetPosition(
+        {
+            currentPosition.x + currentMouse.x - previousMouse.x,
+            currentPosition.y + currentMouse.y - previousMouse.y,
+        });
     m_editor.GetSkeletonEditor().SetPartTransform(part->id, transform);
 }
 
@@ -519,8 +523,8 @@ void CPreviewEditor::ResizePart(
         m_resizeState.anchor.y - anchorOffset.y
     };
 
-    editTransform.GetScale() = newScale;
-    editTransform.GetPosition() = newPosition;
+    editTransform.SetScale(newScale);
+    editTransform.SetPosition(newPosition);
 
     m_editor.GetSkeletonEditor().SetPartTransform(part->id, editTransform);
 }
@@ -599,9 +603,12 @@ void CPreviewEditor::MovePivot(
     const auto transformedDelta = scaleRotation.TransformPoint(deltaPivot);
 
     auto transform = part->bindTransform;
-    auto& position = transform.GetPosition();
-    position.x += transformedDelta.x - deltaPivot.x;
-    position.y += transformedDelta.y - deltaPivot.y;
+    const auto& currentPosition = transform.GetPosition();
+    transform.SetPosition(
+        {
+            currentPosition.x + transformedDelta.x - deltaPivot.x,
+            currentPosition.y + transformedDelta.y - deltaPivot.y
+        });
 
     m_editor.GetSkeletonEditor().SetPartPivotAndTransform(part->id, newPivot, transform);
 }
