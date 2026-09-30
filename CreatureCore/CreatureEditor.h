@@ -40,7 +40,6 @@ namespace Creature
             const Creature::CCreature& GetCreature() const;
             void SetName(const std::string& strName);
         private:
-            Animation::CAnimation* FindMutableAnimationById(Animation::AnimationId id);
             bool RemovePart(PartId id) override;
         private:
             CCreature& m_creature;
