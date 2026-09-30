@@ -29,8 +29,8 @@ namespace
 
         transform.SetScale(
             {
-                transform.GetScale().x + poseTransform.GetScale().x,
-                transform.GetScale().y + poseTransform.GetScale().y
+                transform.GetScale().x * poseTransform.GetScale().x,
+                transform.GetScale().y * poseTransform.GetScale().y
             });
 
         return transform;
