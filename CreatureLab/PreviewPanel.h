@@ -35,6 +35,8 @@ public:
         CEditorContext& context);
 public:
     void DrawUi(
+        const Creature::CSkeleton& skeleton,
+        const Creature::CAppearance& appearance,
         const Creature::CCreaturePose& pose,
         CTextureCache& textureCache,
         const CRenderTarget& renderTarget);
@@ -46,6 +48,8 @@ private:
         const Creature::Math::RectCorner& corner,
         const CRenderPartItem& selectPartView);
     std::vector<CRenderPartItem> BuildPartViews(
+        const Creature::CSkeleton& skeleton,
+        const Creature::CAppearance& appearance,
         const Creature::CCreaturePose& pose,
         const Creature::Math::CMatrix3x2& previewTransform,
         CTextureCache& textureCache);
@@ -57,8 +61,6 @@ private:
         const Creature::Math::Vec2& position);
 private:
     CPreviewEditor m_previewEditor;
-    const Creature::CSkeleton& m_skeleton;
-    const Creature::CAppearance& m_apperance;
     Creature::Math::Vec2 m_contentSize{};
     std::vector<CRenderPartItem> m_vecRenderItem;
 };

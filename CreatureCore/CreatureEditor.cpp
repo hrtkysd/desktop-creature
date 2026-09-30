@@ -1,7 +1,10 @@
 #include "pch.h"
 #include "Animation.h"
+#include "AnimationEditor.h"
+#include "AppearanceEditor.h"
 #include "Creature.h"
 #include "CreatureEditor.h"
+#include "SkeletonEditor.h"
 
 using namespace Creature;
 using namespace Creature::Animation;
@@ -10,9 +13,6 @@ using namespace Creature::Math;
 
 CCreatureEditor::CCreatureEditor(CCreature& creature)
     : m_creature(creature)
-    , m_animationEditor(creature)
-    , m_skeletonEditor(creature.GetSkeleton(), *this)
-    , m_appearanceEditor(creature.GetAppearance())
 {
 }
 
@@ -21,19 +21,19 @@ const CCreature& CCreatureEditor::GetCreature() const
     return m_creature;
 }
 
-CAnimationEditor& CCreatureEditor::GetAnimationEditor()
+CAnimationEditor CCreatureEditor::GetAnimationEditor()
 {
-    return m_animationEditor;
+    return CAnimationEditor{ m_creature.MutableAnimations() };
 }
 
-CSkeletonEditor& CCreatureEditor::GetSkeletonEditor()
+CSkeletonEditor CCreatureEditor::GetSkeletonEditor()
 {
-    return m_skeletonEditor;
+    return CSkeletonEditor{ m_creature.MutableSkeleton(), *this };
 }
 
-CAppearanceEditor& CCreatureEditor::GetAppearanceEditor()
+CAppearanceEditor CCreatureEditor::GetAppearanceEditor()
 {
-    return m_appearanceEditor;
+    return CAppearanceEditor{ m_creature.MutableAppearance() };
 }
 
 void CCreatureEditor::SetName(const std::string& strName)
@@ -41,26 +41,21 @@ void CCreatureEditor::SetName(const std::string& strName)
     m_creature.SetName(strName);
 }
 
-CAnimation* CCreatureEditor::FindAnimationById(AnimationId id)
-{
-    return m_creature.FindAnimationById(id);
-}
-
 bool CCreatureEditor::RemovePart(PartId id)
 {
-    const auto parts = m_skeletonEditor.RemovePartCore(id);
+    const auto parts = GetSkeletonEditor().RemovePartCore(id);
     if (parts.empty()) return false;
     for (const auto part : parts)
     {
-        m_animationEditor.RemovePart(part);
-        m_appearanceEditor.RemovePart(part);
+        GetAnimationEditor().RemovePart(part);
+        GetAppearanceEditor().RemovePart(part);
     }
     return true;
 }
 
-const CAnimation* CCreatureEditor::FindReadonlyAnimationById(AnimationId id) const
+const CAnimation* CCreatureEditor::FindAnimationById(AnimationId id) const
 {
-    return m_creature.FindReadonlyAnimationById(id);
+    return m_creature.FindAnimationById(id);
 }
 
 AnimationId CCreatureEditor::AddNewAnimation(const std::string& strName)

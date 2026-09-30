@@ -228,11 +228,11 @@ bool CAppRuntime::LoadCreature()
 
 bool CAppRuntime::Update(float fDeltaTime)
 {
-    const auto& animations = m_creature.GetReadonlyAnimations();
+    const auto& animations = m_creature.GetAnimations();
     if (animations.empty()) return false;
 
     const auto& animation = animations.front();
-    const auto& skeleton = m_creature.GetReadonlySkeleton();
+    const auto& skeleton = m_creature.GetSkeleton();
 
     m_animationPlayer.Update(fDeltaTime);
     m_animationPlayer.SamplePose(animation, skeleton);
@@ -248,8 +248,8 @@ bool CAppRuntime::Render()
     if (!m_renderer.BeginFrame()) return false;
     m_renderer.BeginSprite();
 
-    const auto& skeleton = m_creature.GetReadonlySkeleton();
-    const auto& creatureAppearance = m_creature.GetReadonlyAppearance();
+    const auto& skeleton = m_creature.GetSkeleton();
+    const auto& creatureAppearance = m_creature.GetAppearance();
     constexpr float creatureScale = 0.1f;
 
     const auto creatureToScreen =

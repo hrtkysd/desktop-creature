@@ -4,6 +4,7 @@
 #include "EditorCommand.h"
 #include "EditorContext.h"
 #include "EditorController.h"
+#include "SkeletonEditor.h"
 #include "UndoScope.h"
 
 using namespace Creature;
@@ -36,7 +37,7 @@ bool CEditorController::Execute(EditorCommand command)
     {
         auto scope = m_context.CreateUndoScope();
 
-        auto& skeletonEditor = m_editor.GetSkeletonEditor();
+        auto skeletonEditor = m_editor.GetSkeletonEditor();
         if (!skeletonEditor.RemovePart(m_context.GetPartId()))
         {
             scope.Cancel();

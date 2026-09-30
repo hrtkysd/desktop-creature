@@ -3,6 +3,7 @@
 #include "AnimationId.h"
 
 #include <memory>
+#include <string>
 #include <vector>
 
 namespace Creature
@@ -19,7 +20,6 @@ namespace Creature
 
     namespace Editor
     {
-        class CAnimationEditor;
         class CCreatureEditor;
     }
 
@@ -31,7 +31,6 @@ namespace Creature
     class CCreature
     {
         friend class IO::CCreatureIO;
-        friend class Creature::Editor::CAnimationEditor;
         friend class Creature::Editor::CCreatureEditor;
     public:
         CCreature();
@@ -43,25 +42,24 @@ namespace Creature
         CCreature(CCreature&&) noexcept;
         CCreature& operator=(CCreature&&) noexcept;
     public:
-        CCreature Clone();
+        CCreature Clone() const;
         const Genome& GetGenome() const;
-        const CSkeleton& GetReadonlySkeleton() const;
-        const CAppearance& GetReadonlyAppearance() const;
+        const CSkeleton& GetSkeleton() const;
+        const CAppearance& GetAppearance() const;
 
         const std::string& GetName() const;
 
-        const std::vector<Animation::CAnimation>& GetReadonlyAnimations() const;
-        const Animation::CAnimation* FindReadonlyAnimationById(Animation::AnimationId id) const;
+        const std::vector<Animation::CAnimation>& GetAnimations() const;
+        const Animation::CAnimation* FindAnimationById(Animation::AnimationId id) const;
     private:
-        Genome& GetGenome();
-        CSkeleton& GetSkeleton();
-        CAppearance& GetAppearance();
-        std::vector<Animation::CAnimation>& GetAnimations();
+        Genome& MutableGenome();
+        CSkeleton& MutableSkeleton();
+        CAppearance& MutableAppearance();
+        std::vector<Animation::CAnimation>& MutableAnimations();
     private:
         Animation::AnimationId AddAnimation(Animation::CAnimation&& animation);
         bool RemoveAnimation(Animation::AnimationId id);
 
-        Animation::CAnimation* FindAnimationById(Animation::AnimationId id);
         Animation::AnimationId AddNewAnimation(const std::string& strName);
 
         void SetName(const std::string& strName);

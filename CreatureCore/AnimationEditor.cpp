@@ -3,14 +3,13 @@
 #include "AnimationEditor.h"
 #include "AnimationTrack.h"
 #include "AnimationTrackKey.h"
-#include "Creature.h"
 
 using namespace Creature;
 using namespace Creature::Animation;
 using namespace Creature::Editor;
 
-CAnimationEditor::CAnimationEditor(CCreature& creature)
-    : m_creature(creature)
+Creature::Editor::CAnimationEditor::CAnimationEditor(std::vector<CAnimation>& vecAnimation)
+    : m_vecAnimation(vecAnimation)
 {
 }
 
@@ -18,7 +17,7 @@ bool CAnimationEditor::SetName(
     AnimationId id,
     const std::string& strName)
 {
-    if (auto animation = m_creature.FindAnimationById(id))
+    if (auto animation = FindAnimationById(id))
     {
         animation->SetName(strName);
         return true;
@@ -30,7 +29,7 @@ bool CAnimationEditor::SetDuration(
     AnimationId id,
     float fDuration)
 {
-    if (auto animation = m_creature.FindAnimationById(id))
+    if (auto animation = FindAnimationById(id))
     {
         return animation->SetDuration(fDuration);
     }
@@ -41,7 +40,7 @@ bool CAnimationEditor::AddTrack(
     AnimationId id,
     CAnimationTrack&& animationTrack)
 {
-    if (auto animation = m_creature.FindAnimationById(id))
+    if (auto animation = FindAnimationById(id))
     {
         return animation->AddAnimationTrack(std::move(animationTrack));
     }
@@ -52,7 +51,7 @@ bool CAnimationEditor::RemoveTrack(
     AnimationId id,
     const CAnimationTrackKey& trackKey)
 {
-    if (auto animation = m_creature.FindAnimationById(id))
+    if (auto animation = FindAnimationById(id))
     {
         return animation->RemoveAnimationTrackByKey(trackKey);
     }
@@ -64,7 +63,7 @@ bool CAnimationEditor::AddOrUpdateKeyFrame(
     const CAnimationTrackKey& trackKey,
     const FloatKeyFrame& keyFrame)
 {
-    if (auto animation = m_creature.FindAnimationById(id))
+    if (auto animation = FindAnimationById(id))
     {
         return animation->AddOrUpdateKeyFrame(trackKey, keyFrame);
     }
@@ -73,7 +72,7 @@ bool CAnimationEditor::AddOrUpdateKeyFrame(
 
 void CAnimationEditor::RemovePart(PartId id)
 {
-    for (auto& animation : m_creature.GetAnimations())
+    for (auto& animation : m_vecAnimation)
     {
         animation.RemoveAnimationTrackByPartId(id);
     }
@@ -81,5 +80,20 @@ void CAnimationEditor::RemovePart(PartId id)
 
 const std::vector<CAnimation>& CAnimationEditor::GetAnimations() const
 {
-    return m_creature.GetReadonlyAnimations();
+    return m_vecAnimation;
+}
+
+CAnimation* CAnimationEditor::FindAnimationById(AnimationId id)
+{
+    const auto it = std::find_if(
+        m_vecAnimation.begin(),
+        m_vecAnimation.end(),
+        [id](const CAnimation& animation)
+        {
+            return animation.GetAnimationId() == id;
+        });
+
+    return it != m_vecAnimation.end()
+        ? std::addressof(*it)
+        : nullptr;
 }
