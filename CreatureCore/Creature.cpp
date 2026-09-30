@@ -36,7 +36,7 @@ CCreature& CCreature::operator=(CCreature&& rhs) noexcept
     return *this;
 }
 
-CCreature CCreature::Clone()
+CCreature CCreature::Clone() const
 {
     CCreature creature;
     *creature.m_impl = *m_impl;
@@ -172,7 +172,7 @@ const CAnimation* CCreature::FindAnimationById(AnimationId id) const
 {
     if (id == INVALID_ANIMATION_ID) return nullptr;
 
-    auto& vecAnimation = m_impl->vecAnimation;
+    const auto& vecAnimation = m_impl->vecAnimation;
     auto itFind = std::find_if(vecAnimation.begin(), vecAnimation.end(), [id](const CAnimation& animation)
         {
             return animation.GetAnimationId() == id;

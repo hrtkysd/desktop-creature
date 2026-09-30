@@ -12,7 +12,7 @@ CUndoBuffer::CUndoBuffer(CCreature& creature, std::size_t maxHistory)
 
 CUndoScope CUndoBuffer::CreateScope()
 {
-    return { *this, m_creature.Clone() };
+    return CUndoScope{ *this, m_creature.Clone() };
 }
 
 bool CUndoBuffer::CanUndo() const noexcept
