@@ -17,20 +17,22 @@ namespace
     {
         auto transform = part.bindTransform;
 
+        const auto currentPosition = transform.GetPosition();
         transform.SetPosition(
             {
-                transform.GetPosition().x + poseTransform.GetPosition().x,
-                transform.GetPosition().y + poseTransform.GetPosition().y
+                currentPosition.x + poseTransform.GetPosition().x,
+                currentPosition.y + poseTransform.GetPosition().y
             });
 
         transform.SetRotation(
             transform.GetRotation() +
             poseTransform.GetRotation());
 
+        const auto& currentScale = transform.GetScale();
         transform.SetScale(
             {
-                transform.GetScale().x * poseTransform.GetScale().x,
-                transform.GetScale().y * poseTransform.GetScale().y
+                currentScale.x * poseTransform.GetScale().x,
+                currentScale.y * poseTransform.GetScale().y
             });
 
         return transform;
@@ -57,15 +59,11 @@ CMatrix3x2 Creature::Math::CPartTransformBuilder::BuildWorld(
     if (part.parentId == INVALID_PART_ID) return local;
 
     const auto* parent = skeleton.FindPartById(part.parentId);
-
     if (!parent) return local;
-
-    const auto parentWorld = BuildWorld(*parent, skeleton);
-
     return
         local
         *
-        parentWorld;
+        BuildWorld(*parent, skeleton);
 }
 
 CMatrix3x2 CPartTransformBuilder::BuildWorld(
@@ -84,7 +82,6 @@ CMatrix3x2 CPartTransformBuilder::BuildWorld(
     }
 
     const auto local = BuildLocal(part, transform);
-
     if (part.parentId == INVALID_PART_ID) return local;
 
     const auto parent = skeleton.FindPartById(part.parentId);

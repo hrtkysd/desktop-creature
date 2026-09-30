@@ -348,10 +348,11 @@ bool CPreviewEditor::BeginRotate(
         });
 
     const auto& transform = part->bindTransform;
+    const auto& currentPosition = transform.GetPosition();
     const Vec2 pivotParent
     {
-        transform.GetPosition().x + part->pivot.x,
-        transform.GetPosition().y + part->pivot.y
+        currentPosition.x + part->pivot.x,
+        currentPosition.y + part->pivot.y
     };
 
     const auto fAngle = Angle::Normalize(
@@ -444,10 +445,11 @@ void CPreviewEditor::MovePart(
 
     auto transform = part->bindTransform;
 
+    const auto& currentPosition = transform.GetPosition();
     transform.SetPosition(
         {
-            transform.GetPosition().x + currentMouse.x - previousMouse.x,
-            transform.GetPosition().y + currentMouse.y - previousMouse.y,
+            currentPosition.x + currentMouse.x - previousMouse.x,
+            currentPosition.y + currentMouse.y - previousMouse.y,
         });
     m_editor.GetSkeletonEditor().SetPartTransform(part->id, transform);
 }
@@ -601,10 +603,11 @@ void CPreviewEditor::MovePivot(
     const auto transformedDelta = scaleRotation.TransformPoint(deltaPivot);
 
     auto transform = part->bindTransform;
+    const auto& currentPosition = transform.GetPosition();
     transform.SetPosition(
         {
-            transform.GetPosition().x + transformedDelta.x - deltaPivot.x,
-            transform.GetPosition().y + transformedDelta.y - deltaPivot.y
+            currentPosition.x + transformedDelta.x - deltaPivot.x,
+            currentPosition.y + transformedDelta.y - deltaPivot.y
         });
 
     m_editor.GetSkeletonEditor().SetPartPivotAndTransform(part->id, newPivot, transform);

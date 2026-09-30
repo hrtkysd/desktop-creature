@@ -75,24 +75,32 @@ void CAnimationPlayer::SamplePose(const CAnimation& animation, const CSkeleton& 
         switch (trackKey.GetProperty())
         {
         case AnimationProperty::PositionX:
-            transform.SetPosition({ value , transform.GetPosition().y });
-            break;
-
+        {
+            const auto& position = transform.GetPosition();
+            transform.SetPosition({ value , position.y });
+        }
+        break;
         case AnimationProperty::PositionY:
-            transform.SetPosition({ transform.GetPosition().x , value });
-            break;
-
+        {
+            const auto& position = transform.GetPosition();
+            transform.SetPosition({ position.x , value });
+        }
+        break;
         case AnimationProperty::Rotation:
             transform.SetRotation(value);
             break;
-
         case AnimationProperty::ScaleX:
-            transform.SetScale({ value, transform.GetScale().y });
-            break;
-
+        {
+            const auto& scale = transform.GetScale();
+            transform.SetScale({ value, scale.y });
+        }
+        break;
         case AnimationProperty::ScaleY:
-            transform.SetScale({ transform.GetScale().x, value });
-            break;
+        {
+            const auto& scale = transform.GetScale();
+            transform.SetScale({ scale.x, value });
+        }
+        break;
         }
     }
 }

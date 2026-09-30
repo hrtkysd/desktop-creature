@@ -361,4 +361,83 @@ namespace Creature
         EXPECT_EQ(part->bindTransform.GetScale(), transform.GetScale());
         EXPECT_FLOAT_EQ(part->bindTransform.GetRotation(), transform.GetRotation());
     }
+
+    TEST(CreatureEditorTest, RemoveParentPartRemovesDescendantsAndTheirReferences)
+    {
+        CCreature creature;
+        CCreatureEditor creatureEditor(creature);
+
+        auto skeletonEditor = creatureEditor.GetSkeletonEditor();
+
+        const auto bodyId = skeletonEditor.AddPart("Body");
+        const auto headId = skeletonEditor.AddPart("Head", bodyId);
+        const auto eyesId = skeletonEditor.AddPart("Eyes", headId);
+        const auto earId = skeletonEditor.AddPart("Ear", headId);
+
+        ASSERT_NE(bodyId, INVALID_PART_ID);
+        ASSERT_NE(headId, INVALID_PART_ID);
+        ASSERT_NE(eyesId, INVALID_PART_ID);
+        ASSERT_NE(earId, INVALID_PART_ID);
+
+        auto appearanceEditor = creatureEditor.GetAppearanceEditor();
+        appearanceEditor.SetTexture(headId, L"head.png");
+        appearanceEditor.SetTexture(eyesId, L"eyes.png");
+        appearanceEditor.SetTexture(earId, L"ear.png");
+
+        const auto animationId = creatureEditor.AddNewAnimation("Idle");
+        ASSERT_NE(animationId, INVALID_ANIMATION_ID);
+
+        const CAnimationTrackKey headTrack{
+            headId,
+            AnimationProperty::Rotation
+        };
+
+        const CAnimationTrackKey eyesTrack{
+            eyesId,
+            AnimationProperty::PositionY
+        };
+
+        const CAnimationTrackKey earTrack{
+            earId,
+            AnimationProperty::Rotation
+        };
+
+        auto animationEditor = creatureEditor.GetAnimationEditor();
+
+        ASSERT_TRUE(animationEditor.AddTrack(
+            animationId,
+            CAnimationTrack{ headTrack }));
+
+        ASSERT_TRUE(animationEditor.AddTrack(
+            animationId,
+            CAnimationTrack{ eyesTrack }));
+
+        ASSERT_TRUE(animationEditor.AddTrack(
+            animationId,
+            CAnimationTrack{ earTrack }));
+
+        // Act
+        ASSERT_TRUE(skeletonEditor.RemovePart(headId));
+
+        // Skeleton
+        EXPECT_NE(creature.GetSkeleton().FindPartById(bodyId), nullptr);
+        EXPECT_EQ(creature.GetSkeleton().FindPartById(headId), nullptr);
+        EXPECT_EQ(creature.GetSkeleton().FindPartById(eyesId), nullptr);
+        EXPECT_EQ(creature.GetSkeleton().FindPartById(earId), nullptr);
+
+        // Appearance
+        EXPECT_EQ(creature.GetAppearance().FindByPartId(headId), nullptr);
+        EXPECT_EQ(creature.GetAppearance().FindByPartId(eyesId), nullptr);
+        EXPECT_EQ(creature.GetAppearance().FindByPartId(earId), nullptr);
+
+        // Animation
+        const auto* animation =
+            creature.FindAnimationById(animationId);
+
+        ASSERT_NE(animation, nullptr);
+
+        EXPECT_EQ(animation->FindAnimationTrack(headTrack), nullptr);
+        EXPECT_EQ(animation->FindAnimationTrack(eyesTrack), nullptr);
+        EXPECT_EQ(animation->FindAnimationTrack(earTrack), nullptr);
+    }
 }
