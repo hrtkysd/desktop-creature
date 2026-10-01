@@ -222,5 +222,8 @@
     <ClCompile Include="..\Common\ComInitializer.cpp">
       <Filter>Common</Filter>
     </ClCompile>
+    <ClCompile Include="..\Common\StringConverter.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

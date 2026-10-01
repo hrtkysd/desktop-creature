@@ -1,105 +1,26 @@
-#include "FileOperation.h"
+#include "StringConverter.h"
 
-#include <shobjidl.h>
-#include <wrl/client.h>
-
-using Microsoft::WRL::ComPtr;
-
-namespace
+std::wstring StringConverter::Utf8ToWide(std::string_view str)
 {
-    const COMDLG_FILTERSPEC kFilters[] =
-    {
-        { L"Creature File", L"*.creature" },
-        { L"All Files",     L"*.*" }
-    };
-}
+    if (str.empty()) return {};
 
-std::filesystem::path CFileOperation::ShowOpenCreatureDialog(HWND hWnd)
-{
-    Microsoft::WRL::ComPtr<IFileOpenDialog> dialog;
-
-    HRESULT hr = CoCreateInstance(
-        CLSID_FileOpenDialog,
+    const auto size = MultiByteToWideChar(
+        CP_UTF8,
+        0,
+        str.data(),
+        static_cast<int>(str.size()),
         nullptr,
-        CLSCTX_INPROC_SERVER,
-        IID_PPV_ARGS(&dialog));
+        0);
 
-    if (FAILED(hr)) return {};
+    std::wstring result(size, L'\0');
 
-    dialog->SetFileTypes(
-        static_cast<UINT>(std::size(kFilters)),
-        kFilters);
+    MultiByteToWideChar(
+        CP_UTF8,
+        0,
+        str.data(),
+        static_cast<int>(str.size()),
+        result.data(),
+        size);
 
-    dialog->SetFileTypeIndex(1);
-
-    hr = dialog->Show(hWnd);
-
-    if (hr == HRESULT_FROM_WIN32(ERROR_CANCELLED)) return {};
-
-    if (FAILED(hr)) return {};
-
-    ComPtr<IShellItem> item;
-
-    if (FAILED(dialog->GetResult(&item))) return {};
-
-    PWSTR pszPath = nullptr;
-
-    if (FAILED(item->GetDisplayName(
-        SIGDN_FILESYSPATH,
-        &pszPath)))
-    {
-        return {};
-    }
-
-    std::filesystem::path path{ pszPath };
-
-    CoTaskMemFree(pszPath);
-
-    return path;
-}
-
-std::filesystem::path CFileOperation::ShowSaveCreatureDialog(HWND hWnd)
-{
-    ComPtr<IFileSaveDialog> dialog;
-
-    HRESULT hr = CoCreateInstance(
-        CLSID_FileSaveDialog,
-        nullptr,
-        CLSCTX_INPROC_SERVER,
-        IID_PPV_ARGS(&dialog));
-
-    if (FAILED(hr)) return {};
-
-    dialog->SetFileTypes(
-        static_cast<UINT>(std::size(kFilters)),
-        kFilters);
-
-    dialog->SetFileTypeIndex(1);
-    dialog->SetDefaultExtension(L"creature");
-    dialog->SetFileName(L"creature.creature");
-
-    hr = dialog->Show(hWnd);
-
-    if (hr == HRESULT_FROM_WIN32(ERROR_CANCELLED)) return {};
-    if (FAILED(hr)) return {};
-
-    ComPtr<IShellItem> item;
-
-    hr = dialog->GetResult(&item);
-
-    if (FAILED(hr)) return {};
-
-    PWSTR pszPath = nullptr;
-
-    hr = item->GetDisplayName(
-        SIGDN_FILESYSPATH,
-        &pszPath);
-
-    if (FAILED(hr)) return {};
-
-    std::filesystem::path path{ pszPath };
-
-    CoTaskMemFree(pszPath);
-
-    return path;
+    return result;
 }

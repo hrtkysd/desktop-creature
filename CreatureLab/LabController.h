@@ -30,7 +30,7 @@ public:
         CEditorController& editorController,
         Creature::Editor::CCreatureEditor& creatureEditor);
 protected:
-    virtual void OnRevisionChanged(Revision revision) override;
+    void OnRevisionChanged(Revision revision) override;
 public:
     bool SaveAs();
     bool LoadFrom();
@@ -50,12 +50,12 @@ public:
     bool IsDirty() const noexcept;
 private:
     void UpdateWindowTitle(Revision currentRevision);
+
 private:
     Revision m_revision = 0;
-    CEditorContext& m_editorContext;
 
     CWindow& m_appWindow;
-
+    CEditorContext& m_editorContext;
     CDocumentController& m_documentController;
     CEditorController& m_editorController;
 
