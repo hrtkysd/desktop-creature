@@ -24,7 +24,7 @@ CLabController::CLabController(
 {
 }
 
-void CLabController::OnRevisionChanged(Revision revision)
+void CLabController::OnRevisionChanged(Revision)
 {
     if (m_appWindow.Handle() == nullptr) return;
     UpdateWindowTitle();
