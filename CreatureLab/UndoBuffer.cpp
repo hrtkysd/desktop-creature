@@ -45,10 +45,11 @@ void CUndoBuffer::Undo()
     auto& snapshot = m_vecUndo.back();
     m_vecRedo.emplace_back(m_creature.Clone(), m_currentRevision);
 
+    const auto revision = snapshot.revision;
     m_creature = std::move(snapshot.state);
     m_vecUndo.pop_back();
 
-    SetCurrentRevision(snapshot.revision, true);
+    SetCurrentRevision(revision, true);
 }
 
 void CUndoBuffer::Redo()
@@ -58,10 +59,11 @@ void CUndoBuffer::Redo()
     auto& snapshot = m_vecRedo.back();
     m_vecUndo.emplace_back(m_creature.Clone(), m_currentRevision);
 
+    const auto revision = snapshot.revision;
     m_creature = std::move(snapshot.state);
     m_vecRedo.pop_back();
 
-    SetCurrentRevision(snapshot.revision, true);
+    SetCurrentRevision(revision, true);
 }
 
 void CUndoBuffer::ResetHistory()
