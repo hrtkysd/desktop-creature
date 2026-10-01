@@ -1,7 +1,6 @@
 #pragma once
 
-#include <string>
-#include <Stringapiset.h>
+#include <string_view>
 
 namespace StringConverter
 {

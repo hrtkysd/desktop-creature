@@ -1,5 +1,7 @@
 #include "StringConverter.h"
 
+#include <Windows.h>
+
 std::wstring StringConverter::Utf8ToWide(std::string_view str)
 {
     if (str.empty()) return {};
