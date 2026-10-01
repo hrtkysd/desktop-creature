@@ -1,15 +1,9 @@
 #include "pch.h"
 #include "AnimationEditor.h"
-#include "AnimationTrack.h"
-#include "AnimationTrackKey.h"
 #include "Application.h"
 #include "ApplicationInformation.h"
-#include "Appearance.h"
-#include "AppearanceEditor.h"
 #include "CreaturePose.h"
 #include "RenderTargetScope.h"
-#include "SkeletonEditor.h"
-#include "Texture.h"
 
 // third party
 #include "imgui.h"
@@ -57,9 +51,6 @@ bool CApp::Initialize(
 
     if (!CreateMainWindow(hInstance, nCmdShow)) return false;
     if (!CreateGraphics()) return false;
-
-    InitializeCreature();
-
     if (!InitializeImGui()) return false;
 
     return true;
@@ -80,7 +71,13 @@ bool CApp::CreateMainWindow(
 
     if (!RegisterClassExW(&wc)) return false;
 
-    m_window.Create(hInstance, kWindowClassName, Information::ProductName, 1280, 800, this);
+    m_window.Create(
+        hInstance,
+        kWindowClassName,
+        Information::Product::ProductName,
+        1280,
+        800,
+        this);
 
     ShowWindow(m_window.Handle(), nCmdShow);
     UpdateWindow(m_window.Handle());
@@ -135,34 +132,6 @@ bool CApp::InitializeImGui()
     return true;
 }
 
-void CApp::InitializeCreature()
-{
-    m_creatureEditor.SetName("Hamster");
-
-    auto skeletonEditor = m_creatureEditor.GetSkeletonEditor();
-    const auto bodyId = skeletonEditor.AddPart("Body");
-    const auto headId = skeletonEditor.AddPart("Head", bodyId);
-    const auto eyesId = skeletonEditor.AddPart("Eyes", headId);
-    const auto leftEarId = skeletonEditor.AddPart("LeftEar", headId);
-    const auto rightEarId = skeletonEditor.AddPart("RightEar", headId);
-
-    auto appearanceEditor = m_creatureEditor.GetAppearanceEditor();
-    appearanceEditor.SetTexture(bodyId, L"assets/body.png");
-    appearanceEditor.SetTexture(headId, L"assets/head.png");
-    appearanceEditor.SetTexture(eyesId, L"assets/eyes.png");
-    appearanceEditor.SetTexture(leftEarId, L"assets/left_ear.png");
-    appearanceEditor.SetTexture(rightEarId, L"assets/right_ear.png");
-
-    CAnimationTrack headRotation(CAnimationTrackKey{ headId, AnimationProperty::Rotation });
-    headRotation.AddOrUpdateKeyFrame({ 0.0f,  0.0f });
-    headRotation.AddOrUpdateKeyFrame({ 0.5f,  0.1f });
-    headRotation.AddOrUpdateKeyFrame({ 1.0f,  0.0f });
-    const auto newId = m_creatureEditor.AddNewAnimation("idle");
-
-    auto animationsEditor = m_creatureEditor.GetAnimationEditor();
-    animationsEditor.AddTrack(newId, std::move(headRotation));
-}
-
 int CApp::Run()
 {
     MSG msg{};
@@ -197,10 +166,32 @@ void CApp::Render()
     ImGui_ImplWin32_NewFrame();
     ImGui::NewFrame();
 
+    m_menuBar.Draw(m_documentContext, m_editorContext);
+
+    const bool hasDocument = m_documentContext.HasDocument();
+
+    if (hasDocument)
+    {
+        DrawWorkspaceUi();
+    }
+
+    ImGui::Render();
+
+    if (!m_graphicsRenderer.BeginFrame()) return;
+
+    if (hasDocument)
+    {
+        RenderPreview();
+    }
+
+    ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+    m_graphicsRenderer.Present();
+}
+
+void CApp::DrawWorkspaceUi()
+{
     const auto viewport = ImGui::GetMainViewport();
-
     const ImGuiID dockspaceId = ImGui::GetID("CreatureLabDockSpace");
-
     if (ImGui::DockBuilderGetNode(dockspaceId) == nullptr)
     {
         ImGui::DockBuilderRemoveNode(dockspaceId);
@@ -251,7 +242,6 @@ void CApp::Render()
         viewport,
         ImGuiDockNodeFlags_None);
 
-    m_menuBar.Draw(m_editorContext);
     m_creatureTreePanel.Draw();
 
     const auto animation = m_creature.FindAnimationById(m_editorContext.GetAnimationId());
@@ -268,7 +258,6 @@ void CApp::Render()
         pose = &m_animationPlayer.GetPose();
     }
 
-    if (!m_graphicsRenderer.BeginFrame()) return;
     if (!m_previewRenderTarget) return;
 
     const auto contentSize = m_previewPanel.GetPreviewContentSize();
@@ -289,26 +278,25 @@ void CApp::Render()
         *pose,
         *m_textureCache,
         *m_previewRenderTarget);
+}
 
-    ImGui::Render();
+void CApp::RenderPreview()
+{
+    if (!m_previewRenderTarget) return;
 
-    {
-        CRenderTargetScope scope(
-            m_graphicsRenderer.GetContext(),
-            *m_previewRenderTarget,
-            { 0.0f, 0.0f, 0.0f, 0.0f });
+    CRenderTargetScope scope(
+        m_graphicsRenderer.GetContext(),
+        *m_previewRenderTarget,
+        { 0.0f, 0.0f, 0.0f, 0.0f });
 
-        m_graphicsRenderer.SetViewport(
-            m_previewRenderTarget->Width(),
-            m_previewRenderTarget->Height());
-        auto& spriteRenderer = m_graphicsRenderer.SpriteRenderer();
-        spriteRenderer.Begin();
-        m_previewPanel.RenderPreview(spriteRenderer);
-    }
+    m_graphicsRenderer.SetViewport(
+        m_previewRenderTarget->Width(),
+        m_previewRenderTarget->Height());
 
-    ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+    auto& spriteRenderer = m_graphicsRenderer.SpriteRenderer();
+    spriteRenderer.Begin();
 
-    m_graphicsRenderer.Present();
+    m_previewPanel.RenderPreview(spriteRenderer);
 }
 
 void CApp::Shutdown()

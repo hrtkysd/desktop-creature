@@ -12,6 +12,7 @@
 #include <dxgi.h>
 #include <wrl/client.h>
 
+#include <cstdint>
 #include <memory>
 #include <string>
 #include <vector>

@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "DocumentContext.h"
 #include "EditorContext.h"
 #include "ImGuiMainMenuBarScope.h"
 #include "ImGuiMenuScope.h"
@@ -14,15 +15,21 @@ CMenuBar::CMenuBar(CLabController& labController)
 {
 }
 
-void CMenuBar::Draw(CEditorContext& context)
+void CMenuBar::Draw(
+    const CDocumentContext& documentContext,
+    CEditorContext& editorContext)
 {
-    HandleShortcutKey(context);
+    HandleShortcutKey(editorContext);
 
     if (CImGuiMainMenuBarScope menuBar{})
     {
         if (CImGuiMenuScope fileMenu{ "File" })
         {
-            if (ImGui::MenuItem("Save As..."))
+            if (ImGui::MenuItem("New Creature"))
+            {
+                m_labController.CreateNew();
+            }
+            else if (ImGui::MenuItem("Save As..."))
             {
                 m_labController.SaveAs();
             }
@@ -31,6 +38,8 @@ void CMenuBar::Draw(CEditorContext& context)
                 m_labController.LoadFrom();
             }
         }
+        const bool hasDocument = documentContext.HasDocument();
+        ImGui::BeginDisabled(!hasDocument);
 
         if (CImGuiMenuScope animationMenu{ "Animation" })
         {
@@ -95,23 +104,24 @@ void CMenuBar::Draw(CEditorContext& context)
                 "Delete Part",
                 nullptr,
                 false,
-                context.GetPartId() != INVALID_PART_ID))
+                editorContext.GetPartId() != INVALID_PART_ID))
             {
                 m_labController.DeletePart();
             }
 
             ImGui::Separator();
 
-            if (ImGui::MenuItem("Undo", "Ctrl+Z", false, context.CanUndo()))
+            if (ImGui::MenuItem("Undo", "Ctrl+Z", false, editorContext.CanUndo()))
             {
                 m_labController.Undo();
             }
 
-            if (ImGui::MenuItem("Redo", "Ctrl+Y", false, context.CanRedo()))
+            if (ImGui::MenuItem("Redo", "Ctrl+Y", false, editorContext.CanRedo()))
             {
                 m_labController.Redo();
             }
         }
+        ImGui::EndDisabled();
     }
 }
 

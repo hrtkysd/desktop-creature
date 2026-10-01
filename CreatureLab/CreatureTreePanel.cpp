@@ -6,6 +6,7 @@
 #include "EditorContext.h"
 #include "ImGuiWindowScope.h"
 #include "Skeleton.h"
+#include "UndoScope.h"
 
 #include "imgui.h"
 #include "imgui_stdlib.h"
@@ -92,6 +93,7 @@ void CCreatureTreePanel::Draw()
                 &m_nodeEdit.GetText(),
                 ImGuiInputTextFlags_EnterReturnsTrue))
             {
+                auto undoScope = m_editorContext.CreateUndoScope();
                 const auto newId = m_editor.AddNewAnimation(m_nodeEdit.GetText());
                 m_editorContext.SelectAnimation(newId);
                 m_nodeEdit.EndEdit();
@@ -167,7 +169,7 @@ void CCreatureTreePanel::DrawPart(
     const auto isOpen =
         ImGui::TreeNodeEx(
             reinterpret_cast<void*>(
-                static_cast<uintptr_t>(partId)),
+                static_cast<std::uintptr_t>(partId)),
             imguiFlags,
             "%s",
             part->strName.c_str());

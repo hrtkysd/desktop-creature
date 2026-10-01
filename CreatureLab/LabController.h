@@ -32,6 +32,7 @@ public:
 protected:
     void OnRevisionChanged(Revision revision) override;
 public:
+    void CreateNew();
     bool SaveAs();
     bool LoadFrom();
 

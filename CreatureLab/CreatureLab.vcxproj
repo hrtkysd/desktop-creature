@@ -92,6 +92,7 @@
     <ClInclude Include="CreatureTreePanel.h" />
     <ClInclude Include="DocumentContext.h" />
     <ClInclude Include="DocumentController.h" />
+    <ClInclude Include="DocumentStatus.h" />
     <ClInclude Include="EditorCommand.h" />
     <ClInclude Include="EditorContext.h" />
     <ClInclude Include="EditorController.h" />
