@@ -2,6 +2,7 @@
 
 #include "AnimationId.h"
 #include "PartId.h"
+#include "Revision.h"
 #include "UndoBuffer.h"
 
 #include <cstdint>
@@ -38,9 +39,10 @@ public:
     SelectionType GetSelectionType() const noexcept;
 
     CUndoScope CreateUndoScope() noexcept;
-    void ClearHistory();
+    void ResetHistory();
     bool CanUndo() const noexcept;
     bool CanRedo() const noexcept;
+    Revision GetRevision() const noexcept;
 
     EditMode GetEditMode() const noexcept;
     void SetEditMode(EditMode mode);

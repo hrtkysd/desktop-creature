@@ -38,9 +38,9 @@ CUndoScope CEditorContext::CreateUndoScope() noexcept
     return m_undoBuffer.CreateScope();
 }
 
-void CEditorContext::ClearHistory()
+void CEditorContext::ResetHistory()
 {
-    m_undoBuffer.Clear();
+    m_undoBuffer.ResetHistory();
 }
 
 void CEditorContext::Undo()
@@ -61,6 +61,11 @@ bool CEditorContext::CanUndo() const noexcept
 bool CEditorContext::CanRedo() const noexcept
 {
     return m_undoBuffer.CanRedo();
+}
+
+Revision CEditorContext::GetRevision() const noexcept
+{
+    return m_undoBuffer.GetCurrentRevision();
 }
 
 EditMode CEditorContext::GetEditMode() const noexcept

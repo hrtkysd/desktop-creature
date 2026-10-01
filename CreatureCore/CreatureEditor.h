@@ -37,6 +37,8 @@ namespace Creature
             Animation::AnimationId AddAnimationWithId(Animation::AnimationId id, const std::string& name);
             bool RemoveAnimation(Animation::AnimationId id);
 
+            void SwapCreature(CCreature&& creature);
+
             const Creature::CCreature& GetCreature() const;
             void SetName(const std::string& strName);
         private:

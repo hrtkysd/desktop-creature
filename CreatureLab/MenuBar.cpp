@@ -30,7 +30,7 @@ void CMenuBar::Draw(CEditorContext& context)
             {
                 if (m_labController.LoadFrom())
                 {
-                    context.ClearHistory();
+                    context.ResetHistory();
                 }
             }
         }

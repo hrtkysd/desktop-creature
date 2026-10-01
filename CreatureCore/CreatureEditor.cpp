@@ -77,3 +77,8 @@ bool CCreatureEditor::RemoveAnimation(AnimationId id)
 {
     return m_creature.RemoveAnimation(id);
 }
+
+void CCreatureEditor::SwapCreature(CCreature&& creature)
+{
+    m_creature = std::move(creature);
+}

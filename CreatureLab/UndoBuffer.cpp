@@ -4,11 +4,24 @@
 
 using namespace Creature;
 
+struct CUndoBuffer::SnapshotImpl
+{
+    SnapshotImpl(CCreature&& state, Revision revision)
+        : state(std::move(state))
+        , revision(revision)
+    {
+    }
+    CCreature state;
+    Revision revision = 0;
+};
+
 CUndoBuffer::CUndoBuffer(CCreature& creature, std::size_t maxHistory)
     : m_creature(creature)
     , m_maxHistoryCount(maxHistory)
 {
 }
+
+CUndoBuffer::~CUndoBuffer() = default;
 
 CUndoScope CUndoBuffer::CreateScope()
 {
@@ -29,9 +42,12 @@ void CUndoBuffer::Undo()
 {
     if (!CanUndo()) return;
 
-    m_vecRedo.push_back(m_creature.Clone());
+    auto& snapshot = m_vecUndo.back();
+    m_vecRedo.emplace_back(m_creature.Clone(), m_currentRevision);
 
-    m_creature = std::move(m_vecUndo.back());
+    m_creature = std::move(snapshot.state);
+    SetCurrentRevision(snapshot.revision, true);
+
     m_vecUndo.pop_back();
 }
 
@@ -39,27 +55,56 @@ void CUndoBuffer::Redo()
 {
     if (!CanRedo()) return;
 
-    m_vecUndo.push_back(m_creature.Clone());
+    auto& snapshot = m_vecRedo.back();
+    m_vecUndo.emplace_back(m_creature.Clone(), m_currentRevision);
 
-    m_creature = std::move(m_vecRedo.back());
+    m_creature = std::move(snapshot.state);
+    SetCurrentRevision(snapshot.revision, true);
+
     m_vecRedo.pop_back();
 }
 
-void CUndoBuffer::Clear()
+void CUndoBuffer::ResetHistory()
 {
     m_vecUndo.clear();
     m_vecRedo.clear();
+    SetCurrentRevision(m_nextRevision++, false);
+}
+
+Revision CUndoBuffer::GetCurrentRevision() const noexcept
+{
+    return m_currentRevision;
+}
+
+void CUndoBuffer::SetListener(IUndoBufferListener* listener) noexcept
+{
+    m_listener = listener;
 }
 
 void CUndoBuffer::Push(CCreature&& state)
 {
     m_vecRedo.clear();
 
-    if (m_maxHistoryCount == 0) return;
-
-    if (m_vecUndo.size() >= m_maxHistoryCount)
+    if (m_maxHistoryCount > 0)
     {
-        m_vecUndo.erase(m_vecUndo.begin());
+        if (m_vecUndo.size() >= m_maxHistoryCount)
+        {
+            m_vecUndo.erase(m_vecUndo.begin());
+        }
+        m_vecUndo.emplace_back(std::move(state), m_currentRevision);
     }
-    m_vecUndo.push_back(std::move(state));
+
+    SetCurrentRevision(m_nextRevision++, true);
+}
+
+void CUndoBuffer::SetCurrentRevision(
+    Revision revision,
+    bool isNotify)
+{
+    if (m_currentRevision == revision) return;
+
+    m_currentRevision = revision;
+
+    if (!isNotify || !m_listener) return;
+    m_listener->OnRevisionChanged(revision);
 }
