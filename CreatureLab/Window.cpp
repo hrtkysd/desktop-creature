@@ -45,5 +45,5 @@ bool CWindow::Create(
 void CWindow::SetTitle(const std::string_view title)
 {
     if (!m_hWnd) return;
-    ::SetWindowText(m_hWnd, StringConverter::Utf8ToWide(title).c_str());
+    ::SetWindowTextW(m_hWnd, StringConverter::Utf8ToWide(title).c_str());
 }

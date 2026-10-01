@@ -27,7 +27,7 @@ CLabController::CLabController(
 void CLabController::OnRevisionChanged(Revision revision)
 {
     if (m_appWindow.Handle() == nullptr) return;
-    UpdateWindowTitle(revision);
+    UpdateWindowTitle();
 }
 
 bool CLabController::SaveAs()
@@ -37,7 +37,7 @@ bool CLabController::SaveAs()
 
     m_revision = m_editorContext.GetRevision();
 
-    UpdateWindowTitle(m_revision);
+    UpdateWindowTitle();
 
     return true;
 }
@@ -52,7 +52,7 @@ bool CLabController::LoadFrom()
     m_editorContext.ResetHistory();
     m_revision = m_editorContext.GetRevision();
 
-    UpdateWindowTitle(m_revision);
+    UpdateWindowTitle();
 
     return true;
 }
@@ -102,7 +102,7 @@ bool CLabController::IsDirty() const noexcept
     return m_revision != m_editorContext.GetRevision();
 }
 
-void CLabController::UpdateWindowTitle(Revision currentRevision)
+void CLabController::UpdateWindowTitle()
 {
     const auto& creature = m_creatureEditor.GetCreature();
 
@@ -114,7 +114,7 @@ void CLabController::UpdateWindowTitle(Revision currentRevision)
         title += creature.GetName();
     }
 
-    if (m_revision != currentRevision)
+    if (IsDirty())
     {
         title += " *";
     }

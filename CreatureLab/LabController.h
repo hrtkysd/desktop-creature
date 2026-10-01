@@ -49,7 +49,7 @@ public:
 
     bool IsDirty() const noexcept;
 private:
-    void UpdateWindowTitle(Revision currentRevision);
+    void UpdateWindowTitle();
 
 private:
     Revision m_revision = 0;
