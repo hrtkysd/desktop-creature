@@ -47,7 +47,6 @@ bool CLabController::LoadFrom()
     auto loadCreature = m_documentController.Load();
     if (!loadCreature) return false;
 
-    const auto strName = loadCreature->GetName();
     m_creatureEditor.SwapCreature(std::move(*loadCreature));
 
     m_editorContext.ResetHistory();
