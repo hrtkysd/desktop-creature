@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "ApplicationInformation.h"
+#include "Creature.h"
 #include "CreatureEditor.h"
 #include "DocumentController.h"
 #include "EditorCommand.h"
@@ -27,6 +28,23 @@ CLabController::CLabController(
 void CLabController::OnRevisionChanged(Revision)
 {
     if (m_appWindow.Handle() == nullptr) return;
+    UpdateWindowTitle();
+}
+
+void CLabController::CreateNew()
+{
+    m_creatureEditor.SwapCreature({});
+    m_creatureEditor.SetName(std::string
+        {
+            Information::Creature::NewCreatureDefaultName
+        });
+
+    m_editorContext.ResetHistory();
+    m_editorContext.SelectCreature();
+
+    m_documentController.CreateNewDocument();
+
+    m_revision = m_editorContext.GetRevision();
     UpdateWindowTitle();
 }
 
@@ -106,7 +124,7 @@ void CLabController::UpdateWindowTitle()
 {
     const auto& creature = m_creatureEditor.GetCreature();
 
-    std::string title{ Information::ProductName };
+    std::string title{ Information::Product::ProductName };
 
     if (!creature.GetName().empty())
     {

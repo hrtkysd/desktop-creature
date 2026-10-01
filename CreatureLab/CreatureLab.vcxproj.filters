@@ -146,6 +146,9 @@
     <ClInclude Include="ApplicationInformation.h">
       <Filter>Application</Filter>
     </ClInclude>
+    <ClInclude Include="DocumentStatus.h">
+      <Filter>Document</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />

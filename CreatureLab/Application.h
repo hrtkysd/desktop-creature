@@ -41,12 +41,12 @@ private:
     bool CreateGraphics();
 
     bool InitializeImGui();
-    void InitializeCreature();
 
     void Shutdown();
 
     void Render();
-
+    void DrawWorkspaceUi();
+    void RenderPreview();
     LRESULT HandleMessage(
         HWND hWnd,
         UINT message,
