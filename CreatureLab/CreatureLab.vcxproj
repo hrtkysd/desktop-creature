@@ -84,11 +84,12 @@
   <ItemGroup>
     <ClInclude Include="..\Common\ComInitializer.h" />
     <ClInclude Include="..\Common\FileOperation.h" />
+    <ClInclude Include="..\Common\StringConverter.h" />
     <ClInclude Include="AnimationPanel.h" />
     <ClInclude Include="Application.h" />
+    <ClInclude Include="ApplicationInformation.h" />
     <ClInclude Include="ContinuousEditUndoScope.h" />
     <ClInclude Include="CreatureTreePanel.h" />
-    <ClInclude Include="DocumentCommand.h" />
     <ClInclude Include="DocumentContext.h" />
     <ClInclude Include="DocumentController.h" />
     <ClInclude Include="EditorCommand.h" />
@@ -108,6 +109,7 @@
     <ClInclude Include="PreviewPart.h" />
     <ClInclude Include="PreviewState.h" />
     <ClInclude Include="RenderPartItem.h" />
+    <ClInclude Include="Revision.h" />
     <ClInclude Include="Rotate.h" />
     <ClInclude Include="UndoBuffer.h" />
     <ClInclude Include="UndoScope.h" />
@@ -119,6 +121,10 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="..\Common\FileOperation.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\Common\StringConverter.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>

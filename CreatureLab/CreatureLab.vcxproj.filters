@@ -95,9 +95,6 @@
     <ClInclude Include="EditorCommand.h">
       <Filter>Command</Filter>
     </ClInclude>
-    <ClInclude Include="DocumentCommand.h">
-      <Filter>Command</Filter>
-    </ClInclude>
     <ClInclude Include="DocumentContext.h">
       <Filter>Document</Filter>
     </ClInclude>
@@ -139,6 +136,15 @@
     </ClInclude>
     <ClInclude Include="..\Common\ComInitializer.h">
       <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Revision.h">
+      <Filter>Transaction</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\StringConverter.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="ApplicationInformation.h">
+      <Filter>Application</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -214,6 +220,9 @@
       <Filter>Common</Filter>
     </ClCompile>
     <ClCompile Include="..\Common\ComInitializer.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\StringConverter.cpp">
       <Filter>Common</Filter>
     </ClCompile>
   </ItemGroup>

@@ -1,5 +1,8 @@
 #include "pch.h"
+#include "StringConverter.h"
 #include "Window.h"
+
+#include <string>
 
 CWindow::CWindow() = default;
 
@@ -15,12 +18,18 @@ HWND CWindow::Handle() const noexcept
     return m_hWnd;
 }
 
-bool CWindow::Create(HINSTANCE hInstance, const wchar_t* pszClassName, const wchar_t* pszTitle, int nWidth, int nHeight, void* userData)
+bool CWindow::Create(
+    HINSTANCE hInstance,
+    const wchar_t* pszClassName,
+    const std::string_view title,
+    int nWidth,
+    int nHeight,
+    void* userData)
 {
     m_hWnd = CreateWindowExW(
         0,
         pszClassName,
-        pszTitle,
+        StringConverter::Utf8ToWide(title).c_str(),
         WS_OVERLAPPEDWINDOW,
         CW_USEDEFAULT,
         CW_USEDEFAULT,
@@ -31,4 +40,10 @@ bool CWindow::Create(HINSTANCE hInstance, const wchar_t* pszClassName, const wch
         hInstance,
         userData);
     return m_hWnd != nullptr;
+}
+
+void CWindow::SetTitle(const std::string_view title)
+{
+    if (!m_hWnd) return;
+    ::SetWindowTextW(m_hWnd, StringConverter::Utf8ToWide(title).c_str());
 }

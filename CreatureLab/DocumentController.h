@@ -1,29 +1,24 @@
 #pragma once
 
-#include "DocumentCommand.h"
+#include "Creature.h"
 
-#include <cstdint>
 #include <filesystem>
-
-namespace Creature
-{
-    class CCreature;
-}
+#include <optional>
 
 class CWindow;
 class CDocumentContext;
-enum class DocumentCommad : std::uint8_t;
 
 class CDocumentController
 {
 public:
-    explicit CDocumentController(CWindow& appWindow, Creature::CCreature& creature, CDocumentContext& context);
+    explicit CDocumentController(
+        CWindow& appWindow,
+        CDocumentContext& context);
 public:
     const std::filesystem::path& Path() const noexcept;
-
-    bool Execute(DocumentCommand command);
+    std::optional<Creature::CCreature> Load() const;
+    bool Save(const Creature::CCreature& creature);
 private:
     CWindow& m_appWindow;
-    Creature::CCreature& m_creature;
     CDocumentContext& m_context;
 };

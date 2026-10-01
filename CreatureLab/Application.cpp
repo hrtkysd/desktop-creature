@@ -3,6 +3,7 @@
 #include "AnimationTrack.h"
 #include "AnimationTrackKey.h"
 #include "Application.h"
+#include "ApplicationInformation.h"
 #include "Appearance.h"
 #include "AppearanceEditor.h"
 #include "CreaturePose.h"
@@ -22,7 +23,6 @@ using namespace Creature::Animation;
 namespace
 {
     constexpr wchar_t kWindowClassName[] = L"CreatureLabWindow";
-    constexpr wchar_t kWindowTitle[] = L"Creature Lab";
 }
 
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(
@@ -35,9 +35,9 @@ CApp::CApp()
     : m_creatureEditor(m_creature)
     , m_undoBuffer(m_creature, 100)
     , m_editorContext(m_undoBuffer)
-    , m_documentController(m_window, m_creature, m_documentContext)
+    , m_documentController(m_window, m_documentContext)
     , m_editorController(m_creatureEditor, m_animationPlayer, m_editorContext)
-    , m_labController(m_editorContext, m_documentController, m_editorController, m_creatureEditor)
+    , m_labController(m_window, m_editorContext, m_documentController, m_editorController, m_creatureEditor)
     , m_menuBar(m_labController)
     , m_previewPanel(m_creatureEditor, m_editorContext)
     , m_creatureTreePanel(m_creatureEditor, m_editorContext)
@@ -52,6 +52,8 @@ bool CApp::Initialize(
     int nCmdShow)
 {
     m_hInstance = hInstance;
+
+    m_undoBuffer.SetListener(std::addressof(m_labController));
 
     if (!CreateMainWindow(hInstance, nCmdShow)) return false;
     if (!CreateGraphics()) return false;
@@ -78,7 +80,7 @@ bool CApp::CreateMainWindow(
 
     if (!RegisterClassExW(&wc)) return false;
 
-    m_window.Create(hInstance, kWindowClassName, kWindowTitle, 1280, 800, this);
+    m_window.Create(hInstance, kWindowClassName, Information::ProductName, 1280, 800, this);
 
     ShowWindow(m_window.Handle(), nCmdShow);
     UpdateWindow(m_window.Handle());

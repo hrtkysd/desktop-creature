@@ -2,11 +2,6 @@
 
 #include <filesystem>
 
-namespace Creature
-{
-    class CCreature;
-}
-
 class CDocumentContext
 {
 public:

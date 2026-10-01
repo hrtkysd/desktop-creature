@@ -1,5 +1,8 @@
 #pragma once
 
+#include "Revision.h"
+#include "UndoBuffer.h"
+
 #include <cstdint>
 
 namespace Creature
@@ -12,17 +15,22 @@ namespace Creature
 class CDocumentController;
 class CEditorController;
 class CEditorContext;
+class CWindow;
 
 enum class EditMode : std::uint8_t;
 
 class CLabController
+    : public IUndoBufferListener
 {
 public:
     explicit CLabController(
+        CWindow& appWindow,
         CEditorContext& editorContext,
         CDocumentController& documentController,
         CEditorController& editorController,
         Creature::Editor::CCreatureEditor& creatureEditor);
+protected:
+    void OnRevisionChanged(Revision revision) override;
 public:
     bool SaveAs();
     bool LoadFrom();
@@ -39,9 +47,15 @@ public:
     void Undo();
     void Redo();
 
+    bool IsDirty() const noexcept;
 private:
-    CEditorContext& m_editorContext;
+    void UpdateWindowTitle();
 
+private:
+    Revision m_revision = 0;
+
+    CWindow& m_appWindow;
+    CEditorContext& m_editorContext;
     CDocumentController& m_documentController;
     CEditorController& m_editorController;
 

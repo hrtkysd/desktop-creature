@@ -26,6 +26,7 @@ public:
         Creature::Editor::CCreatureEditor& editor,
         Creature::Animation::CAnimationPlayer& animationPlayer,
         CEditorContext& context);
+
 public:
     bool Execute(EditorCommand command);
 

@@ -28,10 +28,7 @@ void CMenuBar::Draw(CEditorContext& context)
             }
             else if (ImGui::MenuItem("Load From..."))
             {
-                if (m_labController.LoadFrom())
-                {
-                    context.ClearHistory();
-                }
+                m_labController.LoadFrom();
             }
         }
 
