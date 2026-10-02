@@ -23,14 +23,8 @@ namespace Creature
         class CCreatureEditor;
     }
 
-    namespace IO
-    {
-        class CCreatureIO;
-    }
-
     class CCreature
     {
-        friend class IO::CCreatureIO;
         friend class Creature::Editor::CCreatureEditor;
     public:
         CCreature();

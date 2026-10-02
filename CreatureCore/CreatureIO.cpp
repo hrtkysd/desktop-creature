@@ -178,12 +178,12 @@ bool CCreatureIO::LoadFromFile(const std::filesystem::path& path, CCreature& cre
         {
             const auto strName = animationJson["name"].get<std::string>();
             const auto animationId = animationJson["id"].get<AnimationId>();
-            if (loadedCreature.AddAnimationWithId(animationId, strName) == INVALID_ANIMATION_ID)
+            if (editor.AddAnimationWithId(animationId, strName) == INVALID_ANIMATION_ID)
             {
                 return false;
             }
 
-            auto animation = loadedCreature.FindAnimationById(animationId);
+            const auto animation = loadedCreature.FindAnimationById(animationId);
             if (!animation) return false;
 
             animationEditor.SetDuration(animationId, animationJson["duration"].get<float>());
