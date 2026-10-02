@@ -183,9 +183,6 @@ bool CCreatureIO::LoadFromFile(const std::filesystem::path& path, CCreature& cre
                 return false;
             }
 
-            const auto animation = loadedCreature.FindAnimationById(animationId);
-            if (!animation) return false;
-
             animationEditor.SetDuration(animationId, animationJson["duration"].get<float>());
 
             for (const auto& trackJson : animationJson["tracks"])
