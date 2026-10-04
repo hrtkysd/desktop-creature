@@ -17,7 +17,13 @@
     <ClCompile Include="CreatureTest.cpp">
       <Filter>Tests\Creature</Filter>
     </ClCompile>
-    <ClCompile Include="MotionTest.cpp">
+    <ClCompile Include="MotionEditorTest.cpp">
+      <Filter>Tests\Creature</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimationEditorTest.cpp">
+      <Filter>Tests\Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="SkeletonEditorTest.cpp">
       <Filter>Tests\Creature</Filter>
     </ClCompile>
   </ItemGroup>
