@@ -90,9 +90,7 @@ namespace
             json trackJson;
 
             trackJson["partId"] = key.GetPartId();
-            trackJson["property"] =
-                static_cast<int>(key.GetProperty());
-
+            trackJson["property"] = static_cast<int>(key.GetProperty());
             trackJson["keyFrames"] = json::array();
 
             for (const auto& keyFrame : track.GetKeyFrames())
@@ -101,9 +99,7 @@ namespace
 
                 keyFrameJson["time"] = keyFrame.fTime;
                 keyFrameJson["value"] = keyFrame.fValue;
-                keyFrameJson["interpolation"] =
-                    static_cast<int>(
-                        keyFrame.eInterpolationToNext);
+                keyFrameJson["interpolation"] = static_cast<int>(keyFrame.eInterpolationToNext);
 
                 trackJson["keyFrames"].push_back(std::move(keyFrameJson));
             }
@@ -120,9 +116,7 @@ namespace
         CAppearanceEditor& appearanceEditor)
     {
         Part part;
-
         part.id = partJson.at("id").get<PartId>();
-
         part.strName = partJson.at("name").get<std::string>();
 
         if (partJson.at("parentId").is_null())
@@ -174,7 +168,6 @@ namespace
         for (const auto& trackJson : animationJson.at("tracks"))
         {
             const auto partId = trackJson.at("partId").get<PartId>();
-
             const auto property =
                 static_cast<AnimationProperty>(
                     trackJson.at("property").get<int>());
@@ -271,9 +264,7 @@ bool CCreatureIO::LoadFromFile(
         if (!root.contains("motions") || !root.at("motions").is_array()) return false;
 
         CCreature loadedCreature;
-        CCreatureEditor creatureEditor{
-            loadedCreature
-        };
+        CCreatureEditor creatureEditor{ loadedCreature };
 
         for (const auto& motionJson : root.at("motions"))
         {
@@ -284,7 +275,8 @@ bool CCreatureIO::LoadFromFile(
             if (addedId == INVALID_MOTION_ID) return false;
 
             auto motionEditor = creatureEditor.MotionEditor(motionId);
-            if (!motionEditor) continue;
+            if (!motionEditor) return false;
+
             auto skeletonEditor = motionEditor->SkeletonEditor();
             auto appearanceEditor = motionEditor->AppearanceEditor();
             auto animationEditor = motionEditor->AnimationEditor();
