@@ -54,12 +54,11 @@ private:
         const Creature::Animation::CAnimationTrack& track);
 
 private:
-    Creature::MotionId m_motionId = Creature::INVALID_MOTION_ID;
-
     Creature::Editor::CCreatureEditor& m_editor;
     Creature::Animation::CAnimationPlayer& m_animationPlayer;
     CEditorContext& m_editorContext;
 
+    Creature::MotionId m_motionId = Creature::INVALID_MOTION_ID;
     std::optional<CUndoScope> m_undoScope;
     std::optional<Creature::Animation::CAnimationTrackKey> m_selectedTrackKey;
 
