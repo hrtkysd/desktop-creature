@@ -25,6 +25,8 @@ namespace Creature
     {
         friend class CCreature;
         friend class Editor::CMotionEditor;
+    private:
+        struct MotionImpl;
     public:
         ~CMotion();
 
@@ -34,7 +36,8 @@ namespace Creature
         CMotion(CMotion&&) noexcept;
         CMotion& operator=(CMotion&&) noexcept;
     private:
-        CMotion(MotionId id, const std::string& strName);
+        explicit CMotion(std::unique_ptr<MotionImpl> impl) noexcept;
+        explicit CMotion(MotionId id, const std::string& strName) noexcept;
     public:
         const CSkeleton& GetSkeleton() const;
         const CAppearance& GetAppearance() const;
@@ -52,7 +55,6 @@ namespace Creature
     private:
         void SetMotionId(MotionId id);
     private:
-        struct MotionImpl;
         std::unique_ptr<MotionImpl> m_impl;
     };
 }

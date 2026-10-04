@@ -20,7 +20,12 @@ struct CMotion::MotionImpl
 CMotion::CMotion(CMotion&&) noexcept = default;
 CMotion& CMotion::operator=(CMotion&&) noexcept = default;
 
-CMotion::CMotion(MotionId id, const std::string& strName)
+CMotion::CMotion(std::unique_ptr<MotionImpl> impl) noexcept
+    : m_impl(std::move(impl))
+{
+}
+
+CMotion::CMotion(MotionId id, const std::string& strName) noexcept
     : m_impl(std::make_unique<MotionImpl>())
 {
     m_impl->motionId = id;
@@ -56,9 +61,7 @@ MotionId CMotion::GetMotionId() const
 
 CMotion CMotion::Clone() const
 {
-    CMotion motion(m_impl->motionId, m_impl->strName);
-    *motion.m_impl = *m_impl;
-    return motion;
+    return CMotion(std::make_unique<MotionImpl>(*m_impl));
 }
 
 CSkeleton& CMotion::MutableSkeleton()
