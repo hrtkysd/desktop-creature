@@ -19,8 +19,6 @@ namespace Creature
     }
     namespace Editor
     {
-        class CCreatureEditor;
-
         class CSkeletonEditor
         {
             friend class CMotionEditor;

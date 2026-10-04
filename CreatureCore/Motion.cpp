@@ -25,7 +25,7 @@ CMotion::CMotion(std::unique_ptr<MotionImpl> impl) noexcept
 {
 }
 
-CMotion::CMotion(MotionId id, const std::string& strName) noexcept
+CMotion::CMotion(MotionId id, const std::string& strName)
     : m_impl(std::make_unique<MotionImpl>())
 {
     m_impl->motionId = id;

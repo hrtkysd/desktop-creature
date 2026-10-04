@@ -37,7 +37,7 @@ namespace Creature
         CMotion& operator=(CMotion&&) noexcept;
     private:
         explicit CMotion(std::unique_ptr<MotionImpl> impl) noexcept;
-        explicit CMotion(MotionId id, const std::string& strName) noexcept;
+        explicit CMotion(MotionId id, const std::string& strName);
     public:
         const CSkeleton& GetSkeleton() const;
         const CAppearance& GetAppearance() const;
