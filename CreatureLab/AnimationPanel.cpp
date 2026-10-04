@@ -56,6 +56,12 @@ bool CAnimationPanel::Draw(
     const Creature::Animation::CAnimation& animation,
     const Creature::CSkeleton& skeleton)
 {
+    if (m_motionId != m_editorContext.GetMotionId())
+    {
+        m_motionId = m_editorContext.GetMotionId();
+        m_selectedTrackKey.reset();
+    }
+
     auto motionEditor = m_editor.MotionEditor(m_editorContext.GetMotionId());
     if (!motionEditor) return false;
     auto animationEditor = motionEditor->AnimationEditor();

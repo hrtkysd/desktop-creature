@@ -2,6 +2,7 @@
 
 #include "AnimationProperty.h"
 #include "AnimationTrackKey.h"
+#include "MotionId.h"
 #include "UndoScope.h"
 
 #include <optional>
@@ -53,12 +54,13 @@ private:
         const Creature::Animation::CAnimationTrack& track);
 
 private:
+    Creature::MotionId m_motionId = Creature::INVALID_MOTION_ID;
+
     Creature::Editor::CCreatureEditor& m_editor;
     Creature::Animation::CAnimationPlayer& m_animationPlayer;
     CEditorContext& m_editorContext;
 
     std::optional<CUndoScope> m_undoScope;
-
     std::optional<Creature::Animation::CAnimationTrackKey> m_selectedTrackKey;
 
     Creature::Animation::AnimationProperty m_eNewTrackProperty =

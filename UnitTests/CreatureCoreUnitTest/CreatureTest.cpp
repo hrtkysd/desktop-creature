@@ -133,7 +133,7 @@ namespace Creature
     TEST(CreatureEditorTest, ChildEditorUsesCurrentStateAfterMoveAssignment)
     {
         CCreature creature;
-        CCreatureEditor editor(creature);          // ① creature への参照を保持
+        CCreatureEditor editor(creature);
 
         CCreature replacement;
         CCreatureEditor replacementEditor(replacement);

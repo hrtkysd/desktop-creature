@@ -144,6 +144,7 @@ void CCreatureTreePanel::Draw()
                 {
                     if (auto motionEditor = m_editor.MotionEditor(motionId))
                     {
+                        auto scope = m_editorContext.CreateUndoScope();
                         motionEditor->SetName(m_nodeEdit.GetText());
                     }
 
