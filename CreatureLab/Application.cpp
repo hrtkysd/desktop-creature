@@ -229,16 +229,10 @@ void CApp::Render()
     if (!motion) return;
 
     const auto& skeleton = motion->GetSkeleton();
-    const auto defaultPose = CCreaturePose::Default(skeleton);
-    const auto* pose = &defaultPose;
-
     const auto& animation = motion->GetAnimation();;
     m_animationPlayer.Update(ImGui::GetIO().DeltaTime);
     m_animationPlayer.SamplePose(animation, skeleton);
-
     m_animationPanel.Draw(animation, skeleton);
-
-    pose = &m_animationPlayer.GetPose();
 
     if (!m_graphicsRenderer.BeginFrame()) return;
     if (!m_previewRenderTarget) return;
@@ -254,6 +248,8 @@ void CApp::Render()
             m_previewRenderTarget = std::move(newRenderTarget);
         }
     }
+
+    const auto pose = &m_animationPlayer.GetPose();
 
     m_previewPanel.DrawUi(
         skeleton,
