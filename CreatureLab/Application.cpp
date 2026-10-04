@@ -226,13 +226,15 @@ void CApp::Render()
     m_creatureTreePanel.Draw();
 
     const auto motion = m_creature.FindMotionById(m_editorContext.GetMotionId());
-    if (!motion) return;
+    if (motion)
+    {
+        const auto& skeleton = motion->GetSkeleton();
+        const auto& animation = motion->GetAnimation();
 
-    const auto& skeleton = motion->GetSkeleton();
-    const auto& animation = motion->GetAnimation();
-    m_animationPlayer.Update(ImGui::GetIO().DeltaTime);
-    m_animationPlayer.SamplePose(animation, skeleton);
-    m_animationPanel.Draw(animation, skeleton);
+        m_animationPlayer.Update(ImGui::GetIO().DeltaTime);
+        m_animationPlayer.SamplePose(animation, skeleton);
+        m_animationPanel.Draw(animation, skeleton);
+    }
 
     if (!m_graphicsRenderer.BeginFrame()) return;
     if (!m_previewRenderTarget) return;
@@ -249,14 +251,15 @@ void CApp::Render()
         }
     }
 
-    const auto pose = &m_animationPlayer.GetPose();
-    m_previewPanel.DrawUi(
-        skeleton,
-        motion->GetAppearance(),
-        *pose,
-        *m_textureCache,
-        *m_previewRenderTarget);
-
+    if (motion)
+    {
+        m_previewPanel.DrawUi(
+            motion->GetSkeleton(),
+            motion->GetAppearance(),
+            m_animationPlayer.GetPose(),
+            *m_textureCache,
+            *m_previewRenderTarget);
+    }
     ImGui::Render();
 
     {
