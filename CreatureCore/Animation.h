@@ -5,17 +5,13 @@
 #include "PartId.h"
 
 #include <cstdint>
-#include <string>
 #include <vector>
 
 namespace Creature
 {
-    class CMotion;
-
     namespace Editor
     {
         class CAnimationEditor;
-        class CMotionEditor;
     }
 
     namespace Animation

@@ -86,6 +86,11 @@ CMotion CMotion::NewMotion(
     return CMotion(id, strName);
 }
 
+void CMotion::SetName(const std::string& strName)
+{
+    m_impl->strName = strName;
+}
+
 void CMotion::SetMotionId(MotionId id)
 {
     m_impl->motionId = id;

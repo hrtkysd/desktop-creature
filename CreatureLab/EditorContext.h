@@ -22,7 +22,6 @@ enum class SelectionType : std::uint8_t
     Creature,
     Motion,
     Part,
-    Animation
 };
 
 class CUndoScope;

@@ -29,6 +29,7 @@ public:
     std::string& GetText();
     const std::string& GetText() const;
 
+    Creature::MotionId GetMotionId() const;
 private:
     NodeEditType m_eEditType = NodeEditType::None;
     Creature::MotionId m_motionId

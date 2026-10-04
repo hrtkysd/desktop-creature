@@ -28,6 +28,21 @@ CSkeletonEditor CMotionEditor::SkeletonEditor()
     return CSkeletonEditor{ m_motion.MutableSkeleton(), *this };
 }
 
+const CMotion& CMotionEditor::GetMotion() const
+{
+    return m_motion;
+}
+
+void CMotionEditor::SetName(const std::string& strName)
+{
+    m_motion.SetName(strName);
+}
+
+const std::string& CMotionEditor::GetName() const
+{
+    return m_motion.GetName();
+}
+
 bool CMotionEditor::RemovePart(PartId id)
 {
     const auto parts = SkeletonEditor().RemovePartCore(id);

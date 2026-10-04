@@ -210,6 +210,7 @@ bool CCreatureIO::SaveAsFile(
     json root;
 
     root["version"] = 1;
+    root["name"] = creature.GetName();
     root["motions"] = json::array();
 
     for (const auto& motion : creature.GetMotions())
@@ -261,10 +262,13 @@ bool CCreatureIO::LoadFromFile(
         ifs >> root;
 
         if (!root.contains("version") || root.at("version").get<int>() != 1) return false;
+        if (!root.contains("name") || root.at("name").get<std::string>().empty()) return false;
         if (!root.contains("motions") || !root.at("motions").is_array()) return false;
 
         CCreature loadedCreature;
         CCreatureEditor creatureEditor{ loadedCreature };
+
+        creatureEditor.SetName(root.at("name").get<std::string>());
 
         for (const auto& motionJson : root.at("motions"))
         {

@@ -17,10 +17,10 @@ void CCreatureTreeNodeEdit::BeginCreateNewMotion(const std::string& strText)
     m_strText = strText;
 }
 
-void CCreatureTreeNodeEdit::BeginRenameMotion(MotionId animationId, const std::string& strText)
+void CCreatureTreeNodeEdit::BeginRenameMotion(MotionId motionId, const std::string& strText)
 {
     m_eEditType = NodeEditType::RenameMotion;
-    m_motionId = animationId;
+    m_motionId = motionId;
     m_strText = strText;
 }
 
@@ -50,4 +50,9 @@ std::string& CCreatureTreeNodeEdit::GetText()
 const std::string& CCreatureTreeNodeEdit::GetText() const
 {
     return m_strText;
+}
+
+MotionId CCreatureTreeNodeEdit::GetMotionId() const
+{
+    return m_motionId;
 }

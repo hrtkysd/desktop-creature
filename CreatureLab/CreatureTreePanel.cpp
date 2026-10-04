@@ -99,35 +99,71 @@ void CCreatureTreePanel::Draw()
 
         for (const auto& motion : creature.GetMotions())
         {
-            ImGui::PushID(static_cast<int>(motion.GetMotionId()));
+            const auto motionId = motion.GetMotionId();
 
-            auto imGuiFlags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth;
-            if (m_editorContext.GetMotionId() == motion.GetMotionId() &&
+            ImGui::PushID(static_cast<int>(motionId));
+
+            auto imGuiFlags =
+                ImGuiTreeNodeFlags_OpenOnArrow |
+                ImGuiTreeNodeFlags_SpanAvailWidth;
+
+            if (m_editorContext.GetMotionId() == motionId &&
                 m_editorContext.GetSelectionType() == SelectionType::Motion)
             {
                 imGuiFlags |= ImGuiTreeNodeFlags_Selected;
             }
 
             const auto isMotionOpen = ImGui::TreeNodeEx("##Motion", imGuiFlags);
+
             if (ImGui::IsItemClicked(ImGuiMouseButton_Left))
             {
-                m_editorContext.SelectMotion(motion.GetMotionId());
+                m_editorContext.SelectMotion(motionId);
+            }
+
+            if (ImGui::BeginPopupContextItem())
+            {
+                if (ImGui::MenuItem("Rename"))
+                {
+                    m_nodeEdit.BeginRenameMotion(motionId, motion.GetName());
+                }
+
+                ImGui::EndPopup();
             }
 
             ImGui::SameLine();
-            ImGui::TextUnformatted(motion.GetName().c_str());
+
+            if (m_nodeEdit.IsEditing(NodeEditType::RenameMotion) &&
+                m_nodeEdit.GetMotionId() == motionId)
+            {
+                ImGui::SetNextItemWidth(150.0f);
+
+                if (ImGui::InputText(
+                    "##MotionName",
+                    &m_nodeEdit.GetText(),
+                    ImGuiInputTextFlags_EnterReturnsTrue))
+                {
+                    if (auto motionEditor = m_editor.MotionEditor(motionId))
+                    {
+                        motionEditor->SetName(m_nodeEdit.GetText());
+                    }
+
+                    m_nodeEdit.EndEdit();
+                }
+            }
+            else
+            {
+                ImGui::TextUnformatted(motion.GetName().c_str());
+            }
 
             if (isMotionOpen)
             {
                 const auto& skeleton = motion.GetSkeleton();
+
                 if (ImGui::TreeNode("Parts"))
                 {
                     for (const auto partId : skeleton.GetRootPartIds())
                     {
-                        DrawPart(
-                            motion.GetMotionId(),
-                            skeleton,
-                            partId);
+                        DrawPart(motionId, skeleton, partId);
                     }
 
                     ImGui::TreePop();
@@ -135,10 +171,8 @@ void CCreatureTreePanel::Draw()
 
                 ImGui::TreePop();
             }
-
             ImGui::PopID();
         }
-
         ImGui::TreePop();
     }
 
@@ -178,6 +212,7 @@ void CCreatureTreePanel::DrawPart(
 
     if (ImGui::IsItemClicked())
     {
+        m_editorContext.SelectMotion(motionId);
         m_editorContext.SelectPart(partId);
     }
 

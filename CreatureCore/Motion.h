@@ -53,6 +53,7 @@ namespace Creature
     private:
         static CMotion NewMotion(MotionId id, const std::string& strName);
     private:
+        void SetName(const std::string& strName);
         void SetMotionId(MotionId id);
     private:
         std::unique_ptr<MotionImpl> m_impl;

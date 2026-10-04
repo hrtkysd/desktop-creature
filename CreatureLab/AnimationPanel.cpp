@@ -81,21 +81,13 @@ bool CAnimationPanel::DrawAnimationProperties(
 
     ImGui::SeparatorText("Animation");
 
-    if (!ImGui::BeginTable(
-        "AnimationProperties",
-        2))
+    if (!ImGui::BeginTable("AnimationProperties", 2))
     {
         return false;
     }
 
-    ImGui::TableSetupColumn(
-        "Label",
-        ImGuiTableColumnFlags_WidthFixed,
-        100.0f);
-
-    ImGui::TableSetupColumn(
-        "Value",
-        ImGuiTableColumnFlags_WidthStretch);
+    ImGui::TableSetupColumn("Label", ImGuiTableColumnFlags_WidthFixed, 100.0f);
+    ImGui::TableSetupColumn("Value", ImGuiTableColumnFlags_WidthStretch);
 
     ImGui::TableNextRow();
 

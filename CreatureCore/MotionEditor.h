@@ -3,6 +3,8 @@
 #include "IMotionEditContext.h"
 #include "PartId.h"
 
+#include <string>
+
 namespace Creature
 {
     class CMotion;
@@ -21,6 +23,10 @@ namespace Creature
             CAppearanceEditor AppearanceEditor();
             CAnimationEditor AnimationEditor();
             CSkeletonEditor SkeletonEditor();
+        public:
+            const CMotion& GetMotion() const;
+            void SetName(const std::string& strName);
+            const std::string& GetName() const;
         private:
             bool RemovePart(PartId id) override;
         private:

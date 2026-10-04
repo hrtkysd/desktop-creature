@@ -130,6 +130,29 @@ namespace Creature
         EXPECT_FALSE(editor.RemoveMotion(12345));
     }
 
+    TEST(CreatureEditorTest, ChildEditorUsesCurrentStateAfterMoveAssignment)
+    {
+        CCreature creature;
+        CCreatureEditor editor(creature);          // ① creature への参照を保持
+
+        CCreature replacement;
+        CCreatureEditor replacementEditor(replacement);
+
+        const auto id = replacementEditor.AddNewMotion("Idle");
+        ASSERT_NE(id, INVALID_MOTION_ID);
+
+        creature = std::move(replacement);
+
+        auto motionEditor = editor.MotionEditor(id);
+        ASSERT_TRUE(motionEditor.has_value());
+
+        motionEditor->SetName("Walk");
+
+        const auto motion = creature.FindMotionById(id);
+        ASSERT_NE(motion, nullptr);
+        EXPECT_EQ(motion->GetName(), "Walk");
+    }
+
     TEST(CreatureTest, CloneCreatesIndependentCopy)
     {
         CCreature creature;
