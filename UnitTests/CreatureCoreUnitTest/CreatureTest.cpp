@@ -20,6 +20,7 @@ using namespace Creature::Math;
 
 namespace Creature
 {
+    // NOLINTBEGIN(bugprone-unchecked-optional-access)
     TEST(CreatureEditorTest, SetNameUpdatesCreatureName)
     {
         CCreature creature;
@@ -322,4 +323,5 @@ namespace Creature
         EXPECT_EQ(motion->GetAnimation().FindAnimationTrack(eyesTrack), nullptr);
         EXPECT_EQ(motion->GetAnimation().FindAnimationTrack(earTrack), nullptr);
     }
+    // NOLINTEND(bugprone-unchecked-optional-access)
 }
