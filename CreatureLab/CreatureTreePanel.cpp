@@ -6,6 +6,7 @@
 #include "ImGuiWindowScope.h"
 #include "Motion.h"
 #include "Skeleton.h"
+#include "UndoScope.h"
 
 #include "imgui.h"
 #include "imgui_stdlib.h"
