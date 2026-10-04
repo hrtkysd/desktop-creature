@@ -116,7 +116,7 @@ namespace Creature
         EXPECT_EQ(creature.GetMotions().size(), 1u);
     }
 
-    TEST(CreatureEditorTes, RemoveMotionReturnsFalseForUnknownId)
+    TEST(CreatureEditorTest, RemoveMotionReturnsFalseForUnknownId)
     {
         CCreature creature;
         CCreatureEditor editor(creature);
