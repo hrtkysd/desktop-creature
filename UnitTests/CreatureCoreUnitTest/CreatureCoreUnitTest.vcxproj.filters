@@ -20,6 +20,9 @@
     <ClCompile Include="CreatureTest.cpp">
       <Filter>Tests\Creature</Filter>
     </ClCompile>
+    <ClCompile Include="MotionTest.cpp">
+      <Filter>Tests\Creature</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />

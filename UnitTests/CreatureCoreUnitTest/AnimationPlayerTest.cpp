@@ -8,6 +8,9 @@
 #include "AnimationTrackKey.h"
 #include "Creature.h"
 #include "CreatureEditor.h"
+#include "Motion.h"
+#include "MotionEditor.h"
+#include "MotionId.h"
 #include "Skeleton.h"
 #include "SkeletonEditor.h"
 #include "Transform2D.h"
@@ -23,53 +26,43 @@ namespace AnimationPlayer
     protected:
         void SetUp() override
         {
-            m_partId =
-                m_creatureEditor
-                .GetSkeletonEditor()
-                .AddPart("Body");
+            m_motionId = m_creatureEditor.AddNewMotion("idle");
+            ASSERT_NE(m_motionId, INVALID_MOTION_ID);
 
+            auto motionEditor = m_creatureEditor.MotionEditor(m_motionId);
+            ASSERT_TRUE(motionEditor.has_value());
+
+            m_partId = motionEditor->SkeletonEditor().AddPart("Body");
             ASSERT_NE(m_partId, INVALID_PART_ID);
 
-            m_animationId =
-                m_creatureEditor.AddNewAnimation("idle");
-
-            ASSERT_NE(
-                m_animationId,
-                INVALID_ANIMATION_ID);
-
-            ASSERT_TRUE(
-                m_creatureEditor
-                .GetAnimationEditor()
-                .SetDuration(m_animationId, 1.0f));
+            ASSERT_TRUE(motionEditor->AnimationEditor().SetDuration(1.0f));
         }
 
         void AddConstantTrack(
             AnimationProperty property,
             float value)
         {
-            auto editor = m_creatureEditor.GetAnimationEditor();
+            auto motionEditor = m_creatureEditor.MotionEditor(m_motionId);
+            ASSERT_TRUE(motionEditor.has_value());
+            auto editor = motionEditor->AnimationEditor();
             const CAnimationTrackKey key{
                 m_partId,
                 property
             };
 
-            ASSERT_TRUE(
-                editor.AddTrack(
-                    m_animationId,
-                    CAnimationTrack{ key }));
+            ASSERT_TRUE(editor.AddTrack(CAnimationTrack{ key }));
 
             ASSERT_TRUE(
                 editor.AddOrUpdateKeyFrame(
-                    m_animationId,
                     key,
                     { 0.0f, value }));
         }
 
         const CAnimation& Animation() const
         {
-            const auto animation = m_creatureEditor.FindAnimationById(m_animationId);
-            EXPECT_NE(animation, nullptr);
-            return *animation;
+            const auto motion = m_creatureEditor.FindMotionById(m_motionId);
+            EXPECT_NE(motion, nullptr);
+            return motion->GetAnimation();
         }
 
     protected:
@@ -78,7 +71,7 @@ namespace AnimationPlayer
         CAnimationPlayer m_player;
 
         PartId m_partId = INVALID_PART_ID;
-        AnimationId m_animationId = INVALID_ANIMATION_ID;
+        MotionId m_motionId = INVALID_MOTION_ID;
     };
 
     TEST_F(AnimationPlayerTests, UpdateDoesNotAdvanceWhileStopped)
@@ -163,7 +156,7 @@ namespace AnimationPlayer
 
         m_player.SamplePose(
             Animation(),
-            m_creature.GetSkeleton());
+            m_creature.FindMotionById(m_motionId)->GetSkeleton());
 
         const auto& transforms = m_player.GetPose().GetPartTransform();
         ASSERT_EQ(transforms.size(), 1u);
@@ -197,7 +190,7 @@ namespace AnimationPlayer
 
         m_player.SamplePose(
             Animation(),
-            m_creature.GetSkeleton());
+            m_creature.FindMotionById(m_motionId)->GetSkeleton());
 
         EXPECT_NEAR(
             m_player.GetCurrentAnimationTime(),

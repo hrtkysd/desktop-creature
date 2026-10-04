@@ -7,6 +7,9 @@
 #include "AppearanceEditor.h"
 #include "Creature.h"
 #include "CreatureEditor.h"
+#include "Motion.h"
+#include "MotionEditor.h"
+#include "MotionId.h"
 #include "Skeleton.h"
 #include "SkeletonEditor.h"
 #include "Transform2D.h"
@@ -29,101 +32,101 @@ namespace Creature
         EXPECT_EQ(creature.GetName(), "TestCreature");
     }
 
-    TEST(CreatureEditorTest, AddNewAnimationAddsAnimation)
+    TEST(CreatureEditorTest, AddNewMotionAddsMotion)
     {
         CCreature creature;
         CCreatureEditor editor(creature);
 
-        const auto id = editor.AddNewAnimation("Idle");
+        const auto id = editor.AddNewMotion("Idle");
 
-        ASSERT_NE(id, INVALID_ANIMATION_ID);
+        ASSERT_NE(id, INVALID_MOTION_ID);
 
-        const auto animation = creature.FindAnimationById(id);
-        ASSERT_NE(animation, nullptr);
+        const auto motion = creature.FindMotionById(id);
+        ASSERT_NE(motion, nullptr);
 
-        EXPECT_EQ(animation->GetName(), "Idle");
+        EXPECT_EQ(motion->GetName(), "Idle");
     }
 
-    TEST(CreatureEditorTest, AddNewAnimationGeneratesUniqueIds)
+    TEST(CreatureEditorTest, AddNewMotionGeneratesUniqueIds)
     {
         CCreature creature;
         CCreatureEditor editor(creature);
 
-        const auto idleId = editor.AddNewAnimation("Idle");
-        const auto walkId = editor.AddNewAnimation("Walk");
-        const auto sleepId = editor.AddNewAnimation("Sleep");
+        const auto idleId = editor.AddNewMotion("Idle");
+        const auto walkId = editor.AddNewMotion("Walk");
+        const auto sleepId = editor.AddNewMotion("Sleep");
 
-        EXPECT_NE(idleId, INVALID_ANIMATION_ID);
-        EXPECT_NE(walkId, INVALID_ANIMATION_ID);
-        EXPECT_NE(sleepId, INVALID_ANIMATION_ID);
+        EXPECT_NE(idleId, INVALID_MOTION_ID);
+        EXPECT_NE(walkId, INVALID_MOTION_ID);
+        EXPECT_NE(sleepId, INVALID_MOTION_ID);
 
         EXPECT_NE(idleId, walkId);
         EXPECT_NE(idleId, sleepId);
         EXPECT_NE(walkId, sleepId);
     }
 
-    TEST(CreatureEditorTest, AddAnimationWithIdUpdatesNextGeneratedId)
+    TEST(CreatureEditorTest, AddMotionWithIdUpdatesNextGeneratedId)
     {
         CCreature creature;
         CCreatureEditor editor(creature);
 
-        constexpr AnimationId explicitId = 100;
+        constexpr MotionId explicitId = 100;
 
-        const auto addedId = editor.AddAnimationWithId(explicitId, "Imported");
+        const auto addedId = editor.AddMotionWithId(explicitId, "Imported");
         ASSERT_EQ(addedId, explicitId);
 
-        const auto generatedId = editor.AddNewAnimation("Idle");
+        const auto generatedId = editor.AddNewMotion("Idle");
         EXPECT_EQ(generatedId, explicitId + 1);
     }
 
-    TEST(CreatureEditorTest, AddAnimationWithIdRejectsDuplicateId)
+    TEST(CreatureEditorTest, AddMotionWithIdRejectsDuplicateId)
     {
         CCreature creature;
         CCreatureEditor editor(creature);
 
-        constexpr AnimationId id = 10;
+        constexpr MotionId id = 10;
 
-        ASSERT_EQ(editor.AddAnimationWithId(id, "Idle"), id);
-        EXPECT_EQ(editor.AddAnimationWithId(id, "Walk"), INVALID_ANIMATION_ID);
-        EXPECT_EQ(creature.GetAnimations().size(), 1u);
+        ASSERT_EQ(editor.AddMotionWithId(id, "Idle"), id);
+        EXPECT_EQ(editor.AddMotionWithId(id, "Walk"), INVALID_MOTION_ID);
+        EXPECT_EQ(creature.GetMotions().size(), 1u);
     }
 
-    TEST(CreatureEditorTest, AddAnimationWithIdRejectsInvalidId)
+    TEST(CreatureEditorTest, AddMotionWithIdRejectsInvalidId)
     {
         CCreature creature;
         CCreatureEditor editor(creature);
 
-        const auto id = editor.AddAnimationWithId(INVALID_ANIMATION_ID, "Invalid");
+        const auto id = editor.AddMotionWithId(INVALID_MOTION_ID, "Invalid");
 
-        EXPECT_EQ(id, INVALID_ANIMATION_ID);
-        EXPECT_TRUE(creature.GetAnimations().empty());
+        EXPECT_EQ(id, INVALID_MOTION_ID);
+        EXPECT_TRUE(creature.GetMotions().empty());
     }
 
-    TEST(CreatureEditorTest, RemoveAnimationRemovesSpecifiedAnimation)
+    TEST(CreatureEditorTest, RemoveMotionRemovesSpecifiedMotion)
     {
         CCreature creature;
         CCreatureEditor editor(creature);
 
-        const auto idleId = editor.AddNewAnimation("Idle");
-        const auto walkId = editor.AddNewAnimation("Walk");
+        const auto idleId = editor.AddNewMotion("Idle");
+        const auto walkId = editor.AddNewMotion("Walk");
 
-        ASSERT_NE(idleId, INVALID_ANIMATION_ID);
-        ASSERT_NE(walkId, INVALID_ANIMATION_ID);
+        ASSERT_NE(idleId, INVALID_MOTION_ID);
+        ASSERT_NE(walkId, INVALID_MOTION_ID);
 
-        EXPECT_TRUE(editor.RemoveAnimation(idleId));
+        EXPECT_TRUE(editor.RemoveMotion(idleId));
 
-        EXPECT_EQ(creature.FindAnimationById(idleId), nullptr);
-        EXPECT_NE(creature.FindAnimationById(walkId), nullptr);
+        EXPECT_EQ(creature.FindMotionById(idleId), nullptr);
+        EXPECT_NE(creature.FindMotionById(walkId), nullptr);
 
-        EXPECT_EQ(creature.GetAnimations().size(), 1u);
+        EXPECT_EQ(creature.GetMotions().size(), 1u);
     }
 
-    TEST(CreatureEditorTest, RemoveAnimationReturnsFalseForUnknownId)
+    TEST(CreatureEditorTest, RemoveMotionReturnsFalseForUnknownId)
     {
         CCreature creature;
         CCreatureEditor editor(creature);
 
-        EXPECT_FALSE(editor.RemoveAnimation(12345));
+        EXPECT_FALSE(editor.RemoveMotion(12345));
     }
 
     TEST(CreatureTest, CloneCreatesIndependentCopy)
@@ -133,14 +136,14 @@ namespace Creature
 
         editor.SetName("Original");
 
-        const auto animationId = editor.AddNewAnimation("Idle");
+        const auto motionId = editor.AddNewMotion("Idle");
 
-        ASSERT_NE(animationId, INVALID_ANIMATION_ID);
+        ASSERT_NE(motionId, INVALID_MOTION_ID);
 
         auto clone = creature.Clone();
 
         EXPECT_EQ(clone.GetName(), "Original");
-        EXPECT_NE(clone.FindAnimationById(animationId), nullptr);
+        EXPECT_NE(clone.FindMotionById(motionId), nullptr);
 
         CCreatureEditor cloneEditor(clone);
         cloneEditor.SetName("Clone");
@@ -154,21 +157,22 @@ namespace Creature
         CCreature creature;
         CCreatureEditor editor(creature);
 
-        const auto id = editor.AddNewAnimation("Idle");
-        ASSERT_NE(id, INVALID_ANIMATION_ID);
+        const auto id = editor.AddNewMotion("Idle");
+        ASSERT_NE(id, INVALID_MOTION_ID);
 
         auto clone = creature.Clone();
         CCreatureEditor cloneEditor(clone);
 
-        auto animationEditor = cloneEditor.GetAnimationEditor();
-        ASSERT_TRUE(animationEditor.SetName(id, "Changed"));
+        auto motionEditor = cloneEditor.MotionEditor(id);
+        ASSERT_TRUE(motionEditor.has_value());
+        auto animationEditor = motionEditor->AnimationEditor();
+        ASSERT_TRUE(animationEditor.SetDuration(2.0f));
 
-        ASSERT_NE(creature.FindAnimationById(id), nullptr);
-        ASSERT_NE(clone.FindAnimationById(id), nullptr);
+        ASSERT_NE(creature.FindMotionById(id), nullptr);
+        ASSERT_NE(clone.FindMotionById(id), nullptr);
 
-        EXPECT_EQ(creature.FindAnimationById(id)->GetName(), "Idle");
-
-        EXPECT_EQ(clone.FindAnimationById(id)->GetName(), "Changed");
+        EXPECT_FLOAT_EQ(creature.FindMotionById(id)->GetAnimation().GetDuration(), 0.0f);
+        EXPECT_FLOAT_EQ(clone.FindMotionById(id)->GetAnimation().GetDuration(), 2.0f);
     }
 
     TEST(CreatureEditorTest, ChildEditorUsesCurrentStateAfterMoveAssignment)
@@ -179,40 +183,40 @@ namespace Creature
         CCreature replacement;
         CCreatureEditor replacementEditor(replacement);
 
-        const auto id = replacementEditor.AddNewAnimation("Idle");
-        ASSERT_NE(id, INVALID_ANIMATION_ID);
+        const auto id = replacementEditor.AddNewMotion("Idle");
+        ASSERT_NE(id, INVALID_MOTION_ID);
 
         creature = std::move(replacement);
 
-        auto animationEditor = editor.GetAnimationEditor();
-        EXPECT_TRUE(animationEditor.SetName(id, "Walk"));
+        auto motionEditor = editor.MotionEditor(id);
+        ASSERT_TRUE(motionEditor.has_value());
+        auto animationEditor = motionEditor->AnimationEditor();
+        EXPECT_TRUE(animationEditor.SetDuration(2.0f));
 
-        const auto animation = creature.FindAnimationById(id);
-        ASSERT_NE(animation, nullptr);
-        EXPECT_EQ(animation->GetName(), "Walk");
+        const auto motion = creature.FindMotionById(id);
+        ASSERT_NE(motion, nullptr);
+        EXPECT_FLOAT_EQ(motion->GetAnimation().GetDuration(), 2.0f);
     }
 
     TEST(CreatureEditorTest, RemovePartRemovesAllReferencesToPart)
     {
         CCreature creature;
         CCreatureEditor editor(creature);
+        const auto motionId = editor.AddNewMotion("Idle");
+        ASSERT_NE(motionId, INVALID_MOTION_ID);
 
-        // Arrange: Skeleton
-        auto skeletonEditor = editor.GetSkeletonEditor();
+        auto motionEditor = editor.MotionEditor(motionId);
+        ASSERT_TRUE(motionEditor.has_value());
+        auto skeletonEditor = motionEditor->SkeletonEditor();
         const auto bodyId = skeletonEditor.AddPart("Body");
         const auto headId = skeletonEditor.AddPart("Head", bodyId);
 
         ASSERT_NE(bodyId, INVALID_PART_ID);
         ASSERT_NE(headId, INVALID_PART_ID);
 
-        // Arrange: Appearance
-        auto appearanceEditor = editor.GetAppearanceEditor();
+        auto appearanceEditor = motionEditor->AppearanceEditor();
         appearanceEditor.SetTexture(bodyId, L"assets/body.png");
         appearanceEditor.SetTexture(headId, L"assets/head.png");
-
-        // Arrange: Animation
-        const auto animationId = editor.AddNewAnimation("Idle");
-        ASSERT_NE(animationId, INVALID_ANIMATION_ID);
 
         const CAnimationTrackKey bodyTrackKey
         {
@@ -226,55 +230,47 @@ namespace Creature
             AnimationProperty::Rotation
         };
 
-        auto animationEditor = editor.GetAnimationEditor();
-        ASSERT_TRUE(animationEditor.AddTrack(
-            animationId,
-            CAnimationTrack{ bodyTrackKey }));
+        auto animationEditor = motionEditor->AnimationEditor();
+        ASSERT_TRUE(animationEditor.AddTrack(CAnimationTrack{ bodyTrackKey }));
+        ASSERT_TRUE(animationEditor.AddTrack(CAnimationTrack{ headTrackKey }));
 
-        ASSERT_TRUE(animationEditor.AddTrack(
-            animationId,
-            CAnimationTrack{ headTrackKey }));
-
-        // Preconditions
-        const auto& skeleton = creature.GetSkeleton();
+        const auto motion = creature.FindMotionById(motionId);
+        ASSERT_NE(motion, nullptr);
+        const auto& skeleton = motion->GetSkeleton();
         ASSERT_NE(skeleton.FindPartById(bodyId), nullptr);
         ASSERT_NE(skeleton.FindPartById(headId), nullptr);
 
-        const auto& appearance = creature.GetAppearance();
+        const auto& appearance = motion->GetAppearance();
         ASSERT_NE(appearance.FindByPartId(bodyId), nullptr);
         ASSERT_NE(appearance.FindByPartId(headId), nullptr);
 
-        const auto animationBefore = creature.FindAnimationById(animationId);
-        ASSERT_NE(animationBefore, nullptr);
-        ASSERT_NE(animationBefore->FindAnimationTrack(bodyTrackKey), nullptr);
-        ASSERT_NE(animationBefore->FindAnimationTrack(headTrackKey), nullptr);
+        const auto& animationBefore = motion->GetAnimation();
+        ASSERT_NE(animationBefore.FindAnimationTrack(bodyTrackKey), nullptr);
+        ASSERT_NE(animationBefore.FindAnimationTrack(headTrackKey), nullptr);
 
-        // Act
         ASSERT_TRUE(skeletonEditor.RemovePart(headId));
 
-        // Assert: Skeleton
         EXPECT_NE(skeleton.FindPartById(bodyId), nullptr);
-
         EXPECT_EQ(skeleton.FindPartById(headId), nullptr);
 
-        // Assert: Appearance
         EXPECT_NE(appearance.FindByPartId(bodyId), nullptr);
         EXPECT_EQ(appearance.FindByPartId(headId), nullptr);
 
-        // Assert: Animation
-        const auto animationAfter = creature.FindAnimationById(animationId);
-        ASSERT_NE(animationAfter, nullptr);
-
-        EXPECT_NE(animationAfter->FindAnimationTrack(bodyTrackKey), nullptr);
-        EXPECT_EQ(animationAfter->FindAnimationTrack(headTrackKey), nullptr);
+        const auto& animationAfter = creature.FindMotionById(motionId)->GetAnimation();
+        EXPECT_NE(animationAfter.FindAnimationTrack(bodyTrackKey), nullptr);
+        EXPECT_EQ(animationAfter.FindAnimationTrack(headTrackKey), nullptr);
     }
 
     TEST(SkeletonEditorTest, SetPartTransformUpdatesTransform)
     {
         CCreature creature;
         CCreatureEditor creatureEditor(creature);
+        const auto motionId = creatureEditor.AddNewMotion("Idle");
+        ASSERT_NE(motionId, INVALID_MOTION_ID);
 
-        auto editor = creatureEditor.GetSkeletonEditor();
+        auto motionEditor = creatureEditor.MotionEditor(motionId);
+        ASSERT_TRUE(motionEditor.has_value());
+        auto editor = motionEditor->SkeletonEditor();
         const auto id = editor.AddPart("Body");
 
         CTransform2D transform;
@@ -284,7 +280,7 @@ namespace Creature
 
         ASSERT_TRUE(editor.SetPartTransform(id, transform));
 
-        const auto part = creature.GetSkeleton().FindPartById(id);
+        const auto part = creature.FindMotionById(motionId)->GetSkeleton().FindPartById(id);
         ASSERT_NE(part, nullptr);
 
         EXPECT_EQ(part->bindTransform.GetPosition(), Vec2({ 10.0f, 20.0f }));
@@ -296,8 +292,12 @@ namespace Creature
     {
         CCreature creature;
         CCreatureEditor creatureEditor(creature);
+        const auto motionId = creatureEditor.AddNewMotion("Idle");
+        ASSERT_NE(motionId, INVALID_MOTION_ID);
 
-        auto editor = creatureEditor.GetSkeletonEditor();
+        auto motionEditor = creatureEditor.MotionEditor(motionId);
+        ASSERT_TRUE(motionEditor.has_value());
+        auto editor = motionEditor->SkeletonEditor();
         const auto id = editor.AddPart("Body");
 
         ASSERT_TRUE(editor.SetPartRotation(id, 0.5f));
@@ -306,7 +306,7 @@ namespace Creature
 
         ASSERT_TRUE(editor.SetPartPosition(id, { 10.0f, 20.0f }));
 
-        const auto* part = creature.GetSkeleton().FindPartById(id);
+        const auto* part = creature.FindMotionById(motionId)->GetSkeleton().FindPartById(id);
         ASSERT_NE(part, nullptr);
 
         EXPECT_EQ(part->bindTransform.GetPosition(), Vec2({ 10.0f, 20.0f }));
@@ -319,8 +319,12 @@ namespace Creature
     {
         CCreature creature;
         CCreatureEditor creatureEditor(creature);
+        const auto motionId = creatureEditor.AddNewMotion("Idle");
+        ASSERT_NE(motionId, INVALID_MOTION_ID);
 
-        auto editor = creatureEditor.GetSkeletonEditor();
+        auto motionEditor = creatureEditor.MotionEditor(motionId);
+        ASSERT_TRUE(motionEditor.has_value());
+        auto editor = motionEditor->SkeletonEditor();
 
         constexpr PartId unknownId = 12345;
 
@@ -338,8 +342,12 @@ namespace Creature
     {
         CCreature creature;
         CCreatureEditor creatureEditor(creature);
+        const auto motionId = creatureEditor.AddNewMotion("Idle");
+        ASSERT_NE(motionId, INVALID_MOTION_ID);
 
-        auto editor = creatureEditor.GetSkeletonEditor();
+        auto motionEditor = creatureEditor.MotionEditor(motionId);
+        ASSERT_TRUE(motionEditor.has_value());
+        auto editor = motionEditor->SkeletonEditor();
         const auto id = editor.AddPart("Body");
 
         ASSERT_NE(id, INVALID_PART_ID);
@@ -353,7 +361,7 @@ namespace Creature
 
         ASSERT_TRUE(editor.SetPartPivotAndTransform(id, pivot, transform));
 
-        const auto part = creature.GetSkeleton().FindPartById(id);
+        const auto part = creature.FindMotionById(motionId)->GetSkeleton().FindPartById(id);
 
         ASSERT_NE(part, nullptr);
         EXPECT_EQ(part->pivot, pivot);
@@ -366,8 +374,12 @@ namespace Creature
     {
         CCreature creature;
         CCreatureEditor creatureEditor(creature);
+        const auto motionId = creatureEditor.AddNewMotion("Idle");
+        ASSERT_NE(motionId, INVALID_MOTION_ID);
 
-        auto skeletonEditor = creatureEditor.GetSkeletonEditor();
+        auto motionEditor = creatureEditor.MotionEditor(motionId);
+        ASSERT_TRUE(motionEditor.has_value());
+        auto skeletonEditor = motionEditor->SkeletonEditor();
 
         const auto bodyId = skeletonEditor.AddPart("Body");
         const auto headId = skeletonEditor.AddPart("Head", bodyId);
@@ -379,13 +391,10 @@ namespace Creature
         ASSERT_NE(eyesId, INVALID_PART_ID);
         ASSERT_NE(earId, INVALID_PART_ID);
 
-        auto appearanceEditor = creatureEditor.GetAppearanceEditor();
+        auto appearanceEditor = motionEditor->AppearanceEditor();
         appearanceEditor.SetTexture(headId, L"head.png");
         appearanceEditor.SetTexture(eyesId, L"eyes.png");
         appearanceEditor.SetTexture(earId, L"ear.png");
-
-        const auto animationId = creatureEditor.AddNewAnimation("Idle");
-        ASSERT_NE(animationId, INVALID_ANIMATION_ID);
 
         const CAnimationTrackKey headTrack{
             headId,
@@ -402,42 +411,27 @@ namespace Creature
             AnimationProperty::Rotation
         };
 
-        auto animationEditor = creatureEditor.GetAnimationEditor();
+        auto animationEditor = motionEditor->AnimationEditor();
+        ASSERT_TRUE(animationEditor.AddTrack(CAnimationTrack{ headTrack }));
+        ASSERT_TRUE(animationEditor.AddTrack(CAnimationTrack{ eyesTrack }));
+        ASSERT_TRUE(animationEditor.AddTrack(CAnimationTrack{ earTrack }));
 
-        ASSERT_TRUE(animationEditor.AddTrack(
-            animationId,
-            CAnimationTrack{ headTrack }));
-
-        ASSERT_TRUE(animationEditor.AddTrack(
-            animationId,
-            CAnimationTrack{ eyesTrack }));
-
-        ASSERT_TRUE(animationEditor.AddTrack(
-            animationId,
-            CAnimationTrack{ earTrack }));
-
-        // Act
         ASSERT_TRUE(skeletonEditor.RemovePart(headId));
 
-        // Skeleton
-        EXPECT_NE(creature.GetSkeleton().FindPartById(bodyId), nullptr);
-        EXPECT_EQ(creature.GetSkeleton().FindPartById(headId), nullptr);
-        EXPECT_EQ(creature.GetSkeleton().FindPartById(eyesId), nullptr);
-        EXPECT_EQ(creature.GetSkeleton().FindPartById(earId), nullptr);
+        const auto motion = creature.FindMotionById(motionId);
+        ASSERT_NE(motion, nullptr);
+        EXPECT_NE(motion->GetSkeleton().FindPartById(bodyId), nullptr);
+        EXPECT_EQ(motion->GetSkeleton().FindPartById(headId), nullptr);
+        EXPECT_EQ(motion->GetSkeleton().FindPartById(eyesId), nullptr);
+        EXPECT_EQ(motion->GetSkeleton().FindPartById(earId), nullptr);
 
-        // Appearance
-        EXPECT_EQ(creature.GetAppearance().FindByPartId(headId), nullptr);
-        EXPECT_EQ(creature.GetAppearance().FindByPartId(eyesId), nullptr);
-        EXPECT_EQ(creature.GetAppearance().FindByPartId(earId), nullptr);
+        EXPECT_EQ(motion->GetAppearance().FindByPartId(headId), nullptr);
+        EXPECT_EQ(motion->GetAppearance().FindByPartId(eyesId), nullptr);
+        EXPECT_EQ(motion->GetAppearance().FindByPartId(earId), nullptr);
 
-        // Animation
-        const auto* animation =
-            creature.FindAnimationById(animationId);
-
-        ASSERT_NE(animation, nullptr);
-
-        EXPECT_EQ(animation->FindAnimationTrack(headTrack), nullptr);
-        EXPECT_EQ(animation->FindAnimationTrack(eyesTrack), nullptr);
-        EXPECT_EQ(animation->FindAnimationTrack(earTrack), nullptr);
+        const auto& animation = motion->GetAnimation();
+        EXPECT_EQ(animation.FindAnimationTrack(headTrack), nullptr);
+        EXPECT_EQ(animation.FindAnimationTrack(eyesTrack), nullptr);
+        EXPECT_EQ(animation.FindAnimationTrack(earTrack), nullptr);
     }
 }

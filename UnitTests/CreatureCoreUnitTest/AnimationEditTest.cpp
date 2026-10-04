@@ -1,12 +1,14 @@
 #include "pch.h"
-#include "Animation.h"
-#include "MotionId.h"
 #include "AnimationEditor.h"
+#include "Animation.h"
 #include "AnimationProperty.h"
 #include "AnimationTrack.h"
+#include "MotionEditor.h"
+#include "MotionId.h"
 #include "AnimationTrackKey.h"
 #include "Creature.h"
 #include "CreatureEditor.h"
+#include "Motion.h"
 
 using namespace Creature;
 using namespace Creature::Animation;
@@ -32,7 +34,10 @@ namespace MotionEditor
 
     TEST_F(MotionEditorTests, EmptyTrackCanBeAdded)
     {
-        auto editor = m_creatureEditor.MotionEditor(m_motionId);
+        auto motionEditor = m_creatureEditor.MotionEditor(m_motionId);
+        ASSERT_TRUE(motionEditor.has_value());
+        auto editor = motionEditor->AnimationEditor();
+
         const CAnimationTrackKey key
         {
             1,
@@ -41,38 +46,41 @@ namespace MotionEditor
 
         CAnimationTrack track{ key };
 
-        EXPECT_TRUE(
-            editor.AddTrack(
-                m_motionId,
-                std::move(track)));
+        EXPECT_TRUE(editor.AddTrack(std::move(track)));
     }
 
     TEST_F(MotionEditorTests, SetDurationAcceptsPositiveDuration)
     {
-        auto editor = m_creatureEditor.GetAnimationEditor();
+        auto motionEditor = m_creatureEditor.MotionEditor(m_motionId);
+        ASSERT_TRUE(motionEditor.has_value());
+        auto editor = motionEditor->AnimationEditor();
 
-        ASSERT_TRUE(editor.SetDuration(m_animationId, 1.0f));
+        ASSERT_TRUE(editor.SetDuration(1.0f));
 
-        const auto animation
-            = m_creatureEditor.FindAnimationById(m_animationId);
+        const auto motion = m_creatureEditor.FindMotionById(m_motionId);
 
-        ASSERT_NE(animation, nullptr);
-        EXPECT_FLOAT_EQ(animation->GetDuration(), 1.0f);
+        ASSERT_NE(motion, nullptr);
+        EXPECT_FLOAT_EQ(motion->GetAnimation().GetDuration(), 1.0f);
     }
 
     TEST_F(MotionEditorTests, SetDurationRejectsNegativeDuration)
     {
-        auto editor = m_creatureEditor.GetAnimationEditor();
-        EXPECT_FALSE(editor.SetDuration(m_animationId, -1.0f));
+        auto motionEditor = m_creatureEditor.MotionEditor(m_motionId);
+        ASSERT_TRUE(motionEditor.has_value());
+        auto editor = motionEditor->AnimationEditor();
+
+        EXPECT_FALSE(editor.SetDuration(-1.0f));
     }
 
     TEST_F(
         MotionEditorTests,
         SetDurationRejectsDurationShorterThanExistingKeyFrame)
     {
-        auto editor = m_creatureEditor.GetAnimationEditor();
+        auto motionEditor = m_creatureEditor.MotionEditor(m_motionId);
+        ASSERT_TRUE(motionEditor.has_value());
+        auto editor = motionEditor->AnimationEditor();
 
-        ASSERT_TRUE(editor.SetDuration(m_animationId, 2.0f));
+        ASSERT_TRUE(editor.SetDuration(2.0f));
 
         const CAnimationTrackKey trackKey
         {
@@ -80,31 +88,27 @@ namespace MotionEditor
             AnimationProperty::PositionX
         };
 
-        ASSERT_TRUE(
-            editor.AddTrack(
-                m_animationId,
-                CAnimationTrack{ trackKey }));
+        ASSERT_TRUE(editor.AddTrack(CAnimationTrack{ trackKey }));
 
         ASSERT_TRUE(
             editor.AddOrUpdateKeyFrame(
-                m_animationId,
                 trackKey,
                 { 1.5f, 10.0f }));
 
-        EXPECT_FALSE(
-            editor.SetDuration(m_animationId, 1.0f));
+        EXPECT_FALSE(editor.SetDuration(1.0f));
 
-        const auto animation =
-            m_creatureEditor.FindAnimationById(m_animationId);
+        const auto motion = m_creatureEditor.FindMotionById(m_motionId);
 
-        ASSERT_NE(animation, nullptr);
+        ASSERT_NE(motion, nullptr);
 
-        EXPECT_FLOAT_EQ(animation->GetDuration(), 2.0f);
+        EXPECT_FLOAT_EQ(motion->GetAnimation().GetDuration(), 2.0f);
     }
 
     TEST_F(MotionEditorTests, DuplicateTrackIsRejected)
     {
-        auto editor = m_creatureEditor.GetAnimationEditor();
+        auto motionEditor = m_creatureEditor.MotionEditor(m_motionId);
+        ASSERT_TRUE(motionEditor.has_value());
+        auto editor = motionEditor->AnimationEditor();
 
         const CAnimationTrackKey trackKey
         {
@@ -112,28 +116,23 @@ namespace MotionEditor
             AnimationProperty::Rotation
         };
 
-        ASSERT_TRUE(
-            editor.AddTrack(
-                m_animationId,
-                CAnimationTrack{ trackKey }));
+        ASSERT_TRUE(editor.AddTrack(CAnimationTrack{ trackKey }));
 
-        EXPECT_FALSE(
-            editor.AddTrack(
-                m_animationId,
-                CAnimationTrack{ trackKey }));
+        EXPECT_FALSE(editor.AddTrack(CAnimationTrack{ trackKey }));
 
-        const auto animation =
-            m_creatureEditor.FindAnimationById(m_animationId);
+        const auto motion = m_creatureEditor.FindMotionById(m_motionId);
 
-        ASSERT_NE(animation, nullptr);
-        EXPECT_EQ(animation->GetAnimationTracks().size(), 1u);
+        ASSERT_NE(motion, nullptr);
+        EXPECT_EQ(motion->GetAnimation().GetAnimationTracks().size(), 1u);
     }
 
     TEST_F(MotionEditorTests, KeyFramePastDurationIsRejected)
     {
-        auto editor = m_creatureEditor.GetAnimationEditor();
+        auto motionEditor = m_creatureEditor.MotionEditor(m_motionId);
+        ASSERT_TRUE(motionEditor.has_value());
+        auto editor = motionEditor->AnimationEditor();
 
-        ASSERT_TRUE(editor.SetDuration(m_animationId, 1.0f));
+        ASSERT_TRUE(editor.SetDuration(1.0f));
 
         const CAnimationTrackKey trackKey
         {
@@ -141,23 +140,21 @@ namespace MotionEditor
             AnimationProperty::PositionX
         };
 
-        ASSERT_TRUE(
-            editor.AddTrack(
-                m_animationId,
-                CAnimationTrack{ trackKey }));
+        ASSERT_TRUE(editor.AddTrack(CAnimationTrack{ trackKey }));
 
         EXPECT_FALSE(
             editor.AddOrUpdateKeyFrame(
-                m_animationId,
                 trackKey,
                 { 1.1f, 10.0f }));
     }
 
     TEST_F(MotionEditorTests, NegativeKeyFrameTimeIsRejected)
     {
-        auto editor = m_creatureEditor.GetAnimationEditor();
+        auto motionEditor = m_creatureEditor.MotionEditor(m_motionId);
+        ASSERT_TRUE(motionEditor.has_value());
+        auto editor = motionEditor->AnimationEditor();
 
-        ASSERT_TRUE(editor.SetDuration(m_animationId, 1.0f));
+        ASSERT_TRUE(editor.SetDuration(1.0f));
 
         const CAnimationTrackKey trackKey
         {
@@ -165,14 +162,10 @@ namespace MotionEditor
             AnimationProperty::PositionX
         };
 
-        ASSERT_TRUE(
-            editor.AddTrack(
-                m_animationId,
-                CAnimationTrack{ trackKey }));
+        ASSERT_TRUE(editor.AddTrack(CAnimationTrack{ trackKey }));
 
         EXPECT_FALSE(
             editor.AddOrUpdateKeyFrame(
-                m_animationId,
                 trackKey,
                 { -0.1f, 10.0f }));
     }
