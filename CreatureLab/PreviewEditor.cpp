@@ -3,6 +3,8 @@
 #include "CreatureEditor.h"
 #include "CreaturePose.h"
 #include "EditorContext.h"
+#include "Motion.h"
+#include "MotionEditor.h"
 #include "Part.h"
 #include "PartTransformBuilder.h"
 #include "PreviewEditor.h"
@@ -271,8 +273,10 @@ bool CPreviewEditor::BeginScale(
         Select(HitTestPart(vecPartView, mousePosition));
         return false;
     }
+    const auto motion = m_editor.FindMotionById(m_editorContext.GetMotionId());
+    if (!motion) return false;
 
-    const auto& skeleton = m_editor.GetCreature().GetSkeleton();
+    const auto& skeleton = motion->GetSkeleton();
     auto part = skeleton.FindPartById(selectedView->GetPartId());
     if (!part) return false;
 
@@ -321,9 +325,12 @@ bool CPreviewEditor::BeginRotate(
         return false;
     }
 
+    auto motion = m_editor.FindMotionById(m_editorContext.GetMotionId());
+    if (!motion) return false;
+
     m_editorContext.SelectPart(hitView->GetPartId());
 
-    const auto& skeleton = m_editor.GetCreature().GetSkeleton();
+    const auto& skeleton = motion->GetSkeleton();
     const auto part = skeleton.FindPartById(hitView->GetPartId());
     if (!part) return false;
 
@@ -386,7 +393,11 @@ bool CPreviewEditor::BeginPivot(
         Select(HitTestPart(vecPartView, mousePosition));
         return false;
     }
-    const auto& skeleton = m_editor.GetCreature().GetSkeleton();
+
+    auto motion = m_editor.FindMotionById(m_editorContext.GetMotionId());
+    if (!motion) return false;
+
+    const auto& skeleton = motion->GetSkeleton();
     const auto part = skeleton.FindPartById(selectedView->GetPartId());
     if (!part) return false;
 
@@ -417,8 +428,12 @@ void CPreviewEditor::MovePart(
     const CCreaturePose& pose,
     const CMatrix3x2& previewTransform)
 {
-    const auto& skeleton = m_editor.GetCreature().GetSkeleton();
+    auto motionEditor = m_editor.MotionEditor(m_editorContext.GetMotionId());
+    if (!motionEditor) return;
 
+    auto skeletonEditor = motionEditor->SkeletonEditor();
+
+    const auto& skeleton = skeletonEditor.GetSkeleton();
     auto part = skeleton.FindPartById(m_operation.partId);
     if (!part) return;
 
@@ -451,7 +466,7 @@ void CPreviewEditor::MovePart(
             currentPosition.x + currentMouse.x - previousMouse.x,
             currentPosition.y + currentMouse.y - previousMouse.y,
         });
-    m_editor.GetSkeletonEditor().SetPartTransform(part->id, transform);
+    skeletonEditor.SetPartTransform(part->id, transform);
 }
 
 void CPreviewEditor::ResizePart(
@@ -459,8 +474,12 @@ void CPreviewEditor::ResizePart(
     const std::vector<CPreviewPart>& vecPartView,
     const CMatrix3x2& previewTransform)
 {
-    const auto& skeleton = m_editor.GetCreature().GetSkeleton();
+    auto motionEditor = m_editor.MotionEditor(m_editorContext.GetMotionId());
+    if (!motionEditor) return;
 
+    auto skeletonEditor = motionEditor->SkeletonEditor();
+
+    const auto& skeleton = skeletonEditor.GetSkeleton();
     auto part = skeleton.FindPartById(m_operation.partId);
     if (!part) return;
 
@@ -526,15 +545,18 @@ void CPreviewEditor::ResizePart(
     editTransform.SetScale(newScale);
     editTransform.SetPosition(newPosition);
 
-    m_editor.GetSkeletonEditor().SetPartTransform(part->id, editTransform);
+    skeletonEditor.SetPartTransform(part->id, editTransform);
 }
 
 void CPreviewEditor::RotatePart(
     const CCreaturePose& pose,
     const CMatrix3x2& previewTransform)
 {
-    const auto& skeleton = m_editor.GetCreature().GetSkeleton();
+    auto motionEditor = m_editor.MotionEditor(m_editorContext.GetMotionId());
+    if (!motionEditor) return;
 
+    auto skeletonEditor = motionEditor->SkeletonEditor();
+    const auto& skeleton = skeletonEditor.GetSkeleton();
     const auto part = skeleton.FindPartById(m_operation.partId);
     if (!part) return;
 
@@ -561,14 +583,18 @@ void CPreviewEditor::RotatePart(
     auto transform = part->bindTransform;
     transform.SetRotation(m_rotateState.fPartRotationStart + fDelta);
 
-    m_editor.GetSkeletonEditor().SetPartTransform(part->id, transform);
+    skeletonEditor.SetPartTransform(part->id, transform);
 }
 
 void CPreviewEditor::MovePivot(
     const CCreaturePose& pose,
     const CMatrix3x2& previewTransform)
 {
-    const auto& skeleton = m_editor.GetCreature().GetSkeleton();
+    auto motionEditor = m_editor.MotionEditor(m_editorContext.GetMotionId());
+    if (!motionEditor) return;
+
+    auto skeletonEditor = motionEditor->SkeletonEditor();
+    const auto& skeleton = skeletonEditor.GetSkeleton();
     const auto part = skeleton.FindPartById(m_operation.partId);
     if (!part) return;
 
@@ -609,6 +635,5 @@ void CPreviewEditor::MovePivot(
             currentPosition.x + transformedDelta.x - deltaPivot.x,
             currentPosition.y + transformedDelta.y - deltaPivot.y
         });
-
-    m_editor.GetSkeletonEditor().SetPartPivotAndTransform(part->id, newPivot, transform);
+    skeletonEditor.SetPartPivotAndTransform(part->id, newPivot, transform);
 }

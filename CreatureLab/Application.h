@@ -1,6 +1,5 @@
 #pragma once
 
-#include "AnimationId.h"
 #include "AnimationPanel.h"
 #include "AnimationPlayer.h"
 #include "Creature.h"
@@ -41,7 +40,6 @@ private:
     bool CreateGraphics();
 
     bool InitializeImGui();
-    void InitializeCreature();
 
     void Shutdown();
 
@@ -76,7 +74,6 @@ private:
     std::optional<CTextureCache> m_textureCache;
 
     Creature::Animation::CAnimationPlayer m_animationPlayer;
-    Creature::Animation::AnimationId m_idleAnimationId = Creature::Animation::INVALID_ANIMATION_ID;
     CPreviewPanel m_previewPanel;
     CAnimationPanel m_animationPanel;
 

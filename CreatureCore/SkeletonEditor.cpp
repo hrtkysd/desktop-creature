@@ -11,7 +11,7 @@ using namespace Creature::Math;
 
 CSkeletonEditor::CSkeletonEditor(
     CSkeleton& skeleton,
-    ICreatureEditContext& context)
+    IMotionEditContext& context)
     : m_skeleton(skeleton)
     , m_context(context)
 {

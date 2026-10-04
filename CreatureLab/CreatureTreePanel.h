@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CreatureTreeNodeEdit.h"
+#include "MotionId.h"
 #include "PartId.h"
 
 namespace Creature
@@ -24,6 +25,7 @@ public:
 public:
     void Draw();
     void DrawPart(
+        Creature::MotionId motionId,
         const Creature::CSkeleton& skeleton,
         Creature::PartId partId);
 private:

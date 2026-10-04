@@ -1,6 +1,6 @@
 #pragma once
 
-#include "AnimationId.h"
+#include "MotionId.h"
 #include "PartId.h"
 #include "Revision.h"
 #include "UndoBuffer.h"
@@ -20,8 +20,8 @@ enum class SelectionType : std::uint8_t
 {
     None,
     Creature,
+    Motion,
     Part,
-    Animation
 };
 
 class CUndoScope;
@@ -34,8 +34,8 @@ public:
 public:
     void SelectCreature();
     void SelectPart(Creature::PartId partId);
-    void SelectAnimation(
-        Creature::Animation::AnimationId animationId);
+    void SelectMotion(
+        Creature::MotionId motionId);
     SelectionType GetSelectionType() const noexcept;
 
     CUndoScope CreateUndoScope() noexcept;
@@ -48,13 +48,13 @@ public:
     void SetEditMode(EditMode mode);
 
     Creature::PartId GetPartId() const noexcept;
-    Creature::Animation::AnimationId GetAnimationId() const noexcept;
+    Creature::MotionId GetMotionId() const noexcept;
 private:
     void Undo();
     void Redo();
 private:
-    Creature::Animation::AnimationId m_animationId
-        = Creature::Animation::INVALID_ANIMATION_ID;
+    Creature::MotionId m_motionId
+        = Creature::INVALID_MOTION_ID;
     Creature::PartId m_partId = Creature::INVALID_PART_ID;
     EditMode m_eEditMode = EditMode::Select;
     SelectionType m_eSelectionType = SelectionType::None;

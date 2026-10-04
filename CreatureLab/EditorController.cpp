@@ -35,10 +35,10 @@ bool CEditorController::Execute(EditorCommand command)
         break;
     case EditorCommand::DeletePart:
     {
+        auto motionEditor = m_editor.MotionEditor(m_context.GetMotionId());
+        if (!motionEditor) return false;
         auto scope = m_context.CreateUndoScope();
-
-        auto skeletonEditor = m_editor.GetSkeletonEditor();
-        if (!skeletonEditor.RemovePart(m_context.GetPartId()))
+        if (!motionEditor->SkeletonEditor().RemovePart(m_context.GetPartId()))
         {
             scope.Cancel();
             return false;

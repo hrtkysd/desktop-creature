@@ -1,21 +1,15 @@
 #include "pch.h"
-#include "Animation.h"
-#include "Appearance.h"
 #include "Creature.h"
 #include "Genome.h"
-#include "Skeleton.h"
+#include "Motion.h"
 
 using namespace Creature;
-using namespace Creature::Animation;
 
 struct CCreature::Impl
 {
     Genome genome{};
-    CAppearance appearance{};
-    CSkeleton skeleton;
-
-    AnimationId nextAnimationId = MIN_ANIMATION_ID;
-    std::vector<CAnimation> vecAnimation;
+    std::vector<CMotion> vecMotion;
+    MotionId nextMotionId = MIN_MOTION_ID;
 
     std::string strName;
 };
@@ -39,8 +33,19 @@ CCreature& CCreature::operator=(CCreature&& rhs) noexcept
 CCreature CCreature::Clone() const
 {
     CCreature creature;
-    *creature.m_impl = *m_impl;
+
+    creature.m_impl->genome = m_impl->genome;
+    creature.m_impl->strName = m_impl->strName;
+    creature.m_impl->nextMotionId = m_impl->nextMotionId;
+
+    creature.m_impl->vecMotion.reserve(m_impl->vecMotion.size());
+
+    for (const auto& motion : m_impl->vecMotion)
+    {
+        creature.m_impl->vecMotion.push_back(motion.Clone());
+    }
     return creature;
+
 }
 
 const Genome& CCreature::GetGenome() const
@@ -53,29 +58,63 @@ Genome& CCreature::MutableGenome()
     return m_impl->genome;
 }
 
-const CSkeleton& CCreature::GetSkeleton() const
+std::vector<CMotion>& CCreature::MutableMotions()
 {
-    return m_impl->skeleton;
+    return m_impl->vecMotion;
 }
 
-CSkeleton& CCreature::MutableSkeleton()
+CMotion* CCreature::FindMutableMotionById(MotionId id)
 {
-    return m_impl->skeleton;
+    return const_cast<CMotion*>(std::as_const(*this).FindMotionById(id));
 }
 
-const CAppearance& CCreature::GetAppearance() const
+MotionId CCreature::AddMotion(CMotion&& motion)
 {
-    return m_impl->appearance;
+    const auto id = GenerateMotionId();
+    if (id == INVALID_MOTION_ID) return INVALID_MOTION_ID;
+    motion.SetMotionId(id);
+    m_impl->vecMotion.emplace_back(std::move(motion));
+    return id;
 }
 
-CAppearance& CCreature::MutableAppearance()
+bool CCreature::RemoveMotion(MotionId id)
 {
-    return m_impl->appearance;
+    auto& vecMotion = m_impl->vecMotion;
+
+    const auto it = std::find_if(vecMotion.begin(), vecMotion.end(), [id](const CMotion& motion)
+        {
+            return id == motion.GetMotionId();
+        });
+
+    if (it == vecMotion.end()) return false;
+
+    vecMotion.erase(it);
+    return true;
 }
 
-std::vector<CAnimation>& CCreature::MutableAnimations()
+MotionId CCreature::AddNewMotion(const std::string& strName)
 {
-    return m_impl->vecAnimation;
+    const auto id = GenerateMotionId();
+    if (id == INVALID_MOTION_ID)
+    {
+        return INVALID_MOTION_ID;
+    }
+
+    m_impl->vecMotion.emplace_back(CMotion::NewMotion(id, strName));
+    return id;
+}
+
+MotionId CCreature::AddMotionWithId(MotionId id, const std::string& strName)
+{
+    if (id == INVALID_MOTION_ID) return INVALID_MOTION_ID;
+    if (id == std::numeric_limits<MotionId>::max()) return INVALID_MOTION_ID;
+    if (FindMotionById(id) != nullptr) return INVALID_MOTION_ID;
+
+    m_impl->vecMotion.emplace_back(CMotion::NewMotion(id, strName));
+
+    UpdateNextMotionId(id);
+
+    return id;
 }
 
 const std::string& CCreature::GetName() const
@@ -88,96 +127,47 @@ void CCreature::SetName(const std::string& strName)
     m_impl->strName = strName;
 }
 
-const std::vector<Animation::CAnimation>& CCreature::GetAnimations() const
+const std::vector<CMotion>& CCreature::GetMotions() const
 {
-    return m_impl->vecAnimation;
+    return m_impl->vecMotion;
 }
 
-AnimationId CCreature::AddAnimation(CAnimation&& animation)
+const CMotion* CCreature::FindMotionById(MotionId id) const
 {
-    const auto id = GenerateAnimationId();
-    if (id == INVALID_ANIMATION_ID) return INVALID_ANIMATION_ID;
-    animation.SetAnimationId(id);
-    m_impl->vecAnimation.emplace_back(std::move(animation));
-    return id;
+    if (id == INVALID_MOTION_ID) return nullptr;
+
+    const auto& vecMotion = m_impl->vecMotion;
+    auto itFind = std::find_if(vecMotion.begin(), vecMotion.end(), [id](const CMotion& motion)
+        {
+            return motion.GetMotionId() == id;
+        });
+    return itFind != vecMotion.cend()
+        ? std::addressof(*itFind)
+        : nullptr;
 }
 
-AnimationId CCreature::AddAnimationWithId(AnimationId id, const std::string& name)
+MotionId CCreature::GenerateMotionId()
 {
-    if (id == INVALID_ANIMATION_ID) return INVALID_ANIMATION_ID;
-    if (id == std::numeric_limits<AnimationId>::max()) return INVALID_ANIMATION_ID;
-    if (FindAnimationById(id) != nullptr) return INVALID_ANIMATION_ID;
+    const auto id = m_impl->nextMotionId;
 
-    m_impl->vecAnimation.emplace_back(CAnimation::NewAnimation(id, name));
-
-    UpdateNextAnimationId(id);
-
-    return id;
-}
-
-AnimationId CCreature::GenerateAnimationId()
-{
-    const auto id = m_impl->nextAnimationId;
-
-    if (id == INVALID_ANIMATION_ID)
+    if (id == INVALID_MOTION_ID)
     {
-        return INVALID_ANIMATION_ID;
+        return INVALID_MOTION_ID;
     }
 
-    if (id == std::numeric_limits<AnimationId>::max())
+    if (id == std::numeric_limits<MotionId>::max())
     {
-        m_impl->nextAnimationId = INVALID_ANIMATION_ID;
+        m_impl->nextMotionId = INVALID_MOTION_ID;
     }
     else
     {
-        ++m_impl->nextAnimationId;
+        ++m_impl->nextMotionId;
     }
 
     return id;
 }
 
-void CCreature::UpdateNextAnimationId(AnimationId id)
+void CCreature::UpdateNextMotionId(MotionId id)
 {
-    m_impl->nextAnimationId = std::max(m_impl->nextAnimationId, id + 1);
-}
-
-bool CCreature::RemoveAnimation(AnimationId id)
-{
-    auto& vecAnimation = m_impl->vecAnimation;
-
-    const auto it = std::find_if(vecAnimation.begin(), vecAnimation.end(), [id](const CAnimation& animation)
-        {
-            return id == animation.GetAnimationId();
-        });
-
-    if (it == vecAnimation.end()) return false;
-
-    vecAnimation.erase(it);
-    return true;
-}
-
-AnimationId CCreature::AddNewAnimation(const std::string& strName)
-{
-    const auto id = GenerateAnimationId();
-    if (id == INVALID_ANIMATION_ID)
-    {
-        return INVALID_ANIMATION_ID;
-    }
-
-    m_impl->vecAnimation.emplace_back(CAnimation::NewAnimation(id, strName));
-    return id;
-}
-
-const CAnimation* CCreature::FindAnimationById(AnimationId id) const
-{
-    if (id == INVALID_ANIMATION_ID) return nullptr;
-
-    const auto& vecAnimation = m_impl->vecAnimation;
-    auto itFind = std::find_if(vecAnimation.begin(), vecAnimation.end(), [id](const CAnimation& animation)
-        {
-            return animation.GetAnimationId() == id;
-        });
-    return itFind != vecAnimation.cend()
-        ? std::addressof(*itFind)
-        : nullptr;
+    m_impl->nextMotionId = std::max(m_impl->nextMotionId, id + 1);
 }

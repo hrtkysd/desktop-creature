@@ -5,12 +5,12 @@
 #include "AnimationPlayer.h"
 #include "AnimationProperty.h"
 #include "ContinuousEditUndoScope.h"
+#include "CreatureEditor.h"
 #include "EditorContext.h"
 #include "ImGuiWindowScope.h"
 #include "Skeleton.h"
 
 #include "imgui.h"
-#include "imgui_stdlib.h"
 
 using namespace Creature;
 using namespace Creature::Editor;
@@ -44,32 +44,37 @@ namespace
 }
 
 CAnimationPanel::CAnimationPanel(
+    CCreatureEditor& editor,
     CAnimationPlayer& animationPlayer,
     CEditorContext& editorContext)
-    : m_animationPlayer(animationPlayer)
+    : m_editor(editor)
+    , m_animationPlayer(animationPlayer)
     , m_editorContext(editorContext)
 {
 }
 bool CAnimationPanel::Draw(
-    Creature::Editor::CAnimationEditor& editor,
     const Creature::Animation::CAnimation& animation,
     const Creature::CSkeleton& skeleton)
 {
-    if (m_animationId != animation.GetAnimationId())
+    if (m_motionId != m_editorContext.GetMotionId())
     {
-        m_animationId = animation.GetAnimationId();
+        m_motionId = m_editorContext.GetMotionId();
         m_selectedTrackKey.reset();
     }
+
+    auto motionEditor = m_editor.MotionEditor(m_editorContext.GetMotionId());
+    if (!motionEditor) return false;
+    auto animationEditor = motionEditor->AnimationEditor();
 
     CImGuiWindowScope window("Animation");
 
     bool bChanged = false;
 
-    bChanged |= DrawAnimationProperties(editor, animation);
+    bChanged |= DrawAnimationProperties(animationEditor, animation);
 
     DrawCurrentTime(animation);
 
-    bChanged |= DrawTracks(editor, animation, skeleton);
+    bChanged |= DrawTracks(animationEditor, animation, skeleton);
 
     return bChanged;
 }
@@ -82,21 +87,13 @@ bool CAnimationPanel::DrawAnimationProperties(
 
     ImGui::SeparatorText("Animation");
 
-    if (!ImGui::BeginTable(
-        "AnimationProperties",
-        2))
+    if (!ImGui::BeginTable("AnimationProperties", 2))
     {
         return false;
     }
 
-    ImGui::TableSetupColumn(
-        "Label",
-        ImGuiTableColumnFlags_WidthFixed,
-        100.0f);
-
-    ImGui::TableSetupColumn(
-        "Value",
-        ImGuiTableColumnFlags_WidthStretch);
+    ImGui::TableSetupColumn("Label", ImGuiTableColumnFlags_WidthFixed, 100.0f);
+    ImGui::TableSetupColumn("Value", ImGuiTableColumnFlags_WidthStretch);
 
     ImGui::TableNextRow();
 
@@ -105,23 +102,6 @@ bool CAnimationPanel::DrawAnimationProperties(
 
     ImGui::TableSetColumnIndex(1);
     ImGui::SetNextItemWidth(-FLT_MIN);
-
-    {
-        auto strName = animation.GetName();
-        const auto edited = ImGui::InputText(
-            "##AnimationName",
-            &strName);
-
-        CContinuousEditUndoScope scope(m_editorContext, m_undoScope, edited);
-
-        if (edited)
-        {
-            if (editor.SetName(animation.GetAnimationId(), strName))
-            {
-                bChanged = true;
-            }
-        }
-    }
 
     ImGui::TableNextRow();
 
@@ -142,9 +122,7 @@ bool CAnimationPanel::DrawAnimationProperties(
         CContinuousEditUndoScope scope(m_editorContext, m_undoScope, edited);
         if (edited)
         {
-            editor.SetDuration(
-                animation.GetAnimationId(),
-                fDuration);
+            editor.SetDuration(fDuration);
 
             bChanged = true;
         }
@@ -294,7 +272,7 @@ bool CAnimationPanel::DrawAddTrack(
     if (ImGui::Button("Add Track"))
     {
         auto scope = m_editorContext.CreateUndoScope();
-        if (editor.AddTrack(animation.GetAnimationId(), CAnimationTrack{ key }))
+        if (editor.AddTrack(CAnimationTrack{ key }))
         {
             m_selectedTrackKey = key;
             bChanged = true;
@@ -346,7 +324,7 @@ bool CAnimationPanel::DrawTrack(
                 auto editFrame = keyFrame;
                 editFrame.fValue = fValue;
 
-                if (!editor.AddOrUpdateKeyFrame(animation.GetAnimationId(), trackKey, editFrame))
+                if (!editor.AddOrUpdateKeyFrame(trackKey, editFrame))
                 {
                     return false;
                 }
@@ -383,7 +361,7 @@ bool CAnimationPanel::DrawTrack(
 
                         edited.eInterpolationToNext = value;
 
-                        if (!editor.AddOrUpdateKeyFrame(animation.GetAnimationId(), trackKey, edited))
+                        if (!editor.AddOrUpdateKeyFrame(trackKey, edited))
                         {
                             scope.Cancel();
                             return false;
@@ -419,7 +397,7 @@ bool CAnimationPanel::DrawTrack(
             Interpolation::SmoothStep
         };
 
-        if (editor.AddOrUpdateKeyFrame(animation.GetAnimationId(), trackKey, keyFrame))
+        if (editor.AddOrUpdateKeyFrame(trackKey, keyFrame))
         {
             bChanged = true;
         }
@@ -435,7 +413,7 @@ bool CAnimationPanel::DrawTrack(
     if (ImGui::Button("Delete Track"))
     {
         auto scope = m_editorContext.CreateUndoScope();
-        if (editor.RemoveTrack(animation.GetAnimationId(), trackKey))
+        if (editor.RemoveTrack(trackKey))
         {
             m_selectedTrackKey.reset();
             bChanged = true;

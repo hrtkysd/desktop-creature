@@ -1,6 +1,6 @@
 #pragma once
 
-#include "AnimationId.h"
+#include "MotionId.h"
 
 #include <cstdint>
 #include <string>
@@ -9,8 +9,8 @@ enum class NodeEditType : std::uint8_t
 {
     None,
     RenameCreature,
-    RenameAnimation,
-    CreateAnimation
+    RenameMotion,
+    CreateMotion
 };
 
 class CCreatureTreeNodeEdit
@@ -18,8 +18,8 @@ class CCreatureTreeNodeEdit
 public:
 
     void BeginRenameCreature(const std::string& strText);
-    void BeginCreateNewAnimation(const std::string& strText);
-    void BeginRenameAnimation(Creature::Animation::AnimationId animationId, const std::string& strText);
+    void BeginCreateNewMotion(const std::string& strText);
+    void BeginRenameMotion(Creature::MotionId motionId, const std::string& strText);
 
     void EndEdit();
 
@@ -29,9 +29,10 @@ public:
     std::string& GetText();
     const std::string& GetText() const;
 
+    Creature::MotionId GetMotionId() const;
 private:
     NodeEditType m_eEditType = NodeEditType::None;
-    Creature::Animation::AnimationId m_animationId
-        = Creature::Animation::INVALID_ANIMATION_ID;
+    Creature::MotionId m_motionId
+        = Creature::INVALID_MOTION_ID;
     std::string m_strText;
 };

@@ -1,48 +1,36 @@
 #pragma once
 
-#include "AnimationId.h"
-#include "ICreatureEditContext.h"
-#include "PartId.h"
+#include "MotionId.h"
+#include "MotionEditor.h"
 
+#include <optional>
 #include <string>
 
 namespace Creature
 {
     class CCreature;
 
-    namespace Animation
-    {
-        class CAnimation;
-    }
 
     namespace Editor
     {
-        class CAnimationEditor;
-        class CAppearanceEditor;
-        class CSkeletonEditor;
-
-        class CCreatureEditor : private ICreatureEditContext
+        class CCreatureEditor
         {
         public:
             CCreatureEditor() = delete;
             explicit CCreatureEditor(Creature::CCreature& creature);
         public:
-            CAnimationEditor GetAnimationEditor();
-            CSkeletonEditor GetSkeletonEditor();
-            CAppearanceEditor GetAppearanceEditor();
+            std::optional<CMotionEditor> MotionEditor(MotionId id);
         public:
-            const Animation::CAnimation* FindAnimationById(Animation::AnimationId id) const;
-            Animation::AnimationId AddNewAnimation(const std::string& strName);
-            Animation::AnimationId AddAnimation(Animation::CAnimation&& animation);
-            Animation::AnimationId AddAnimationWithId(Animation::AnimationId id, const std::string& name);
-            bool RemoveAnimation(Animation::AnimationId id);
+            const CMotion* FindMotionById(MotionId id) const;
+            MotionId AddNewMotion(const std::string& strName);
+            MotionId AddMotion(CMotion&& motion);
+            MotionId AddMotionWithId(MotionId id, const std::string& strName);
+            bool RemoveMotion(MotionId id);
 
             void SwapCreature(CCreature&& creature);
 
             const Creature::CCreature& GetCreature() const;
             void SetName(const std::string& strName);
-        private:
-            bool RemovePart(PartId id) override;
         private:
             CCreature& m_creature;
         };

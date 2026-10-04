@@ -7,6 +7,8 @@
 #include "Appearance.h"
 #include "AppearanceEditor.h"
 #include "CreaturePose.h"
+#include "Motion.h"
+#include "MotionEditor.h"
 #include "RenderTargetScope.h"
 #include "SkeletonEditor.h"
 #include "Texture.h"
@@ -41,7 +43,7 @@ CApp::CApp()
     , m_menuBar(m_labController)
     , m_previewPanel(m_creatureEditor, m_editorContext)
     , m_creatureTreePanel(m_creatureEditor, m_editorContext)
-    , m_animationPanel(m_animationPlayer, m_editorContext)
+    , m_animationPanel(m_creatureEditor, m_animationPlayer, m_editorContext)
 {
 }
 
@@ -57,9 +59,6 @@ bool CApp::Initialize(
 
     if (!CreateMainWindow(hInstance, nCmdShow)) return false;
     if (!CreateGraphics()) return false;
-
-    InitializeCreature();
-
     if (!InitializeImGui()) return false;
 
     return true;
@@ -133,34 +132,6 @@ bool CApp::InitializeImGui()
     m_bImGuiInitialized = true;
 
     return true;
-}
-
-void CApp::InitializeCreature()
-{
-    m_creatureEditor.SetName("Hamster");
-
-    auto skeletonEditor = m_creatureEditor.GetSkeletonEditor();
-    const auto bodyId = skeletonEditor.AddPart("Body");
-    const auto headId = skeletonEditor.AddPart("Head", bodyId);
-    const auto eyesId = skeletonEditor.AddPart("Eyes", headId);
-    const auto leftEarId = skeletonEditor.AddPart("LeftEar", headId);
-    const auto rightEarId = skeletonEditor.AddPart("RightEar", headId);
-
-    auto appearanceEditor = m_creatureEditor.GetAppearanceEditor();
-    appearanceEditor.SetTexture(bodyId, L"assets/body.png");
-    appearanceEditor.SetTexture(headId, L"assets/head.png");
-    appearanceEditor.SetTexture(eyesId, L"assets/eyes.png");
-    appearanceEditor.SetTexture(leftEarId, L"assets/left_ear.png");
-    appearanceEditor.SetTexture(rightEarId, L"assets/right_ear.png");
-
-    CAnimationTrack headRotation(CAnimationTrackKey{ headId, AnimationProperty::Rotation });
-    headRotation.AddOrUpdateKeyFrame({ 0.0f,  0.0f });
-    headRotation.AddOrUpdateKeyFrame({ 0.5f,  0.1f });
-    headRotation.AddOrUpdateKeyFrame({ 1.0f,  0.0f });
-    const auto newId = m_creatureEditor.AddNewAnimation("idle");
-
-    auto animationsEditor = m_creatureEditor.GetAnimationEditor();
-    animationsEditor.AddTrack(newId, std::move(headRotation));
 }
 
 int CApp::Run()
@@ -254,18 +225,15 @@ void CApp::Render()
     m_menuBar.Draw(m_editorContext);
     m_creatureTreePanel.Draw();
 
-    const auto animation = m_creature.FindAnimationById(m_editorContext.GetAnimationId());
-    const auto& skeleton = m_creature.GetSkeleton();
-    const auto defaultPose = CCreaturePose::Default(skeleton);
-    const auto* pose = &defaultPose;
-    if (animation)
+    const auto motion = m_creature.FindMotionById(m_editorContext.GetMotionId());
+    if (motion)
     {
-        m_animationPlayer.Update(ImGui::GetIO().DeltaTime);
-        m_animationPlayer.SamplePose(*animation, skeleton);
-        auto animationEditor = m_creatureEditor.GetAnimationEditor();
-        m_animationPanel.Draw(animationEditor, *animation, skeleton);
+        const auto& skeleton = motion->GetSkeleton();
+        const auto& animation = motion->GetAnimation();
 
-        pose = &m_animationPlayer.GetPose();
+        m_animationPlayer.Update(ImGui::GetIO().DeltaTime);
+        m_animationPlayer.SamplePose(animation, skeleton);
+        m_animationPanel.Draw(animation, skeleton);
     }
 
     if (!m_graphicsRenderer.BeginFrame()) return;
@@ -283,13 +251,15 @@ void CApp::Render()
         }
     }
 
-    m_previewPanel.DrawUi(
-        skeleton,
-        m_creature.GetAppearance(),
-        *pose,
-        *m_textureCache,
-        *m_previewRenderTarget);
-
+    if (motion)
+    {
+        m_previewPanel.DrawUi(
+            motion->GetSkeleton(),
+            motion->GetAppearance(),
+            m_animationPlayer.GetPose(),
+            *m_textureCache,
+            *m_previewRenderTarget);
+    }
     ImGui::Render();
 
     {
