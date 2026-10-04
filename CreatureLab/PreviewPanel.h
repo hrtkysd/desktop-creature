@@ -9,7 +9,10 @@ namespace Creature
     class CAppearance;
     class CCreaturePose;
     class CSkeleton;
-
+    namespace Editor
+    {
+        class CCreatureEditor;
+    }
     namespace Math
     {
         struct RectCorner;

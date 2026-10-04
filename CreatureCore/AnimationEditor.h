@@ -1,10 +1,8 @@
 #pragma once
 
-#include "AnimationId.h"
 #include "PartId.h"
 
 #include <string>
-#include <vector>
 
 namespace Creature
 {
@@ -22,25 +20,21 @@ namespace Creature
         {
         public:
             explicit CAnimationEditor(
-                std::vector<Animation::CAnimation>& vecAnimation);
+                Animation::CAnimation& animation);
 
-            bool SetName(Animation::AnimationId id, const std::string& name);
-            bool SetDuration(Animation::AnimationId id, float duration);
+            bool SetDuration(float duration);
 
-            bool AddTrack(Animation::AnimationId id, Animation::CAnimationTrack&& track);
-            bool RemoveTrack(Animation::AnimationId id, const Animation::CAnimationTrackKey& key);
+            bool AddTrack(Animation::CAnimationTrack&& track);
+            bool RemoveTrack(const Animation::CAnimationTrackKey& key);
 
             bool AddOrUpdateKeyFrame(
-                Animation::AnimationId id,
                 const Animation::CAnimationTrackKey& key,
                 const Animation::FloatKeyFrame& frame);
             void RemovePart(Creature::PartId id);
 
-            const std::vector<Animation::CAnimation>& GetAnimations() const;
+            const Animation::CAnimation& GetAnimation() const;
         private:
-            Animation::CAnimation* FindAnimationById(Animation::AnimationId id);
-        private:
-            std::vector<Creature::Animation::CAnimation>& m_vecAnimation;
+            Creature::Animation::CAnimation& m_animation;
         };
     }
 }

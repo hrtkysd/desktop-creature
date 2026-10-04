@@ -5,7 +5,6 @@
 #include <cmath>
 
 using namespace Creature;
-using namespace Creature::Animation;
 
 namespace
 {

@@ -3,6 +3,7 @@
 #include "Application.h"
 #include "CreatureIO.h"
 #include "FileOperation.h"
+#include "Motion.h"
 #include "PartTransformBuilder.h"
 #include "Skeleton.h"
 #include "SpriteRenderDescription.h"
@@ -228,28 +229,31 @@ bool CAppRuntime::LoadCreature()
 
 bool CAppRuntime::Update(float fDeltaTime)
 {
-    const auto& animations = m_creature.GetAnimations();
-    if (animations.empty()) return false;
+    const auto& motions = m_creature.GetMotions();
+    if (motions.empty()) return false;
 
-    const auto& animation = animations.front();
-    const auto& skeleton = m_creature.GetSkeleton();
+    const auto& motion = motions.front();
+    const auto& skeleton = motion.GetSkeleton();
 
     m_animationPlayer.Update(fDeltaTime);
-    m_animationPlayer.SamplePose(animation, skeleton);
+    m_animationPlayer.SamplePose(motion.GetAnimation(), skeleton);
     return true;
 }
 
 bool CAppRuntime::Render()
 {
     if (!m_textureCache) return false;
+    const auto& motions = m_creature.GetMotions();
+    if (motions.empty()) return false;
 
+    const auto& motion = motions.front();
     const auto& pose = m_animationPlayer.GetPose();
 
     if (!m_renderer.BeginFrame()) return false;
     m_renderer.BeginSprite();
 
-    const auto& skeleton = m_creature.GetSkeleton();
-    const auto& creatureAppearance = m_creature.GetAppearance();
+    const auto& skeleton = motion.GetSkeleton();
+    const auto& creatureAppearance = motion.GetAppearance();
     constexpr float creatureScale = 0.1f;
 
     const auto creatureToScreen =

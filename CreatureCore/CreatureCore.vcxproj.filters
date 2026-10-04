@@ -92,9 +92,6 @@
     <ClInclude Include="MathUtils.h">
       <Filter>Math</Filter>
     </ClInclude>
-    <ClInclude Include="AnimationId.h">
-      <Filter>Animation</Filter>
-    </ClInclude>
     <ClInclude Include="Part.h">
       <Filter>Creature</Filter>
     </ClInclude>
@@ -119,7 +116,16 @@
     <ClInclude Include="AnimationEditor.h">
       <Filter>Editor</Filter>
     </ClInclude>
-    <ClInclude Include="ICreatureEditContext.h">
+    <ClInclude Include="IMotionEditContext.h">
+      <Filter>Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="Motion.h">
+      <Filter>Creature</Filter>
+    </ClInclude>
+    <ClInclude Include="MotionId.h">
+      <Filter>Creature</Filter>
+    </ClInclude>
+    <ClInclude Include="MotionEditor.h">
       <Filter>Editor</Filter>
     </ClInclude>
   </ItemGroup>
@@ -177,6 +183,12 @@
       <Filter>Editor</Filter>
     </ClCompile>
     <ClCompile Include="AnimationEditor.cpp">
+      <Filter>Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="Motion.cpp">
+      <Filter>Creature</Filter>
+    </ClCompile>
+    <ClCompile Include="MotionEditor.cpp">
       <Filter>Editor</Filter>
     </ClCompile>
   </ItemGroup>

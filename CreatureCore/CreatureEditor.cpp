@@ -1,19 +1,48 @@
 #include "pch.h"
-#include "Animation.h"
-#include "AnimationEditor.h"
-#include "AppearanceEditor.h"
 #include "Creature.h"
 #include "CreatureEditor.h"
-#include "SkeletonEditor.h"
+#include "Motion.h"
 
 using namespace Creature;
-using namespace Creature::Animation;
 using namespace Creature::Editor;
-using namespace Creature::Math;
 
 CCreatureEditor::CCreatureEditor(CCreature& creature)
     : m_creature(creature)
 {
+}
+
+std::optional<CMotionEditor> CCreatureEditor::MotionEditor(MotionId id)
+{
+    if (auto motion = m_creature.FindMutableMotionById(id))
+    {
+        return CMotionEditor(*motion);
+    }
+    return {};
+}
+
+const CMotion* CCreatureEditor::FindMotionById(MotionId id) const
+{
+    return m_creature.FindMotionById(id);
+}
+
+MotionId CCreatureEditor::AddNewMotion(const std::string& strName)
+{
+    return m_creature.AddNewMotion(strName);
+}
+
+MotionId CCreatureEditor::AddMotion(CMotion&& motion)
+{
+    return m_creature.AddMotion(std::move(motion));
+}
+
+MotionId CCreatureEditor::AddMotionWithId(MotionId id, const std::string& strName)
+{
+    return m_creature.AddMotionWithId(id, strName);
+}
+
+bool CCreatureEditor::RemoveMotion(MotionId id)
+{
+    return m_creature.RemoveMotion(id);
 }
 
 const CCreature& CCreatureEditor::GetCreature() const
@@ -21,61 +50,9 @@ const CCreature& CCreatureEditor::GetCreature() const
     return m_creature;
 }
 
-CAnimationEditor CCreatureEditor::GetAnimationEditor()
-{
-    return CAnimationEditor{ m_creature.MutableAnimations() };
-}
-
-CSkeletonEditor CCreatureEditor::GetSkeletonEditor()
-{
-    return CSkeletonEditor{ m_creature.MutableSkeleton(), *this };
-}
-
-CAppearanceEditor CCreatureEditor::GetAppearanceEditor()
-{
-    return CAppearanceEditor{ m_creature.MutableAppearance() };
-}
-
 void CCreatureEditor::SetName(const std::string& strName)
 {
     m_creature.SetName(strName);
-}
-
-bool CCreatureEditor::RemovePart(PartId id)
-{
-    const auto parts = GetSkeletonEditor().RemovePartCore(id);
-    if (parts.empty()) return false;
-    for (const auto part : parts)
-    {
-        GetAnimationEditor().RemovePart(part);
-        GetAppearanceEditor().RemovePart(part);
-    }
-    return true;
-}
-
-const CAnimation* CCreatureEditor::FindAnimationById(AnimationId id) const
-{
-    return m_creature.FindAnimationById(id);
-}
-
-AnimationId CCreatureEditor::AddNewAnimation(const std::string& strName)
-{
-    return m_creature.AddNewAnimation(strName);
-}
-
-AnimationId CCreatureEditor::AddAnimationWithId(AnimationId id, const std::string& strName)
-{
-    return m_creature.AddAnimationWithId(id, strName);
-}
-
-AnimationId CCreatureEditor::AddAnimation(CAnimation&& animation)
-{
-    return m_creature.AddAnimation(std::move(animation));
-}
-
-bool CCreatureEditor::RemoveAnimation(AnimationId id)
-{
-    return m_creature.RemoveAnimation(id);
 }
 
 void CCreatureEditor::SwapCreature(CCreature&& creature)

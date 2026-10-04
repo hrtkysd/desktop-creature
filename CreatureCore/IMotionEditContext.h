@@ -6,10 +6,10 @@ namespace Creature
 {
     namespace Editor
     {
-        class ICreatureEditContext
+        class IMotionEditContext
         {
         public:
-            virtual ~ICreatureEditContext() = default;
+            virtual ~IMotionEditContext() = default;
             virtual bool RemovePart(PartId id) = 0;
         };
     }

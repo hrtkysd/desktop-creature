@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "Animation.h"
-#include "AnimationId.h"
+#include "MotionId.h"
 #include "AnimationEditor.h"
 #include "AnimationProperty.h"
 #include "AnimationTrack.h"
@@ -8,37 +8,31 @@
 #include "Creature.h"
 #include "CreatureEditor.h"
 
-
 using namespace Creature;
 using namespace Creature::Animation;
 using namespace Creature::Editor;
 
-namespace AnimationEditor
+namespace MotionEditor
 {
-    class AnimationEditorTests : public ::testing::Test
+    class MotionEditorTests : public ::testing::Test
     {
     protected:
         void SetUp() override
         {
-            m_animationId = m_creatureEditor.AddNewAnimation("idle");
-
-            ASSERT_NE(
-                m_animationId,
-                INVALID_ANIMATION_ID);
+            m_motionId = m_creatureEditor.AddNewMotion("idle");
+            ASSERT_NE(m_motionId, INVALID_MOTION_ID);
         }
 
     protected:
         CCreature m_creature;
         CCreatureEditor m_creatureEditor{ m_creature };
 
-        AnimationId m_animationId = INVALID_ANIMATION_ID;
+        MotionId m_motionId = INVALID_MOTION_ID;
     };
 
-    TEST_F(AnimationEditorTests, EmptyTrackCanBeAdded)
+    TEST_F(MotionEditorTests, EmptyTrackCanBeAdded)
     {
-        auto editor =
-            m_creatureEditor.GetAnimationEditor();
-
+        auto editor = m_creatureEditor.MotionEditor(m_motionId);
         const CAnimationTrackKey key
         {
             1,
@@ -49,11 +43,11 @@ namespace AnimationEditor
 
         EXPECT_TRUE(
             editor.AddTrack(
-                m_animationId,
+                m_motionId,
                 std::move(track)));
     }
 
-    TEST_F(AnimationEditorTests, SetDurationAcceptsPositiveDuration)
+    TEST_F(MotionEditorTests, SetDurationAcceptsPositiveDuration)
     {
         auto editor = m_creatureEditor.GetAnimationEditor();
 
@@ -66,14 +60,14 @@ namespace AnimationEditor
         EXPECT_FLOAT_EQ(animation->GetDuration(), 1.0f);
     }
 
-    TEST_F(AnimationEditorTests, SetDurationRejectsNegativeDuration)
+    TEST_F(MotionEditorTests, SetDurationRejectsNegativeDuration)
     {
         auto editor = m_creatureEditor.GetAnimationEditor();
         EXPECT_FALSE(editor.SetDuration(m_animationId, -1.0f));
     }
 
     TEST_F(
-        AnimationEditorTests,
+        MotionEditorTests,
         SetDurationRejectsDurationShorterThanExistingKeyFrame)
     {
         auto editor = m_creatureEditor.GetAnimationEditor();
@@ -108,7 +102,7 @@ namespace AnimationEditor
         EXPECT_FLOAT_EQ(animation->GetDuration(), 2.0f);
     }
 
-    TEST_F(AnimationEditorTests, DuplicateTrackIsRejected)
+    TEST_F(MotionEditorTests, DuplicateTrackIsRejected)
     {
         auto editor = m_creatureEditor.GetAnimationEditor();
 
@@ -135,7 +129,7 @@ namespace AnimationEditor
         EXPECT_EQ(animation->GetAnimationTracks().size(), 1u);
     }
 
-    TEST_F(AnimationEditorTests, KeyFramePastDurationIsRejected)
+    TEST_F(MotionEditorTests, KeyFramePastDurationIsRejected)
     {
         auto editor = m_creatureEditor.GetAnimationEditor();
 
@@ -159,7 +153,7 @@ namespace AnimationEditor
                 { 1.1f, 10.0f }));
     }
 
-    TEST_F(AnimationEditorTests, NegativeKeyFrameTimeIsRejected)
+    TEST_F(MotionEditorTests, NegativeKeyFrameTimeIsRejected)
     {
         auto editor = m_creatureEditor.GetAnimationEditor();
 

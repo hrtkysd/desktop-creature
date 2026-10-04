@@ -5,6 +5,7 @@
 #include "CreatureTreePanel.h"
 #include "EditorContext.h"
 #include "ImGuiWindowScope.h"
+#include "Motion.h"
 #include "Skeleton.h"
 
 #include "imgui.h"
@@ -73,50 +74,50 @@ void CCreatureTreePanel::Draw()
         return;
     }
 
-    if (ImGui::TreeNode("Animations"))
+    if (ImGui::TreeNode("Motions"))
     {
         if (ImGui::BeginPopupContextItem())
         {
-            if (ImGui::MenuItem("New Animation"))
+            if (ImGui::MenuItem("New Motion"))
             {
-                m_nodeEdit.BeginCreateNewAnimation("New Animation");
+                m_nodeEdit.BeginCreateNewMotion("New Motion");
             }
 
             ImGui::EndPopup();
         }
 
-        if (m_nodeEdit.IsEditing(NodeEditType::CreateAnimation))
+        if (m_nodeEdit.IsEditing(NodeEditType::CreateMotion))
         {
             if (ImGui::InputText(
-                "##NewAnimation",
+                "##NewMotion",
                 &m_nodeEdit.GetText(),
                 ImGuiInputTextFlags_EnterReturnsTrue))
             {
-                const auto newId = m_editor.AddNewAnimation(m_nodeEdit.GetText());
-                m_editorContext.SelectAnimation(newId);
+                const auto newId = m_editor.AddNewMotion(m_nodeEdit.GetText());
+                m_editorContext.SelectMotion(newId);
                 m_nodeEdit.EndEdit();
             }
         }
 
-        for (const auto& animation : creature.GetAnimations())
+        for (const auto& motion : creature.GetMotions())
         {
-            ImGui::PushID(static_cast<int>(animation.GetAnimationId()));
+            ImGui::PushID(static_cast<int>(motion.GetMotionId()));
 
             ImGuiTreeNodeFlags flags =
                 ImGuiTreeNodeFlags_Leaf |
                 ImGuiTreeNodeFlags_NoTreePushOnOpen |
                 ImGuiTreeNodeFlags_SpanAvailWidth;
 
-            if (m_editorContext.GetAnimationId() == animation.GetAnimationId())
+            if (m_editorContext.GetMotionId() == motion.GetMotionId())
             {
                 flags |= ImGuiTreeNodeFlags_Selected;
             }
 
-            ImGui::TreeNodeEx(animation.GetName().c_str(), flags);
+            ImGui::TreeNodeEx(motion.GetName().c_str(), flags);
 
             if (ImGui::IsItemClicked(ImGuiMouseButton_Left))
             {
-                m_editorContext.SelectAnimation(animation.GetAnimationId());
+                m_editorContext.SelectMotion(motion.GetMotionId());
             }
 
             ImGui::PopID();
@@ -125,7 +126,7 @@ void CCreatureTreePanel::Draw()
         ImGui::TreePop();
     }
 
-    if (ImGui::TreeNode("Parts"))
+    /*if (ImGui::TreeNode("Parts"))
     {
         const auto& skeleton = creature.GetSkeleton();
 
@@ -135,7 +136,7 @@ void CCreatureTreePanel::Draw()
         }
 
         ImGui::TreePop();
-    }
+    }*/
     ImGui::TreePop();
     ImGui::PopID();
 }

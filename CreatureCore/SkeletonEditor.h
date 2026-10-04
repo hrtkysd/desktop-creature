@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ICreatureEditContext.h"
+#include "IMotionEditContext.h"
 #include "PartId.h"
 
 #include <string_view>
@@ -23,12 +23,12 @@ namespace Creature
 
         class CSkeletonEditor
         {
-            friend class CCreatureEditor;
+            friend class CMotionEditor;
         public:
             CSkeletonEditor() = delete;
             explicit CSkeletonEditor(
                 CSkeleton& skeleton,
-                ICreatureEditContext& context);
+                IMotionEditContext& context);
 
         public:
             bool SetPartTransform(
@@ -65,7 +65,7 @@ namespace Creature
 
         private:
             CSkeleton& m_skeleton;
-            ICreatureEditContext& m_context;
+            IMotionEditContext& m_context;
         };
     }
 }
