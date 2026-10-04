@@ -246,10 +246,7 @@ bool CCreatureIO::SaveAsFile(
 
     std::ofstream ofs(path);
 
-    if (!ofs)
-    {
-        return false;
-    }
+    if (!ofs) return false;
 
     ofs << root.dump(4);
 
@@ -262,10 +259,7 @@ bool CCreatureIO::LoadFromFile(
 {
     std::ifstream ifs(path);
 
-    if (!ifs)
-    {
-        return false;
-    }
+    if (!ifs) return false;
 
     json root;
 
@@ -273,7 +267,7 @@ bool CCreatureIO::LoadFromFile(
     {
         ifs >> root;
 
-        if (!root.contains("version") || root.at("version").get<int>() != 2) return false;
+        if (!root.contains("version") || root.at("version").get<int>() != 1) return false;
         if (!root.contains("motions") || !root.at("motions").is_array()) return false;
 
         CCreature loadedCreature;

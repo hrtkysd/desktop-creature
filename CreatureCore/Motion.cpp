@@ -17,8 +17,6 @@ struct CMotion::MotionImpl
     std::string strName;
 };
 
-CMotion::CMotion() = default;
-
 CMotion::CMotion(CMotion&&) noexcept = default;
 CMotion& CMotion::operator=(CMotion&&) noexcept = default;
 
@@ -58,7 +56,7 @@ MotionId CMotion::GetMotionId() const
 
 CMotion CMotion::Clone() const
 {
-    CMotion motion;
+    CMotion motion(m_impl->motionId, m_impl->strName);
     *motion.m_impl = *m_impl;
     return motion;
 }

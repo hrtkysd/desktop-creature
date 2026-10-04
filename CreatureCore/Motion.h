@@ -26,8 +26,6 @@ namespace Creature
     {
         friend class CCreature;
         friend class Editor::CMotionEditor;
-    private:
-        CMotion();
     public:
         ~CMotion();
 

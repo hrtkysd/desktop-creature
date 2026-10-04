@@ -33,13 +33,19 @@ CCreature& CCreature::operator=(CCreature&& rhs) noexcept
 CCreature CCreature::Clone() const
 {
     CCreature creature;
+
+    creature.m_impl->genome = m_impl->genome;
     creature.m_impl->strName = m_impl->strName;
+    creature.m_impl->nextMotionId = m_impl->nextMotionId;
+
     creature.m_impl->vecMotion.reserve(m_impl->vecMotion.size());
+
     for (const auto& motion : m_impl->vecMotion)
     {
         creature.m_impl->vecMotion.push_back(motion.Clone());
     }
     return creature;
+
 }
 
 const Genome& CCreature::GetGenome() const
