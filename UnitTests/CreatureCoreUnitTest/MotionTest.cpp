@@ -23,7 +23,8 @@ using namespace Creature::Editor;
 
 namespace Creature
 {
-    class AnimationEditorTests : public ::testing::Test
+    // NOLINTBEGIN(bugprone-unchecked-optional-access)
+    class MotionEditorTests : public ::testing::Test
     {
     protected:
         void SetUp() override
@@ -56,7 +57,7 @@ namespace Creature
         PartId m_partId = INVALID_PART_ID;
     };
 
-    TEST_F(AnimationEditorTests, EmptyTrackCanBeAdded)
+    TEST_F(MotionEditorTests, EmptyTrackCanBeAdded)
     {
         auto motionEditor = GetMotionEditor();
         ASSERT_TRUE(motionEditor.has_value());
@@ -71,7 +72,7 @@ namespace Creature
         EXPECT_TRUE(editor.AddTrack(CAnimationTrack{ key }));
     }
 
-    TEST_F(AnimationEditorTests, SetDurationAcceptsPositiveDuration)
+    TEST_F(MotionEditorTests, SetDurationAcceptsPositiveDuration)
     {
         auto motionEditor = GetMotionEditor();
         ASSERT_TRUE(motionEditor.has_value());
@@ -85,7 +86,7 @@ namespace Creature
         EXPECT_FLOAT_EQ(motion->GetAnimation().GetDuration(), 1.0f);
     }
 
-    TEST_F(AnimationEditorTests, SetDurationRejectsNegativeDuration)
+    TEST_F(MotionEditorTests, SetDurationRejectsNegativeDuration)
     {
         auto motionEditor = GetMotionEditor();
         ASSERT_TRUE(motionEditor.has_value());
@@ -95,7 +96,7 @@ namespace Creature
         EXPECT_FALSE(editor.SetDuration(-1.0f));
     }
 
-    TEST_F(AnimationEditorTests, SetDurationRejectsDurationShorterThanExistingKeyFrame)
+    TEST_F(MotionEditorTests, SetDurationRejectsDurationShorterThanExistingKeyFrame)
     {
         auto motionEditor = GetMotionEditor();
         ASSERT_TRUE(motionEditor.has_value());
@@ -119,7 +120,7 @@ namespace Creature
         EXPECT_FLOAT_EQ(motion->GetAnimation().GetDuration(), 2.0f);
     }
 
-    TEST_F(AnimationEditorTests, DuplicateTrackIsRejected)
+    TEST_F(MotionEditorTests, DuplicateTrackIsRejected)
     {
         auto motionEditor = GetMotionEditor();
         ASSERT_TRUE(motionEditor.has_value());
@@ -140,7 +141,7 @@ namespace Creature
         EXPECT_EQ(motion->GetAnimation().GetAnimationTracks().size(), 1u);
     }
 
-    TEST_F(AnimationEditorTests, KeyFramePastDurationIsRejected)
+    TEST_F(MotionEditorTests, KeyFramePastDurationIsRejected)
     {
         auto motionEditor = GetMotionEditor();
         ASSERT_TRUE(motionEditor.has_value());
@@ -158,7 +159,7 @@ namespace Creature
         EXPECT_FALSE(editor.AddOrUpdateKeyFrame(trackKey, { 1.1f, 10.0f }));
     }
 
-    TEST_F(AnimationEditorTests, NegativeKeyFrameTimeIsRejected)
+    TEST_F(MotionEditorTests, NegativeKeyFrameTimeIsRejected)
     {
         auto motionEditor = GetMotionEditor();
         ASSERT_TRUE(motionEditor.has_value());
@@ -432,4 +433,5 @@ namespace Creature
         EXPECT_NE(creature.FindMotionById(secondId), nullptr);
         EXPECT_EQ(creature.GetMotions().size(), 1u);
     }
+    // NOLINTEND(bugprone-unchecked-optional-access)
 }

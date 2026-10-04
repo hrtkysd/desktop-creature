@@ -20,6 +20,7 @@ using namespace Creature::Editor;
 
 namespace AnimationPlayer
 {
+    // NOLINTBEGIN(bugprone-unchecked-optional-access)
     class AnimationPlayerTests : public ::testing::Test
     {
     protected:
@@ -158,4 +159,5 @@ namespace AnimationPlayer
         m_player.SamplePose(Animation(), Skeleton());
         EXPECT_NEAR(m_player.GetCurrentAnimationTime(), 0.25f, 0.0001f);
     }
+    // NOLINTEND(bugprone-unchecked-optional-access)
 }
