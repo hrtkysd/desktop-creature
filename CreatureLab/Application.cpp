@@ -229,7 +229,7 @@ void CApp::Render()
     if (!motion) return;
 
     const auto& skeleton = motion->GetSkeleton();
-    const auto& animation = motion->GetAnimation();;
+    const auto& animation = motion->GetAnimation();
     m_animationPlayer.Update(ImGui::GetIO().DeltaTime);
     m_animationPlayer.SamplePose(animation, skeleton);
     m_animationPanel.Draw(animation, skeleton);

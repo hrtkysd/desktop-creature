@@ -35,14 +35,13 @@ bool CEditorController::Execute(EditorCommand command)
         break;
     case EditorCommand::DeletePart:
     {
-        if (auto motionEditor = m_editor.MotionEditor(m_context.GetMotionId()))
+        auto motionEditor = m_editor.MotionEditor(m_context.GetMotionId());
+        if (!motionEditor) return false;
+        auto scope = m_context.CreateUndoScope();
+        if (!motionEditor->SkeletonEditor().RemovePart(m_context.GetPartId()))
         {
-            auto scope = m_context.CreateUndoScope();
-            if (!motionEditor->SkeletonEditor().RemovePart(m_context.GetPartId()))
-            {
-                scope.Cancel();
-                return false;
-            }
+            scope.Cancel();
+            return false;
         }
     }
     break;

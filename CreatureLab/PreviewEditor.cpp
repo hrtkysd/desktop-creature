@@ -3,6 +3,7 @@
 #include "CreatureEditor.h"
 #include "CreaturePose.h"
 #include "EditorContext.h"
+#include "Motion.h"
 #include "MotionEditor.h"
 #include "Part.h"
 #include "PartTransformBuilder.h"
@@ -272,10 +273,10 @@ bool CPreviewEditor::BeginScale(
         Select(HitTestPart(vecPartView, mousePosition));
         return false;
     }
-    auto motionEditor = m_editor.MotionEditor(m_editorContext.GetMotionId());
-    if (!motionEditor) return false;
+    const auto motion = m_editor.FindMotionById(m_editorContext.GetMotionId());
+    if (!motion) return false;
 
-    const auto& skeleton = motionEditor->SkeletonEditor().GetSkeleton();
+    const auto& skeleton = motion->GetSkeleton();
     auto part = skeleton.FindPartById(selectedView->GetPartId());
     if (!part) return false;
 
@@ -324,12 +325,12 @@ bool CPreviewEditor::BeginRotate(
         return false;
     }
 
-    auto motionEditor = m_editor.MotionEditor(m_editorContext.GetMotionId());
-    if (!motionEditor) return false;
+    auto motion = m_editor.FindMotionById(m_editorContext.GetMotionId());
+    if (!motion) return false;
 
     m_editorContext.SelectPart(hitView->GetPartId());
 
-    const auto& skeleton = motionEditor->SkeletonEditor().GetSkeleton();
+    const auto& skeleton = motion->GetSkeleton();
     const auto part = skeleton.FindPartById(hitView->GetPartId());
     if (!part) return false;
 
@@ -393,10 +394,10 @@ bool CPreviewEditor::BeginPivot(
         return false;
     }
 
-    auto motionEditor = m_editor.MotionEditor(m_editorContext.GetMotionId());
-    if (!motionEditor) return false;
+    auto motion = m_editor.FindMotionById(m_editorContext.GetMotionId());
+    if (!motion) return false;
 
-    const auto& skeleton = motionEditor->SkeletonEditor().GetSkeleton();
+    const auto& skeleton = motion->GetSkeleton();
     const auto part = skeleton.FindPartById(selectedView->GetPartId());
     if (!part) return false;
 
@@ -591,8 +592,8 @@ void CPreviewEditor::MovePivot(
 {
     auto motionEditor = m_editor.MotionEditor(m_editorContext.GetMotionId());
     if (!motionEditor) return;
-    auto skeletonEditor = motionEditor->SkeletonEditor();
 
+    auto skeletonEditor = motionEditor->SkeletonEditor();
     const auto& skeleton = skeletonEditor.GetSkeleton();
     const auto part = skeleton.FindPartById(m_operation.partId);
     if (!part) return;
