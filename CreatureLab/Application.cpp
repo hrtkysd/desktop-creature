@@ -59,9 +59,6 @@ bool CApp::Initialize(
 
     if (!CreateMainWindow(hInstance, nCmdShow)) return false;
     if (!CreateGraphics()) return false;
-
-    InitializeCreature();
-
     if (!InitializeImGui()) return false;
 
     return true;
@@ -135,34 +132,6 @@ bool CApp::InitializeImGui()
     m_bImGuiInitialized = true;
 
     return true;
-}
-
-void CApp::InitializeCreature()
-{
-    //m_creatureEditor.SetName("Hamster");
-
-    //auto skeletonEditor = m_creatureEditor.GetSkeletonEditor();
-    //const auto bodyId = skeletonEditor.AddPart("Body");
-    //const auto headId = skeletonEditor.AddPart("Head", bodyId);
-    //const auto eyesId = skeletonEditor.AddPart("Eyes", headId);
-    //const auto leftEarId = skeletonEditor.AddPart("LeftEar", headId);
-    //const auto rightEarId = skeletonEditor.AddPart("RightEar", headId);
-
-    //auto appearanceEditor = m_creatureEditor.GetAppearanceEditor();
-    //appearanceEditor.SetTexture(bodyId, L"assets/body.png");
-    //appearanceEditor.SetTexture(headId, L"assets/head.png");
-    //appearanceEditor.SetTexture(eyesId, L"assets/eyes.png");
-    //appearanceEditor.SetTexture(leftEarId, L"assets/left_ear.png");
-    //appearanceEditor.SetTexture(rightEarId, L"assets/right_ear.png");
-
-    //CAnimationTrack headRotation(CAnimationTrackKey{ headId, AnimationProperty::Rotation });
-    //headRotation.AddOrUpdateKeyFrame({ 0.0f,  0.0f });
-    //headRotation.AddOrUpdateKeyFrame({ 0.5f,  0.1f });
-    //headRotation.AddOrUpdateKeyFrame({ 1.0f,  0.0f });
-    //const auto newId = m_creatureEditor.AddNewAnimation("idle");
-
-    //auto animationsEditor = m_creatureEditor.GetAnimationEditor();
-    //animationsEditor.AddTrack(newId, std::move(headRotation));
 }
 
 int CApp::Run()

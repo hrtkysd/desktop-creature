@@ -40,7 +40,6 @@ private:
     bool CreateGraphics();
 
     bool InitializeImGui();
-    void InitializeCreature();
 
     void Shutdown();
 
