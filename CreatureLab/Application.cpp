@@ -250,7 +250,6 @@ void CApp::Render()
     }
 
     const auto pose = &m_animationPlayer.GetPose();
-
     m_previewPanel.DrawUi(
         skeleton,
         motion->GetAppearance(),

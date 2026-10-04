@@ -1,5 +1,4 @@
 #include "pch.h"
-#include "Animation.h"
 #include "Creature.h"
 #include "CreatureEditor.h"
 #include "CreatureTreePanel.h"
@@ -12,7 +11,6 @@
 #include "imgui_stdlib.h"
 
 using namespace Creature;
-using namespace Creature::Animation;
 using namespace Creature::Editor;
 
 CCreatureTreePanel::CCreatureTreePanel(
@@ -35,6 +33,7 @@ void CCreatureTreePanel::Draw()
     const auto isOpen = ImGui::TreeNodeEx("##CreatureTree", treeFlags);
 
     ImGui::SameLine();
+
     if (m_nodeEdit.IsEditing(NodeEditType::RenameCreature))
     {
         ImGui::SetNextItemWidth(150.0f);
@@ -51,7 +50,6 @@ void CCreatureTreePanel::Draw()
     else
     {
         const auto isSelected = m_editorContext.GetSelectionType() == SelectionType::Creature;
-
         if (ImGui::Selectable(creature.GetName().c_str(), isSelected))
         {
             m_editorContext.SelectCreature();
@@ -103,21 +101,39 @@ void CCreatureTreePanel::Draw()
         {
             ImGui::PushID(static_cast<int>(motion.GetMotionId()));
 
-            ImGuiTreeNodeFlags flags =
-                ImGuiTreeNodeFlags_Leaf |
-                ImGuiTreeNodeFlags_NoTreePushOnOpen |
-                ImGuiTreeNodeFlags_SpanAvailWidth;
-
-            if (m_editorContext.GetMotionId() == motion.GetMotionId())
+            auto imGuiFlags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth;
+            if (m_editorContext.GetMotionId() == motion.GetMotionId() &&
+                m_editorContext.GetSelectionType() == SelectionType::Motion)
             {
-                flags |= ImGuiTreeNodeFlags_Selected;
+                imGuiFlags |= ImGuiTreeNodeFlags_Selected;
             }
 
-            ImGui::TreeNodeEx(motion.GetName().c_str(), flags);
-
+            const auto isMotionOpen = ImGui::TreeNodeEx("##Motion", imGuiFlags);
             if (ImGui::IsItemClicked(ImGuiMouseButton_Left))
             {
                 m_editorContext.SelectMotion(motion.GetMotionId());
+            }
+
+            ImGui::SameLine();
+            ImGui::TextUnformatted(motion.GetName().c_str());
+
+            if (isMotionOpen)
+            {
+                const auto& skeleton = motion.GetSkeleton();
+                if (ImGui::TreeNode("Parts"))
+                {
+                    for (const auto partId : skeleton.GetRootPartIds())
+                    {
+                        DrawPart(
+                            motion.GetMotionId(),
+                            skeleton,
+                            partId);
+                    }
+
+                    ImGui::TreePop();
+                }
+
+                ImGui::TreePop();
             }
 
             ImGui::PopID();
@@ -126,63 +142,50 @@ void CCreatureTreePanel::Draw()
         ImGui::TreePop();
     }
 
-    /*if (ImGui::TreeNode("Parts"))
-    {
-        const auto& skeleton = creature.GetSkeleton();
-
-        for (const auto& id : skeleton.GetRootPartIds())
-        {
-            DrawPart(skeleton, id);
-        }
-
-        ImGui::TreePop();
-    }*/
     ImGui::TreePop();
     ImGui::PopID();
 }
 
 void CCreatureTreePanel::DrawPart(
-    const Creature::CSkeleton& skeleton,
-    Creature::PartId partId)
+    MotionId motionId,
+    const CSkeleton& skeleton,
+    PartId partId)
 {
     const auto part = skeleton.FindPartById(partId);
     if (!part) return;
 
-    const bool isSelected =
+    const auto isSelected =
         m_editorContext.GetSelectionType() == SelectionType::Part &&
+        m_editorContext.GetMotionId() == motionId &&
         m_editorContext.GetPartId() == partId;
 
-    auto imguiFlags =
+    auto imGuiFlags =
         ImGuiTreeNodeFlags_OpenOnArrow |
         ImGuiTreeNodeFlags_SpanAvailWidth;
 
     if (!skeleton.HasChildren(partId))
     {
-        imguiFlags |=
-            ImGuiTreeNodeFlags_Leaf |
-            ImGuiTreeNodeFlags_NoTreePushOnOpen;
+        imGuiFlags |= ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen;
     }
 
-    if (isSelected) imguiFlags |= ImGuiTreeNodeFlags_Selected;
+    if (isSelected) imGuiFlags |= ImGuiTreeNodeFlags_Selected;
 
-    const auto isOpen =
-        ImGui::TreeNodeEx(
-            reinterpret_cast<void*>(
-                static_cast<uintptr_t>(partId)),
-            imguiFlags,
-            "%s",
-            part->strName.c_str());
+    const auto isOpen = ImGui::TreeNodeEx(
+        reinterpret_cast<void*>(static_cast<uintptr_t>(partId)),
+        imGuiFlags,
+        "%s",
+        part->strName.c_str());
 
     if (ImGui::IsItemClicked())
     {
         m_editorContext.SelectPart(partId);
     }
 
-    if (isOpen && !(imguiFlags & ImGuiTreeNodeFlags_NoTreePushOnOpen))
+    if (isOpen && !(imGuiFlags & ImGuiTreeNodeFlags_NoTreePushOnOpen))
     {
         for (const auto childId : skeleton.GetChildPartIds(partId))
         {
-            DrawPart(skeleton, childId);
+            DrawPart(motionId, skeleton, childId);
         }
 
         ImGui::TreePop();
