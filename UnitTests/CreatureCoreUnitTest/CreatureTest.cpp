@@ -242,8 +242,7 @@ namespace Creature
         ASSERT_NE(motionBefore->GetAnimation().FindAnimationTrack(bodyTrackKey), nullptr);
         ASSERT_NE(motionBefore->GetAnimation().FindAnimationTrack(headTrackKey), nullptr);
 
-        ASSERT_TRUE(
-            skeletonEditor.RemovePart(headId));
+        ASSERT_TRUE(skeletonEditor.RemovePart(headId));
 
         const auto motionAfter = creature.FindMotionById(motionId);
         ASSERT_NE(motionAfter, nullptr);
