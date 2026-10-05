@@ -113,7 +113,7 @@ namespace
     bool DeserializePart(
         const json& partJson,
         CSkeletonEditor& skeletonEditor,
-        CAppearanceEditor& appearanceEditor)
+        std::vector<PartAppearance>& vecPartApperance)
     {
         Part part;
         part.id = partJson.at("id").get<PartId>();
@@ -146,11 +146,19 @@ namespace
 
         const auto partId = part.id;
 
-        if (!skeletonEditor.AddPartWithId(std::move(part))) return false;
+        if (!skeletonEditor.AddPartWithId(std::move(part)))
+        {
+            return false;
+        }
 
         if (partJson.contains("texture"))
         {
-            appearanceEditor.SetTexture(partId, partJson.at("texture").get<std::string>());
+            vecPartApperance.emplace_back(
+                PartAppearance{
+                    partId,
+                    partJson.at("texture").get<std::string>(),
+                    partJson.at("zOrder").get<ZOrder>()
+                });
         }
 
         return true;
@@ -282,15 +290,19 @@ bool CCreatureIO::LoadFromFile(
             if (!motionEditor) return false;
 
             auto skeletonEditor = motionEditor->SkeletonEditor();
-            auto appearanceEditor = motionEditor->AppearanceEditor();
             auto animationEditor = motionEditor->AnimationEditor();
+
+            std::vector<PartAppearance> vecPartAppearance;
 
             for (const auto& partJson : motionJson.at("parts"))
             {
-                if (!DeserializePart(partJson, skeletonEditor, appearanceEditor)) return false;
+                if (!DeserializePart(partJson, skeletonEditor, vecPartAppearance)) return false;
             }
 
             if (!DeserializeAnimation(motionJson.at("animation"), animationEditor)) return false;
+
+            auto appearanceEditor = motionEditor->AppearanceEditor();
+            appearanceEditor.SwapAppearance(std::move(vecPartAppearance));
         }
 
         creature = std::move(loadedCreature);

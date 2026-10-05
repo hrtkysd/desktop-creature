@@ -1,12 +1,31 @@
 #include "pch.h"
+#include "ApplicationInformation.h"
 #include "CreatureIO.h"
 #include "DocumentContext.h"
 #include "DocumentController.h"
+#include "FileDialogFilter.h"
 #include "FileOperation.h"
 #include "Window.h"
 
 using namespace Creature;
 using namespace Creature::IO;
+
+namespace
+{
+    const std::vector<CFileDialogFilter> kCreatureFilters =
+    {
+         CFileDialogFilter{ "Creature File", "*.creature" },
+         CFileDialogFilter{ "All Files", "*.*" }
+    };
+
+    const std::vector<CFileDialogFilter> kAppearanceFilters
+    {
+        CFileDialogFilter{ "Image Files", "*.png;*.jpg;*.jpeg;*.bmp" },
+        CFileDialogFilter{ "PNG Image", "*.png" },
+        CFileDialogFilter{ "JPEG Image", "*.jpg;*.jpeg" },
+        CFileDialogFilter{ "Bitmap Image", "*.bmp" }
+    };
+}
 
 CDocumentController::CDocumentController(
     CWindow& appWindow,
@@ -27,9 +46,9 @@ void CDocumentController::CreateNewDocument()
     m_context.SetDocumentStatus(DocumentStatus::New);
 }
 
-std::optional<Creature::CCreature> CDocumentController::Load() const
+std::optional<Creature::CCreature> CDocumentController::LoadCreature() const
 {
-    const auto path = CFileOperation::ShowOpenCreatureDialog(m_appWindow.Handle());
+    const auto path = CFileOperation::ShowOpenDialog(m_appWindow.Handle(), kCreatureFilters);
     if (path.empty()) return {};
 
     CCreature creature;
@@ -38,11 +57,20 @@ std::optional<Creature::CCreature> CDocumentController::Load() const
     return creature;
 }
 
-bool CDocumentController::Save(const Creature::CCreature& creature)
+bool CDocumentController::SaveCreature(const Creature::CCreature& creature)
 {
-    auto path = CFileOperation::ShowSaveCreatureDialog(m_appWindow.Handle());
+    auto path = CFileOperation::ShowSaveDialog(
+        m_appWindow.Handle(),
+        std::string{ Information::File::DefaultCreatureFileExtension },
+        std::string{ Information::File::DefaultCreatureFileName },
+        kCreatureFilters);
     if (path.empty() || !CCreatureIO::SaveAsFile(creature, path)) return false;
     m_context.SetPath(std::move(path));
     m_context.SetDocumentStatus(DocumentStatus::File);
     return true;
+}
+
+std::optional<std::filesystem::path> CDocumentController::LoadApperance() const
+{
+    return CFileOperation::ShowOpenDialog(m_appWindow.Handle(), kAppearanceFilters);
 }

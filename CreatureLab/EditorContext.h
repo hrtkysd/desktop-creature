@@ -49,6 +49,7 @@ public:
 
     Creature::PartId GetPartId() const noexcept;
     Creature::MotionId GetMotionId() const noexcept;
+
 private:
     void Undo();
     void Redo();

@@ -24,6 +24,28 @@ void CCreatureTreeNodeEdit::BeginRenameMotion(MotionId motionId, const std::stri
     m_strText = strText;
 }
 
+void CCreatureTreeNodeEdit::BeginCreatePart(
+    MotionId motionId,
+    PartId parentId,
+    const std::string& strText)
+{
+    m_eEditType = NodeEditType::CreatePart;
+    m_motionId = motionId;
+    m_parentId = parentId;
+    m_strText = strText;
+}
+
+void CCreatureTreeNodeEdit::BeginRenamePart(
+    MotionId motionId,
+    PartId parentId,
+    const std::string& strText)
+{
+    m_eEditType = NodeEditType::RenamePart;
+    m_motionId = motionId;
+    m_parentId = parentId;
+    m_strText = strText;
+}
+
 void CCreatureTreeNodeEdit::EndEdit()
 {
     m_eEditType = NodeEditType::None;
@@ -55,4 +77,9 @@ const std::string& CCreatureTreeNodeEdit::GetText() const
 MotionId CCreatureTreeNodeEdit::GetMotionId() const
 {
     return m_motionId;
+}
+
+PartId CCreatureTreeNodeEdit::GetParentPartId() const
+{
+    return m_parentId;
 }

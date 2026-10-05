@@ -5,7 +5,7 @@ using namespace Creature;
 using namespace Creature::Math;
 
 CRenderPartItem::CRenderPartItem(
-    const PartId partId,
+    PartId partId,
     const CTransformRect& rcPart,
     const std::shared_ptr<CTexture>& texture)
     : m_partId(partId)

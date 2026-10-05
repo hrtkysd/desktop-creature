@@ -47,7 +47,7 @@ namespace Creature
         const auto partId = skeletonEditor.AddPart("Body");
         ASSERT_NE(partId, INVALID_PART_ID);
 
-        motionEditor->AppearanceEditor().SetTexture(partId, L"body.png");
+        motionEditor->AppearanceEditor().AddPart(partId, L"body.png");
 
         const CAnimationTrackKey trackKey
         {
@@ -127,8 +127,8 @@ namespace Creature
         ASSERT_NE(headId, INVALID_PART_ID);
 
         auto appearanceEditor = motionEditor->AppearanceEditor();
-        appearanceEditor.SetTexture(bodyId, L"assets/body.png");
-        appearanceEditor.SetTexture(headId, L"assets/head.png");
+        appearanceEditor.AddPart(bodyId, L"assets/body.png");
+        appearanceEditor.AddPart(headId, L"assets/head.png");
 
         const CAnimationTrackKey bodyTrackKey
         {
@@ -185,9 +185,9 @@ namespace Creature
         ASSERT_NE(earId, INVALID_PART_ID);
 
         auto appearanceEditor = motionEditor->AppearanceEditor();
-        appearanceEditor.SetTexture(headId, L"head.png");
-        appearanceEditor.SetTexture(eyesId, L"eyes.png");
-        appearanceEditor.SetTexture(earId, L"ear.png");
+        appearanceEditor.AddPart(headId, L"head.png");
+        appearanceEditor.AddPart(eyesId, L"eyes.png");
+        appearanceEditor.AddPart(earId, L"ear.png");
 
         const CAnimationTrackKey headTrack
         {
@@ -276,11 +276,11 @@ namespace Creature
             AnimationProperty::PositionX
         };
 
-        firstMotionEditor->AppearanceEditor().SetTexture(firstParentId, L"first-body.png");
-        firstMotionEditor->AppearanceEditor().SetTexture(firstChildId, L"first-head.png");
+        firstMotionEditor->AppearanceEditor().AddPart(firstParentId, L"first-body.png");
+        firstMotionEditor->AppearanceEditor().AddPart(firstChildId, L"first-head.png");
 
-        secondMotionEditor->AppearanceEditor().SetTexture(secondParentId, L"second-body.png");
-        secondMotionEditor->AppearanceEditor().SetTexture(secondChildId, L"second-head.png");
+        secondMotionEditor->AppearanceEditor().AddPart(secondParentId, L"second-body.png");
+        secondMotionEditor->AppearanceEditor().AddPart(secondChildId, L"second-head.png");
 
         ASSERT_TRUE(firstMotionEditor->AnimationEditor().AddTrack(CAnimationTrack{ firstTrack }));
         ASSERT_TRUE(secondMotionEditor->AnimationEditor().AddTrack(CAnimationTrack{ secondTrack }));

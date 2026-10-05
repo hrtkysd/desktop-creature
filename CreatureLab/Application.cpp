@@ -36,7 +36,7 @@ CApp::CApp()
     , m_labController(m_window, m_editorContext, m_documentController, m_editorController, m_creatureEditor)
     , m_menuBar(m_labController)
     , m_previewPanel(m_creatureEditor, m_editorContext)
-    , m_creatureTreePanel(m_creatureEditor, m_editorContext)
+    , m_creatureTreePanel(m_creatureEditor, m_labController, m_editorContext)
     , m_animationPanel(m_creatureEditor, m_animationPlayer, m_editorContext)
 {
 }

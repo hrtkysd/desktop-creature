@@ -15,12 +15,14 @@ namespace Creature
 }
 
 class CEditorContext;
+class CLabController;
 
 class CCreatureTreePanel
 {
 public:
     explicit CCreatureTreePanel(
         Creature::Editor::CCreatureEditor& editor,
+        CLabController& labController,
         CEditorContext& context);
 public:
     void Draw();
@@ -30,6 +32,7 @@ public:
         Creature::PartId partId);
 private:
     Creature::Editor::CCreatureEditor& m_editor;
+    CLabController& m_labController;
     CEditorContext& m_editorContext;
     CCreatureTreeNodeEdit m_nodeEdit;
 };

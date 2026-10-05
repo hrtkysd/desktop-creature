@@ -93,6 +93,7 @@
     <ClInclude Include="AppearanceEditor.h" />
     <ClInclude Include="CreatureEditor.h" />
     <ClInclude Include="CreatureIO.h" />
+    <ClInclude Include="ZOrder.h" />
     <ClInclude Include="IMotionEditContext.h" />
     <ClInclude Include="Interpolation.h" />
     <ClInclude Include="MathUtils.h" />

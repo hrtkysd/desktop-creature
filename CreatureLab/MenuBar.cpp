@@ -31,11 +31,11 @@ void CMenuBar::Draw(
             }
             else if (ImGui::MenuItem("Save As..."))
             {
-                m_labController.SaveAs();
+                m_labController.SaveCreatureAs();
             }
             else if (ImGui::MenuItem("Load From..."))
             {
-                m_labController.LoadFrom();
+                m_labController.LoadCreatureFrom();
             }
         }
         const bool hasDocument = documentContext.HasDocument();
@@ -100,6 +100,7 @@ void CMenuBar::Draw(
             {
                 m_labController.SetEditMode(EditMode::Pivot);
             }
+
             if (ImGui::MenuItem(
                 "Delete Part",
                 nullptr,
@@ -107,6 +108,25 @@ void CMenuBar::Draw(
                 editorContext.GetPartId() != INVALID_PART_ID))
             {
                 m_labController.DeletePart();
+            }
+
+            ImGui::Separator();
+
+            if (ImGui::MenuItem(
+                "Move Foward",
+                nullptr,
+                false,
+                m_labController.CanMoveForward()))
+            {
+                m_labController.MoveForward();
+            }
+            if (ImGui::MenuItem(
+                "Move Backward",
+                nullptr,
+                false,
+                m_labController.CanMoveBackward()))
+            {
+                m_labController.MoveBackward();
             }
 
             ImGui::Separator();

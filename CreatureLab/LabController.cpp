@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "Appearance.h"
 #include "ApplicationInformation.h"
 #include "Creature.h"
 #include "CreatureEditor.h"
@@ -7,8 +8,11 @@
 #include "EditorContext.h"
 #include "EditorController.h"
 #include "LabController.h"
+#include "Motion.h"
+#include "PartId.h"
 #include "Window.h"
 
+using namespace Creature;
 using namespace Creature::Editor;
 
 CLabController::CLabController(
@@ -48,10 +52,10 @@ void CLabController::CreateNew()
     UpdateWindowTitle();
 }
 
-bool CLabController::SaveAs()
+bool CLabController::SaveCreatureAs()
 {
     const auto& creature = m_creatureEditor.GetCreature();
-    if (!m_documentController.Save(creature)) return false;
+    if (!m_documentController.SaveCreature(creature)) return false;
 
     m_revision = m_editorContext.GetRevision();
 
@@ -60,9 +64,9 @@ bool CLabController::SaveAs()
     return true;
 }
 
-bool CLabController::LoadFrom()
+bool CLabController::LoadCreatureFrom()
 {
-    auto loadCreature = m_documentController.Load();
+    auto loadCreature = m_documentController.LoadCreature();
     if (!loadCreature) return false;
 
     m_creatureEditor.SwapCreature(std::move(*loadCreature));
@@ -73,6 +77,11 @@ bool CLabController::LoadFrom()
     UpdateWindowTitle();
 
     return true;
+}
+
+std::optional<std::filesystem::path> CLabController::LoadAppearance()
+{
+    return m_documentController.LoadApperance();
 }
 
 void CLabController::PlayAnimation()
@@ -103,6 +112,42 @@ EditMode CLabController::GetEditMode() const noexcept
 bool CLabController::DeletePart()
 {
     return m_editorController.Execute(EditorCommand::DeletePart);
+}
+
+bool CLabController::CanMoveForward() const
+{
+    const auto& creature = m_creatureEditor.GetCreature();
+    const auto motion = creature.FindMotionById(m_editorContext.GetMotionId());
+    if (!motion) return false;
+
+    const auto partId = m_editorContext.GetPartId();
+    if (partId == INVALID_PART_ID) return false;
+
+    const auto& appearance = motion->GetAppearance();
+    return appearance.CanMoveForward(partId);
+}
+
+bool CLabController::CanMoveBackward() const
+{
+    const auto& creature = m_creatureEditor.GetCreature();
+    const auto motion = creature.FindMotionById(m_editorContext.GetMotionId());
+    if (!motion) return false;
+
+    const auto partId = m_editorContext.GetPartId();
+    if (partId == INVALID_PART_ID) return false;
+
+    const auto& appearance = motion->GetAppearance();
+    return appearance.CanMoveBackward(partId);
+}
+
+bool CLabController::MoveForward()
+{
+    return m_editorController.Execute(EditorCommand::ToForward);
+}
+
+bool CLabController::MoveBackward()
+{
+    return m_editorController.Execute(EditorCommand::ToBackward);
 }
 
 void CLabController::Undo()

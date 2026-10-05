@@ -299,15 +299,15 @@ std::vector<CRenderPartItem> CPreviewPanel::BuildPartViews(
     std::vector<CRenderPartItem> result;
     result.reserve(skeleton.Parts().size());
 
-    for (const auto& part : skeleton.Parts())
+    for (const auto& part : appearance.Parts())
     {
-        const auto partAppearance = appearance.FindByPartId(part.id);
-        if (!partAppearance) continue;
+        const auto skeletonPart = skeleton.FindPartById(part.partId);
+        if (!skeletonPart) continue;
 
-        auto texture = textureCache.Load(partAppearance->texturePath);
+        auto texture = textureCache.Load(part.texturePath);
         if (!texture) continue;
 
-        const auto worldTransform = CPartTransformBuilder::BuildWorld(part, skeleton, pose);
+        const auto worldTransform = CPartTransformBuilder::BuildWorld(*skeletonPart, skeleton, pose);
         const auto screenTransform = worldTransform * previewTransform;
 
         const Vec2 size
@@ -319,7 +319,7 @@ std::vector<CRenderPartItem> CPreviewPanel::BuildPartViews(
         CTransformRect rect(size, screenTransform);
 
         result.emplace_back(
-            part.id,
+            part.partId,
             rect,
             std::move(texture));
     }

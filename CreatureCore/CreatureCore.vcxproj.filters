@@ -128,6 +128,9 @@
     <ClInclude Include="MotionEditor.h">
       <Filter>Editor</Filter>
     </ClInclude>
+    <ClInclude Include="ZOrder.h">
+      <Filter>Animation</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AnimationPlayer.cpp">
