@@ -70,7 +70,7 @@ bool CDocumentController::SaveCreature(const Creature::CCreature& creature)
     return true;
 }
 
-std::optional<std::filesystem::path> CDocumentController::LoadApperance() const
+std::optional<std::filesystem::path> CDocumentController::LoadAppearance() const
 {
     return CFileOperation::ShowOpenDialog(m_appWindow.Handle(), kAppearanceFilters);
 }

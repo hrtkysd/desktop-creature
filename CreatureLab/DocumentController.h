@@ -21,7 +21,7 @@ public:
     std::optional<Creature::CCreature> LoadCreature() const;
     bool SaveCreature(const Creature::CCreature& creature);
 
-    std::optional<std::filesystem::path> LoadApperance() const;
+    std::optional<std::filesystem::path> LoadAppearance() const;
 private:
     CWindow& m_appWindow;
     CDocumentContext& m_context;

@@ -69,6 +69,7 @@ namespace
         if (const auto partAppearance = appearance.FindByPartId(part.id))
         {
             partJson["texture"] = partAppearance->texturePath.generic_string();
+            partJson["zOrder"] = partAppearance->zOrder;
         }
 
         return partJson;
@@ -113,7 +114,7 @@ namespace
     bool DeserializePart(
         const json& partJson,
         CSkeletonEditor& skeletonEditor,
-        std::vector<PartAppearance>& vecPartApperance)
+        std::vector<PartAppearance>& vecPartAppearance)
     {
         Part part;
         part.id = partJson.at("id").get<PartId>();
@@ -153,7 +154,7 @@ namespace
 
         if (partJson.contains("texture"))
         {
-            vecPartApperance.emplace_back(
+            vecPartAppearance.emplace_back(
                 PartAppearance{
                     partId,
                     partJson.at("texture").get<std::string>(),

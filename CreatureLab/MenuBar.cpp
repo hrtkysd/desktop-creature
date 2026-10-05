@@ -113,7 +113,7 @@ void CMenuBar::Draw(
             ImGui::Separator();
 
             if (ImGui::MenuItem(
-                "Move Foward",
+                "Move Forward",
                 nullptr,
                 false,
                 m_labController.CanMoveForward()))

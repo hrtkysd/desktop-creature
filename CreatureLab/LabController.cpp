@@ -37,6 +37,7 @@ void CLabController::OnRevisionChanged(Revision)
 
 void CLabController::CreateNew()
 {
+    //TODO: check dirty status, display confirm message.
     m_creatureEditor.SwapCreature({});
     m_creatureEditor.SetName(std::string
         {
@@ -81,7 +82,7 @@ bool CLabController::LoadCreatureFrom()
 
 std::optional<std::filesystem::path> CLabController::LoadAppearance()
 {
-    return m_documentController.LoadApperance();
+    return m_documentController.LoadAppearance();
 }
 
 void CLabController::PlayAnimation()

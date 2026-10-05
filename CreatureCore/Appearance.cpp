@@ -9,7 +9,7 @@ CAppearance::CAppearance() = default;
 CAppearance::CAppearance(std::vector<PartAppearance>&& vecPart)
     : m_vecPart(std::move(vecPart))
 {
-    std::sort(m_vecPart.begin(), m_vecPart.end(),
+    std::stable_sort(m_vecPart.begin(), m_vecPart.end(),
         [](const PartAppearance& lhs, const PartAppearance& rhs)
         {
             return lhs.zOrder < rhs.zOrder;

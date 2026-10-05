@@ -282,6 +282,7 @@ void CCreatureTreePanel::DrawPart(
                 const auto texturePath = m_labController.LoadAppearance();
                 if (texturePath && !texturePath->empty())
                 {
+                    auto undoScope = m_editorContext.CreateUndoScope();
                     motionEditor->AppearanceEditor().AddPart(partId, *texturePath);
                 }
             }
