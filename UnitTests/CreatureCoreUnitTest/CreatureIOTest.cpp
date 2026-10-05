@@ -43,6 +43,8 @@ namespace
     };
 }
 
+// NOLINTBEGIN(bugprone-unchecked-optional-access)
+
 TEST(CreatureIOTest, SaveAndLoadPreservesAppearanceZOrder)
 {
     CCreature creature;
@@ -126,3 +128,4 @@ TEST(CreatureIOTest, SaveAndLoadPreservesAppearanceZOrder)
     EXPECT_EQ(loadedAppearance.Parts()[2].zOrder, 2u);
     EXPECT_EQ(loadedAppearance.Parts()[2].texturePath, std::filesystem::path{ L"assets/head.png" });
 }
+// NOLINTEND(bugprone-unchecked-optional-access)
