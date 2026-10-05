@@ -129,7 +129,6 @@
     <ClCompile Include="CreatureIO.cpp" />
     <ClCompile Include="CreaturePose.cpp" />
     <ClCompile Include="GenomeGenerator.cpp" />
-    <ClInclude Include="PartPose.h" />
     <ClInclude Include="Matrix3x2.h" />
     <ClCompile Include="Matrix3x2.cpp" />
     <ClCompile Include="Motion.cpp" />

@@ -267,12 +267,12 @@ PartId CSkeleton::FindPartIdByName(const std::string_view name) const
     return findPart ? findPart->id : INVALID_PART_ID;
 }
 
-std::uint32_t CSkeleton::FindPartIndexById(PartId id) const
+PartIndex CSkeleton::FindPartIndexById(PartId id) const
 {
     const auto itFind = std::find_if(m_vecPart.cbegin(), m_vecPart.cend(), [id](const Part& part)
         {
             return part.id == id;
         });
     if (itFind == m_vecPart.cend()) return INVALID_PART_INDEX;
-    return static_cast<int>(std::distance(m_vecPart.begin(), itFind));
+    return static_cast<PartIndex>(std::distance(m_vecPart.cbegin(), itFind));
 }

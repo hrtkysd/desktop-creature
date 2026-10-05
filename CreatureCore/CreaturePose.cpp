@@ -40,28 +40,3 @@ void CCreaturePose::SetRootTransform(const CTransform2D& transform)
 {
     m_rootTransform = transform;
 }
-
-Vec2& CCreaturePose::GetEyeOffset()
-{
-    return m_eyeOffset;
-}
-
-const Vec2& CCreaturePose::GetEyeOffset() const
-{
-    return m_eyeOffset;
-}
-
-void CCreaturePose::SetEyeOffset(const Vec2& offset)
-{
-    m_eyeOffset = offset;
-}
-
-bool Creature::CCreaturePose::IsBlink() const
-{
-    return m_isBlink;
-}
-
-void CCreaturePose::SetBlink(bool isBlink)
-{
-    m_isBlink = isBlink;
-}
