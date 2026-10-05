@@ -3,7 +3,6 @@
 #include "UndoScope.h"
 
 using namespace Creature;
-using namespace Creature::Animation;
 
 CEditorContext::CEditorContext(CUndoBuffer& undoBuffer)
     : m_undoBuffer(undoBuffer)
@@ -22,10 +21,10 @@ void CEditorContext::SelectPart(PartId partId)
     m_partId = partId;
 }
 
-void CEditorContext::SelectAnimation(Creature::Animation::AnimationId animationId)
+void CEditorContext::SelectMotion(Creature::MotionId motionId)
 {
-    m_eSelectionType = SelectionType::Animation;
-    m_animationId = animationId;
+    m_eSelectionType = SelectionType::Motion;
+    m_motionId = motionId;
 }
 
 SelectionType CEditorContext::GetSelectionType() const noexcept
@@ -83,7 +82,7 @@ PartId CEditorContext::GetPartId() const noexcept
     return m_partId;
 }
 
-AnimationId CEditorContext::GetAnimationId() const noexcept
+MotionId CEditorContext::GetMotionId() const noexcept
 {
-    return m_animationId;
+    return m_motionId;
 }

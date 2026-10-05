@@ -1,6 +1,6 @@
 #pragma once
 
-#include "AnimationId.h"
+#include "MotionId.h"
 
 #include <memory>
 #include <string>
@@ -9,28 +9,15 @@
 namespace Creature
 {
     struct Genome;
-
-    class CAppearance;
-    class CSkeleton;
-
-    namespace Animation
-    {
-        class CAnimation;
-    }
+    class CMotion;
 
     namespace Editor
     {
         class CCreatureEditor;
     }
 
-    namespace IO
-    {
-        class CCreatureIO;
-    }
-
     class CCreature
     {
-        friend class IO::CCreatureIO;
         friend class Creature::Editor::CCreatureEditor;
     public:
         CCreature();
@@ -44,28 +31,26 @@ namespace Creature
     public:
         CCreature Clone() const;
         const Genome& GetGenome() const;
-        const CSkeleton& GetSkeleton() const;
-        const CAppearance& GetAppearance() const;
 
         const std::string& GetName() const;
 
-        const std::vector<Animation::CAnimation>& GetAnimations() const;
-        const Animation::CAnimation* FindAnimationById(Animation::AnimationId id) const;
+        const std::vector<CMotion>& GetMotions() const;
+        const CMotion* FindMotionById(MotionId id) const;
     private:
         Genome& MutableGenome();
-        CSkeleton& MutableSkeleton();
-        CAppearance& MutableAppearance();
-        std::vector<Animation::CAnimation>& MutableAnimations();
+        std::vector<CMotion>& MutableMotions();
+        CMotion* FindMutableMotionById(MotionId id);
     private:
-        Animation::AnimationId AddAnimation(Animation::CAnimation&& animation);
-        bool RemoveAnimation(Animation::AnimationId id);
-
-        Animation::AnimationId AddNewAnimation(const std::string& strName);
 
         void SetName(const std::string& strName);
-        Animation::AnimationId AddAnimationWithId(Animation::AnimationId id, const std::string& name);
-        Animation::AnimationId GenerateAnimationId();
-        void UpdateNextAnimationId(Animation::AnimationId id);
+
+        MotionId AddMotion(CMotion&& motion);
+        bool RemoveMotion(MotionId id);
+        MotionId AddNewMotion(const std::string& strName);
+        MotionId AddMotionWithId(MotionId id, const std::string& strName);
+        MotionId GenerateMotionId();
+        void UpdateNextMotionId(MotionId id);
+
     private:
         struct Impl;
         std::unique_ptr<Impl> m_impl;

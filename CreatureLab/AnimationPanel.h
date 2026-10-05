@@ -1,8 +1,8 @@
 #pragma once
 
-#include "AnimationId.h"
 #include "AnimationProperty.h"
 #include "AnimationTrackKey.h"
+#include "MotionId.h"
 #include "UndoScope.h"
 
 #include <optional>
@@ -19,6 +19,7 @@ namespace Creature
     namespace Editor
     {
         class CAnimationEditor;
+        class CCreatureEditor;
     }
 }
 class CEditorContext;
@@ -27,11 +28,11 @@ class CAnimationPanel
 {
 public:
     explicit CAnimationPanel(
+        Creature::Editor::CCreatureEditor& editor,
         Creature::Animation::CAnimationPlayer& animationPlayer,
         CEditorContext& editorContext);
 public:
     bool Draw(
-        Creature::Editor::CAnimationEditor& editor,
         const Creature::Animation::CAnimation& animation,
         const Creature::CSkeleton& skeleton);
 private:
@@ -53,14 +54,12 @@ private:
         const Creature::Animation::CAnimationTrack& track);
 
 private:
+    Creature::Editor::CCreatureEditor& m_editor;
     Creature::Animation::CAnimationPlayer& m_animationPlayer;
     CEditorContext& m_editorContext;
 
+    Creature::MotionId m_motionId = Creature::INVALID_MOTION_ID;
     std::optional<CUndoScope> m_undoScope;
-
-    Creature::Animation::AnimationId m_animationId =
-        Creature::Animation::INVALID_ANIMATION_ID;
-
     std::optional<Creature::Animation::CAnimationTrackKey> m_selectedTrackKey;
 
     Creature::Animation::AnimationProperty m_eNewTrackProperty =

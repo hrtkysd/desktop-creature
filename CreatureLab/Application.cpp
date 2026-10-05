@@ -3,6 +3,8 @@
 #include "Application.h"
 #include "ApplicationInformation.h"
 #include "CreaturePose.h"
+#include "Motion.h"
+#include "MotionEditor.h"
 #include "RenderTargetScope.h"
 
 // third party
@@ -35,7 +37,7 @@ CApp::CApp()
     , m_menuBar(m_labController)
     , m_previewPanel(m_creatureEditor, m_editorContext)
     , m_creatureTreePanel(m_creatureEditor, m_editorContext)
-    , m_animationPanel(m_animationPlayer, m_editorContext)
+    , m_animationPanel(m_creatureEditor, m_animationPlayer, m_editorContext)
 {
 }
 
@@ -244,18 +246,15 @@ void CApp::DrawWorkspaceUi()
 
     m_creatureTreePanel.Draw();
 
-    const auto animation = m_creature.FindAnimationById(m_editorContext.GetAnimationId());
-    const auto& skeleton = m_creature.GetSkeleton();
-    const auto defaultPose = CCreaturePose::Default(skeleton);
-    const auto* pose = &defaultPose;
-    if (animation)
+    const auto motion = m_creature.FindMotionById(m_editorContext.GetMotionId());
+    if (motion)
     {
-        m_animationPlayer.Update(ImGui::GetIO().DeltaTime);
-        m_animationPlayer.SamplePose(*animation, skeleton);
-        auto animationEditor = m_creatureEditor.GetAnimationEditor();
-        m_animationPanel.Draw(animationEditor, *animation, skeleton);
+        const auto& skeleton = motion->GetSkeleton();
+        const auto& animation = motion->GetAnimation();
 
-        pose = &m_animationPlayer.GetPose();
+        m_animationPlayer.Update(ImGui::GetIO().DeltaTime);
+        m_animationPlayer.SamplePose(animation, skeleton);
+        m_animationPanel.Draw(animation, skeleton);
     }
 
     if (!m_previewRenderTarget) return;
@@ -272,12 +271,15 @@ void CApp::DrawWorkspaceUi()
         }
     }
 
-    m_previewPanel.DrawUi(
-        skeleton,
-        m_creature.GetAppearance(),
-        *pose,
-        *m_textureCache,
-        *m_previewRenderTarget);
+    if (motion)
+    {
+        m_previewPanel.DrawUi(
+            motion->GetSkeleton(),
+            motion->GetAppearance(),
+            m_animationPlayer.GetPose(),
+            *m_textureCache,
+            *m_previewRenderTarget);
+    }
 }
 
 void CApp::RenderPreview()

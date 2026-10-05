@@ -2,34 +2,32 @@
 #include "CreatureTreeNodeEdit.h"
 
 using namespace Creature;
-using namespace Creature::Animation;
-
 
 void CCreatureTreeNodeEdit::BeginRenameCreature(const std::string& strText)
 {
     m_eEditType = NodeEditType::RenameCreature;
-    m_animationId = INVALID_ANIMATION_ID;
+    m_motionId = INVALID_MOTION_ID;
     m_strText = strText;
 }
 
-void CCreatureTreeNodeEdit::BeginCreateNewAnimation(const std::string& strText)
+void CCreatureTreeNodeEdit::BeginCreateNewMotion(const std::string& strText)
 {
-    m_eEditType = NodeEditType::CreateAnimation;
-    m_animationId = INVALID_ANIMATION_ID;
+    m_eEditType = NodeEditType::CreateMotion;
+    m_motionId = INVALID_MOTION_ID;
     m_strText = strText;
 }
 
-void CCreatureTreeNodeEdit::BeginRenameAnimation(AnimationId animationId, const std::string& strText)
+void CCreatureTreeNodeEdit::BeginRenameMotion(MotionId motionId, const std::string& strText)
 {
-    m_eEditType = NodeEditType::RenameCreature;
-    m_animationId = animationId;
+    m_eEditType = NodeEditType::RenameMotion;
+    m_motionId = motionId;
     m_strText = strText;
 }
 
 void CCreatureTreeNodeEdit::EndEdit()
 {
     m_eEditType = NodeEditType::None;
-    m_animationId = INVALID_ANIMATION_ID;
+    m_motionId = INVALID_MOTION_ID;
     m_strText = "";
 }
 
@@ -52,4 +50,9 @@ std::string& CCreatureTreeNodeEdit::GetText()
 const std::string& CCreatureTreeNodeEdit::GetText() const
 {
     return m_strText;
+}
+
+MotionId CCreatureTreeNodeEdit::GetMotionId() const
+{
+    return m_motionId;
 }

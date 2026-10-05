@@ -5,34 +5,16 @@
 using namespace Creature;
 using namespace Creature::Animation;
 
-CAnimation::CAnimation(AnimationId id, const std::string& strName)
-    : CAnimation(id, strName, 0.0f, {})
-{
-}
-
 CAnimation::CAnimation(
-    AnimationId id,
-    const std::string& strName,
     float fDuration,
     const std::vector<CAnimationTrack>& vecAnimationTrack)
-    : m_animationId(id)
-    , m_strName(strName)
-    , m_fDuration(fDuration)
+    : m_fDuration(fDuration)
     , m_vecAnimationTrack(vecAnimationTrack)
 {
 }
 
+CAnimation::CAnimation() = default;
 CAnimation::~CAnimation() = default;
-
-AnimationId CAnimation::GetAnimationId() const
-{
-    return m_animationId;
-}
-
-const std::string& CAnimation::GetName() const
-{
-    return m_strName;
-}
 
 float CAnimation::GetDuration() const
 {
@@ -54,21 +36,6 @@ const CAnimationTrack* CAnimation::FindAnimationTrack(
     return itFind != m_vecAnimationTrack.end()
         ? std::addressof(*itFind)
         : nullptr;
-}
-
-CAnimation CAnimation::NewAnimation(AnimationId id, const std::string& strName)
-{
-    return CAnimation(id, strName);
-}
-
-void CAnimation::SetAnimationId(AnimationId id)
-{
-    m_animationId = id;
-}
-
-void CAnimation::SetName(const std::string& strName)
-{
-    m_strName = strName;
 }
 
 bool CAnimation::SetDuration(float fDuration)
