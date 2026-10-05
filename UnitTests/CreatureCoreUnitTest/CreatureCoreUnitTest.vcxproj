@@ -106,6 +106,7 @@
     <ClCompile Include="AnimationEditorTest.cpp" />
     <ClCompile Include="AnimationPlayerTest.cpp" />
     <ClCompile Include="AnimationTrackTest.cpp" />
+    <ClCompile Include="CreatureIOTest.cpp" />
     <ClCompile Include="CreatureTest.cpp" />
     <ClCompile Include="MatrixTest.cpp" />
     <ClCompile Include="MotionEditorTest.cpp" />
