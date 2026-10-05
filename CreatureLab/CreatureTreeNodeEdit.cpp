@@ -35,17 +35,6 @@ void CCreatureTreeNodeEdit::BeginCreatePart(
     m_strText = strText;
 }
 
-void CCreatureTreeNodeEdit::BeginRenamePart(
-    MotionId motionId,
-    PartId parentId,
-    const std::string& strText)
-{
-    m_eEditType = NodeEditType::RenamePart;
-    m_motionId = motionId;
-    m_parentId = parentId;
-    m_strText = strText;
-}
-
 void CCreatureTreeNodeEdit::EndEdit()
 {
     m_eEditType = NodeEditType::None;

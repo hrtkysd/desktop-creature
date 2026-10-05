@@ -19,7 +19,10 @@ void CMenuBar::Draw(
     const CDocumentContext& documentContext,
     CEditorContext& editorContext)
 {
-    HandleShortcutKey(editorContext);
+    if (documentContext.HasDocument())
+    {
+        HandleShortcutKey(editorContext);
+    }
 
     if (CImGuiMainMenuBarScope menuBar{})
     {

@@ -68,8 +68,8 @@ bool CDocumentController::SaveCreature(const Creature::CCreature& creature)
 {
     auto path = CFileOperation::ShowSaveDialog(
         m_appWindow.Handle(),
-        std::string{ Information::File::DefaultCreatureFileExtension },
-        std::string{ Information::File::DefaultCreatureFileName },
+        Information::File::DefaultCreatureFileExtension,
+        Information::File::DefaultCreatureFileName,
         CreatureFilters());
     if (path.empty() || !CCreatureIO::SaveAsFile(creature, path)) return false;
     m_context.SetPath(std::move(path));

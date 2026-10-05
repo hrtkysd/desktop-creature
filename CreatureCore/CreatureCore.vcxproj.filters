@@ -26,6 +26,15 @@
     <Filter Include="Editor">
       <UniqueIdentifier>{9488ca15-274b-499c-b11c-737e910955b9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Creature\Appearance">
+      <UniqueIdentifier>{8c1d9034-ed3c-47de-aa31-9b698310d973}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Creature\Motion">
+      <UniqueIdentifier>{a9967ce0-7ea4-431b-8bae-15a212126e10}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Creature\Skeleton">
+      <UniqueIdentifier>{ff39c512-52bf-4219-bb92-a8b531aca818}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AnimationPlayer.h">
@@ -44,9 +53,6 @@
     <ClInclude Include="Transform2D.h">
       <Filter>Math</Filter>
     </ClInclude>
-    <ClInclude Include="Skeleton.h">
-      <Filter>Creature</Filter>
-    </ClInclude>
     <ClInclude Include="AnimationTrack.h">
       <Filter>Animation</Filter>
     </ClInclude>
@@ -56,14 +62,8 @@
     <ClInclude Include="PartPose.h">
       <Filter>Animation</Filter>
     </ClInclude>
-    <ClInclude Include="PartAppearance.h">
-      <Filter>Animation</Filter>
-    </ClInclude>
     <ClInclude Include="Creature.h">
       <Filter>Creature</Filter>
-    </ClInclude>
-    <ClInclude Include="Appearance.h">
-      <Filter>Animation</Filter>
     </ClInclude>
     <ClInclude Include="TransformRect.h">
       <Filter>Math</Filter>
@@ -92,12 +92,6 @@
     <ClInclude Include="MathUtils.h">
       <Filter>Math</Filter>
     </ClInclude>
-    <ClInclude Include="Part.h">
-      <Filter>Creature</Filter>
-    </ClInclude>
-    <ClInclude Include="PartId.h">
-      <Filter>Creature</Filter>
-    </ClInclude>
     <ClInclude Include="AnimationTrackKey.h">
       <Filter>Animation</Filter>
     </ClInclude>
@@ -119,17 +113,32 @@
     <ClInclude Include="IMotionEditContext.h">
       <Filter>Editor</Filter>
     </ClInclude>
-    <ClInclude Include="Motion.h">
-      <Filter>Creature</Filter>
-    </ClInclude>
-    <ClInclude Include="MotionId.h">
-      <Filter>Creature</Filter>
-    </ClInclude>
     <ClInclude Include="MotionEditor.h">
       <Filter>Editor</Filter>
     </ClInclude>
     <ClInclude Include="ZOrder.h">
-      <Filter>Animation</Filter>
+      <Filter>Creature\Appearance</Filter>
+    </ClInclude>
+    <ClInclude Include="PartAppearance.h">
+      <Filter>Creature\Appearance</Filter>
+    </ClInclude>
+    <ClInclude Include="Appearance.h">
+      <Filter>Creature\Appearance</Filter>
+    </ClInclude>
+    <ClInclude Include="MotionId.h">
+      <Filter>Creature\Motion</Filter>
+    </ClInclude>
+    <ClInclude Include="Motion.h">
+      <Filter>Creature\Motion</Filter>
+    </ClInclude>
+    <ClInclude Include="Skeleton.h">
+      <Filter>Creature\Skeleton</Filter>
+    </ClInclude>
+    <ClInclude Include="Part.h">
+      <Filter>Creature\Skeleton</Filter>
+    </ClInclude>
+    <ClInclude Include="PartId.h">
+      <Filter>Creature</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -140,14 +149,8 @@
       <Filter>Generator</Filter>
     </ClCompile>
     <ClCompile Include="pch.cpp" />
-    <ClCompile Include="Skeleton.cpp">
-      <Filter>Creature</Filter>
-    </ClCompile>
     <ClCompile Include="Creature.cpp">
       <Filter>Creature</Filter>
-    </ClCompile>
-    <ClCompile Include="Appearance.cpp">
-      <Filter>Animation</Filter>
     </ClCompile>
     <ClCompile Include="TransformRect.cpp">
       <Filter>Math</Filter>
@@ -188,11 +191,17 @@
     <ClCompile Include="AnimationEditor.cpp">
       <Filter>Editor</Filter>
     </ClCompile>
-    <ClCompile Include="Motion.cpp">
-      <Filter>Creature</Filter>
-    </ClCompile>
     <ClCompile Include="MotionEditor.cpp">
       <Filter>Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="Appearance.cpp">
+      <Filter>Creature\Appearance</Filter>
+    </ClCompile>
+    <ClCompile Include="Motion.cpp">
+      <Filter>Creature\Motion</Filter>
+    </ClCompile>
+    <ClCompile Include="Skeleton.cpp">
+      <Filter>Creature\Skeleton</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -49,9 +49,6 @@ namespace Creature
         MotionId AddMotionWithId(
             MotionId id,
             const std::string& strName);
-        MotionId AddMotionWithId(
-            MotionId id,
-            CMotion&& motion);
         MotionId GenerateMotionId();
         void UpdateNextMotionId(MotionId id);
 

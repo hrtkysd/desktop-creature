@@ -117,20 +117,6 @@ MotionId CCreature::AddMotionWithId(MotionId id, const std::string& strName)
     return id;
 }
 
-MotionId CCreature::AddMotionWithId(MotionId id, CMotion&& motion)
-{
-    if (id == INVALID_MOTION_ID) return INVALID_MOTION_ID;
-    if (id == std::numeric_limits<MotionId>::max()) return INVALID_MOTION_ID;
-    if (FindMotionById(id) != nullptr) return INVALID_MOTION_ID;
-
-    motion.SetMotionId(id);
-    m_impl->vecMotion.emplace_back(std::move(motion));
-
-    UpdateNextMotionId(id);
-
-    return id;
-}
-
 const std::string& CCreature::GetName() const
 {
     return m_impl->strName;

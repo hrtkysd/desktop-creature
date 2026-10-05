@@ -12,7 +12,6 @@ enum class NodeEditType : std::uint8_t
     RenameCreature,
     RenameMotion,
     CreateMotion,
-    RenamePart,
     CreatePart
 };
 
@@ -24,10 +23,6 @@ public:
     void BeginCreateNewMotion(const std::string& strText);
     void BeginRenameMotion(Creature::MotionId motionId, const std::string& strText);
     void BeginCreatePart(
-        Creature::MotionId motionId,
-        Creature::PartId partId,
-        const std::string& strText);
-    void BeginRenamePart(
         Creature::MotionId motionId,
         Creature::PartId partId,
         const std::string& strText);

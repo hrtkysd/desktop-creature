@@ -18,11 +18,15 @@ namespace
     constexpr int CREATURE_HEIGHT = 760;
     constexpr UINT_PTR RENDER_TIMER_ID = 1;
 
-    const std::vector<CFileDialogFilter> kCreatureFilters =
+    std::vector<CFileDialogFilter> CreatureFilters()
     {
-         CFileDialogFilter{ "Creature File", "*.creature" },
-         CFileDialogFilter{ "All Files", "*.*" }
-    };
+        return
+        {
+            CFileDialogFilter{ "Creature File", "*.creature" },
+            CFileDialogFilter{ "All Files", "*.*" }
+
+        };
+    }
 }
 
 CAppRuntime::CAppRuntime() = default;
@@ -226,7 +230,7 @@ bool CAppRuntime::InitializeGraphics(
 
 bool CAppRuntime::LoadCreature()
 {
-    const auto path = CFileOperation::ShowOpenDialog(m_hWorkspace, kCreatureFilters);
+    const auto path = CFileOperation::ShowOpenDialog(m_hWorkspace, CreatureFilters());
     if (path.empty()) return false;
     auto loadCreature = m_creature.Clone();
     if (!IO::CCreatureIO::LoadFromFile(path, loadCreature)) return false;
