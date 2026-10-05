@@ -10,6 +10,29 @@
 using namespace Creature;
 using namespace Creature::IO;
 
+namespace
+{
+    std::vector<CFileDialogFilter> CreatureFilters()
+    {
+        return
+        {
+             CFileDialogFilter{ "Creature File", "*.creature" },
+             CFileDialogFilter{ "All Files", "*.*" }
+        };
+    }
+
+    std::vector<CFileDialogFilter> AppearanceFilters()
+    {
+        return
+        {
+            CFileDialogFilter{ "Image Files", "*.png;*.jpg;*.jpeg;*.bmp" },
+            CFileDialogFilter{ "PNG Image", "*.png" },
+            CFileDialogFilter{ "JPEG Image", "*.jpg;*.jpeg" },
+            CFileDialogFilter{ "Bitmap Image", "*.bmp" }
+        };
+    }
+}
+
 CDocumentController::CDocumentController(
     CWindow& appWindow,
     CDocumentContext& context)
@@ -31,12 +54,8 @@ void CDocumentController::CreateNewDocument()
 
 std::optional<Creature::CCreature> CDocumentController::LoadCreature() const
 {
-    const std::vector<CFileDialogFilter> kCreatureFilters =
-    {
-         CFileDialogFilter{ "Creature File", "*.creature" },
-         CFileDialogFilter{ "All Files", "*.*" }
-    };
-    const auto path = CFileOperation::ShowOpenDialog(m_appWindow.Handle(), kCreatureFilters);
+
+    const auto path = CFileOperation::ShowOpenDialog(m_appWindow.Handle(), CreatureFilters());
     if (path.empty()) return {};
 
     CCreature creature;
@@ -47,16 +66,11 @@ std::optional<Creature::CCreature> CDocumentController::LoadCreature() const
 
 bool CDocumentController::SaveCreature(const Creature::CCreature& creature)
 {
-    const std::vector<CFileDialogFilter> kCreatureFilters =
-    {
-         CFileDialogFilter{ "Creature File", "*.creature" },
-         CFileDialogFilter{ "All Files", "*.*" }
-    };
     auto path = CFileOperation::ShowSaveDialog(
         m_appWindow.Handle(),
         std::string{ Information::File::DefaultCreatureFileExtension },
         std::string{ Information::File::DefaultCreatureFileName },
-        kCreatureFilters);
+        CreatureFilters());
     if (path.empty() || !CCreatureIO::SaveAsFile(creature, path)) return false;
     m_context.SetPath(std::move(path));
     m_context.SetDocumentStatus(DocumentStatus::File);
@@ -65,12 +79,5 @@ bool CDocumentController::SaveCreature(const Creature::CCreature& creature)
 
 std::optional<std::filesystem::path> CDocumentController::LoadAppearance() const
 {
-    const std::vector<CFileDialogFilter> kAppearanceFilters
-    {
-        CFileDialogFilter{ "Image Files", "*.png;*.jpg;*.jpeg;*.bmp" },
-        CFileDialogFilter{ "PNG Image", "*.png" },
-        CFileDialogFilter{ "JPEG Image", "*.jpg;*.jpeg" },
-        CFileDialogFilter{ "Bitmap Image", "*.bmp" }
-    };
-    return CFileOperation::ShowOpenDialog(m_appWindow.Handle(), kAppearanceFilters);
+    return CFileOperation::ShowOpenDialog(m_appWindow.Handle(), AppearanceFilters());
 }
