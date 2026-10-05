@@ -4,6 +4,8 @@
 #include "UndoBuffer.h"
 
 #include <cstdint>
+#include <filesystem>
+#include <optional>
 
 namespace Creature
 {
@@ -32,8 +34,11 @@ public:
 protected:
     void OnRevisionChanged(Revision revision) override;
 public:
-    bool SaveAs();
-    bool LoadFrom();
+    void CreateNew();
+    bool SaveCreatureAs();
+    bool LoadCreatureFrom();
+
+    std::optional<std::filesystem::path> LoadAppearance();
 
     void PlayAnimation();
     void PauseAnimation();
@@ -43,6 +48,12 @@ public:
     EditMode GetEditMode() const noexcept;
 
     bool DeletePart();
+
+    bool CanMoveForward() const;
+    bool CanMoveBackward() const;
+
+    bool MoveForward();
+    bool MoveBackward();
 
     void Undo();
     void Redo();

@@ -26,6 +26,9 @@
     <ClCompile Include="SkeletonEditorTest.cpp">
       <Filter>Tests\Creature</Filter>
     </ClCompile>
+    <ClCompile Include="CreatureIOTest.cpp">
+      <Filter>Tests\Creature</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />

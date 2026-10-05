@@ -11,7 +11,7 @@ class CRenderPartItem
 {
 public:
     explicit CRenderPartItem(
-        const Creature::PartId partId,
+        Creature::PartId partId,
         const Creature::Math::CTransformRect& rcPart,
         const std::shared_ptr<CTexture>& texture);
 public:

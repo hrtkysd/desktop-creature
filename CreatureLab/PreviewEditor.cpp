@@ -61,6 +61,8 @@ namespace
         const std::vector<CPreviewPart>& vecPreviewPart,
         const Vec2& mousePosition)
     {
+        // Preview parts are already sorted back-to-front by zOrder,
+        // so hit-test in reverse order to find the frontmost part first.
         const auto itFind = std::find_if(
             vecPreviewPart.crbegin(),
             vecPreviewPart.crend(),

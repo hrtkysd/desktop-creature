@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "AnimationPlayer.h"
+#include "AppearanceEditor.h"
 #include "CreatureEditor.h"
 #include "EditorCommand.h"
 #include "EditorContext.h"
@@ -39,6 +40,30 @@ bool CEditorController::Execute(EditorCommand command)
         if (!motionEditor) return false;
         auto scope = m_context.CreateUndoScope();
         if (!motionEditor->SkeletonEditor().RemovePart(m_context.GetPartId()))
+        {
+            scope.Cancel();
+            return false;
+        }
+    }
+    break;
+    case EditorCommand::ToForward:
+    {
+        auto motionEditor = m_editor.MotionEditor(m_context.GetMotionId());
+        if (!motionEditor) return false;
+        auto scope = m_context.CreateUndoScope();
+        if (!motionEditor->AppearanceEditor().MoveForward(m_context.GetPartId()))
+        {
+            scope.Cancel();
+            return false;
+        }
+    }
+    break;
+    case EditorCommand::ToBackward:
+    {
+        auto motionEditor = m_editor.MotionEditor(m_context.GetMotionId());
+        if (!motionEditor) return false;
+        auto scope = m_context.CreateUndoScope();
+        if (!motionEditor->AppearanceEditor().MoveBackward(m_context.GetPartId()))
         {
             scope.Cancel();
             return false;

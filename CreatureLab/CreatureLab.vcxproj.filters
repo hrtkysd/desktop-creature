@@ -146,6 +146,12 @@
     <ClInclude Include="ApplicationInformation.h">
       <Filter>Application</Filter>
     </ClInclude>
+    <ClInclude Include="DocumentStatus.h">
+      <Filter>Document</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\FileDialogFilter.h">
+      <Filter>Common</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -223,6 +229,9 @@
       <Filter>Common</Filter>
     </ClCompile>
     <ClCompile Include="..\Common\StringConverter.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\FileDialogFilter.cpp">
       <Filter>Common</Filter>
     </ClCompile>
   </ItemGroup>

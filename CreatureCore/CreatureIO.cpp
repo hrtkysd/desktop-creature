@@ -69,6 +69,7 @@ namespace
         if (const auto partAppearance = appearance.FindByPartId(part.id))
         {
             partJson["texture"] = partAppearance->texturePath.generic_string();
+            partJson["zOrder"] = partAppearance->zOrder;
         }
 
         return partJson;
@@ -113,7 +114,7 @@ namespace
     bool DeserializePart(
         const json& partJson,
         CSkeletonEditor& skeletonEditor,
-        CAppearanceEditor& appearanceEditor)
+        std::vector<PartAppearance>& vecPartAppearance)
     {
         Part part;
         part.id = partJson.at("id").get<PartId>();
@@ -146,11 +147,19 @@ namespace
 
         const auto partId = part.id;
 
-        if (!skeletonEditor.AddPartWithId(std::move(part))) return false;
+        if (!skeletonEditor.AddPartWithId(std::move(part)))
+        {
+            return false;
+        }
 
         if (partJson.contains("texture"))
         {
-            appearanceEditor.SetTexture(partId, partJson.at("texture").get<std::string>());
+            vecPartAppearance.emplace_back(
+                PartAppearance{
+                    partId,
+                    partJson.at("texture").get<std::string>(),
+                    partJson.at("zOrder").get<ZOrder>()
+                });
         }
 
         return true;
@@ -282,15 +291,19 @@ bool CCreatureIO::LoadFromFile(
             if (!motionEditor) return false;
 
             auto skeletonEditor = motionEditor->SkeletonEditor();
-            auto appearanceEditor = motionEditor->AppearanceEditor();
             auto animationEditor = motionEditor->AnimationEditor();
+
+            std::vector<PartAppearance> vecPartAppearance;
 
             for (const auto& partJson : motionJson.at("parts"))
             {
-                if (!DeserializePart(partJson, skeletonEditor, appearanceEditor)) return false;
+                if (!DeserializePart(partJson, skeletonEditor, vecPartAppearance)) return false;
             }
 
             if (!DeserializeAnimation(motionJson.at("animation"), animationEditor)) return false;
+
+            auto appearanceEditor = motionEditor->AppearanceEditor();
+            appearanceEditor.SwapAppearance(std::move(vecPartAppearance));
         }
 
         creature = std::move(loadedCreature);

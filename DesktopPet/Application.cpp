@@ -2,6 +2,7 @@
 #include "Appearance.h"
 #include "Application.h"
 #include "CreatureIO.h"
+#include "FileDialogFilter.h"
 #include "FileOperation.h"
 #include "Motion.h"
 #include "PartTransformBuilder.h"
@@ -16,6 +17,16 @@ namespace
     constexpr int CREATURE_WIDTH = 1280;
     constexpr int CREATURE_HEIGHT = 760;
     constexpr UINT_PTR RENDER_TIMER_ID = 1;
+
+    std::vector<CFileDialogFilter> CreatureFilters()
+    {
+        return
+        {
+            CFileDialogFilter{ "Creature File", "*.creature" },
+            CFileDialogFilter{ "All Files", "*.*" }
+
+        };
+    }
 }
 
 CAppRuntime::CAppRuntime() = default;
@@ -219,7 +230,7 @@ bool CAppRuntime::InitializeGraphics(
 
 bool CAppRuntime::LoadCreature()
 {
-    const auto path = CFileOperation::ShowOpenCreatureDialog(m_hWorkspace);
+    const auto path = CFileOperation::ShowOpenDialog(m_hWorkspace, CreatureFilters());
     if (path.empty()) return false;
     auto loadCreature = m_creature.Clone();
     if (!IO::CCreatureIO::LoadFromFile(path, loadCreature)) return false;
@@ -262,17 +273,17 @@ bool CAppRuntime::Render()
         Math::CMatrix3x2::CreateTranslation(
             { 640.0f, 380.0f });
 
-    for (const auto& part : skeleton.Parts())
+    for (const auto& part : creatureAppearance.Parts())
     {
-        const auto appearance = creatureAppearance.FindByPartId(part.id);
-        if (!appearance) continue;
+        const auto skeletonPart = skeleton.FindPartById(part.partId);
+        if (!skeletonPart) continue;
 
-        auto texture = m_textureCache->Load(appearance->texturePath);
+        auto texture = m_textureCache->Load(part.texturePath);
         if (!texture) continue;
 
         const auto worldTransform =
             Math::CPartTransformBuilder::BuildWorld(
-                part,
+                *skeletonPart,
                 skeleton,
                 pose);
         const auto screenTransform =

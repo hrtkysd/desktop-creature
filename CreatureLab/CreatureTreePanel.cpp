@@ -1,11 +1,14 @@
 #include "pch.h"
+#include "AppearanceEditor.h"
 #include "Creature.h"
 #include "CreatureEditor.h"
 #include "CreatureTreePanel.h"
 #include "EditorContext.h"
 #include "ImGuiWindowScope.h"
+#include "LabController.h"
 #include "Motion.h"
 #include "Skeleton.h"
+#include "SkeletonEditor.h"
 #include "UndoScope.h"
 
 #include "imgui.h"
@@ -16,8 +19,10 @@ using namespace Creature::Editor;
 
 CCreatureTreePanel::CCreatureTreePanel(
     CCreatureEditor& editor,
+    CLabController& labController,
     CEditorContext& context)
     : m_editor(editor)
+    , m_labController(labController)
     , m_editorContext(context)
 {
 }
@@ -92,6 +97,7 @@ void CCreatureTreePanel::Draw()
                 &m_nodeEdit.GetText(),
                 ImGuiInputTextFlags_EnterReturnsTrue))
             {
+                auto undoScope = m_editorContext.CreateUndoScope();
                 const auto newId = m_editor.AddNewMotion(m_nodeEdit.GetText());
                 m_editorContext.SelectMotion(newId);
                 m_nodeEdit.EndEdit();
@@ -163,6 +169,43 @@ void CCreatureTreePanel::Draw()
 
                 if (ImGui::TreeNode("Parts"))
                 {
+                    if (ImGui::BeginPopupContextItem())
+                    {
+                        if (ImGui::MenuItem("New Part"))
+                        {
+                            m_nodeEdit.BeginCreatePart(motionId, INVALID_PART_ID, "New Part");
+                        }
+
+                        ImGui::EndPopup();
+                    }
+
+                    if (m_nodeEdit.IsEditing(NodeEditType::CreatePart) &&
+                        m_nodeEdit.GetMotionId() == motionId &&
+                        m_nodeEdit.GetParentPartId() == INVALID_PART_ID)
+                    {
+                        if (ImGui::InputText(
+                            "##NewPart",
+                            &m_nodeEdit.GetText(),
+                            ImGuiInputTextFlags_EnterReturnsTrue))
+                        {
+                            if (auto motionEditor = m_editor.MotionEditor(motionId))
+                            {
+                                auto undoScope = m_editorContext.CreateUndoScope();
+
+                                const auto partId =
+                                    motionEditor->SkeletonEditor().AddPart(m_nodeEdit.GetText());
+
+                                if (partId != INVALID_PART_ID)
+                                {
+                                    m_editorContext.SelectMotion(motionId);
+                                    m_editorContext.SelectPart(partId);
+                                }
+                            }
+
+                            m_nodeEdit.EndEdit();
+                        }
+                    }
+
                     for (const auto partId : skeleton.GetRootPartIds())
                     {
                         DrawPart(motionId, skeleton, partId);
@@ -170,7 +213,6 @@ void CCreatureTreePanel::Draw()
 
                     ImGui::TreePop();
                 }
-
                 ImGui::TreePop();
             }
             ImGui::PopID();
@@ -201,10 +243,15 @@ void CCreatureTreePanel::DrawPart(
 
     if (!skeleton.HasChildren(partId))
     {
-        imGuiFlags |= ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen;
+        imGuiFlags |=
+            ImGuiTreeNodeFlags_Leaf |
+            ImGuiTreeNodeFlags_NoTreePushOnOpen;
     }
 
-    if (isSelected) imGuiFlags |= ImGuiTreeNodeFlags_Selected;
+    if (isSelected)
+    {
+        imGuiFlags |= ImGuiTreeNodeFlags_Selected;
+    }
 
     const auto isOpen = ImGui::TreeNodeEx(
         reinterpret_cast<void*>(static_cast<uintptr_t>(partId)),
@@ -216,6 +263,63 @@ void CCreatureTreePanel::DrawPart(
     {
         m_editorContext.SelectMotion(motionId);
         m_editorContext.SelectPart(partId);
+    }
+
+    if (ImGui::BeginPopupContextItem())
+    {
+        if (ImGui::MenuItem("New Child"))
+        {
+            m_nodeEdit.BeginCreatePart(motionId, partId, "New Part");
+        }
+
+        if (ImGui::MenuItem("Set Texture"))
+        {
+            m_editorContext.SelectMotion(motionId);
+            m_editorContext.SelectPart(partId);
+
+            if (auto motionEditor = m_editor.MotionEditor(motionId))
+            {
+                const auto texturePath = m_labController.LoadAppearance();
+                if (texturePath && !texturePath->empty())
+                {
+                    auto undoScope = m_editorContext.CreateUndoScope();
+                    motionEditor->AppearanceEditor().AddPart(partId, *texturePath);
+                }
+            }
+        }
+
+        ImGui::EndPopup();
+    }
+
+    if (m_nodeEdit.IsEditing(NodeEditType::CreatePart) &&
+        m_nodeEdit.GetMotionId() == motionId &&
+        m_nodeEdit.GetParentPartId() == partId)
+    {
+        ImGui::Indent();
+
+        if (ImGui::InputText(
+            "##NewPart",
+            &m_nodeEdit.GetText(),
+            ImGuiInputTextFlags_EnterReturnsTrue))
+        {
+            if (auto motionEditor = m_editor.MotionEditor(motionId))
+            {
+                auto undoScope = m_editorContext.CreateUndoScope();
+
+                const auto newPartId =
+                    motionEditor->SkeletonEditor().AddPart(m_nodeEdit.GetText(), partId);
+
+                if (newPartId != INVALID_PART_ID)
+                {
+                    m_editorContext.SelectMotion(motionId);
+                    m_editorContext.SelectPart(newPartId);
+                }
+            }
+
+            m_nodeEdit.EndEdit();
+        }
+
+        ImGui::Unindent();
     }
 
     if (isOpen && !(imGuiFlags & ImGuiTreeNodeFlags_NoTreePushOnOpen))

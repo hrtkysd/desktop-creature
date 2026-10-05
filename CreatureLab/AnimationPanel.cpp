@@ -98,14 +98,6 @@ bool CAnimationPanel::DrawAnimationProperties(
     ImGui::TableNextRow();
 
     ImGui::TableSetColumnIndex(0);
-    ImGui::TextUnformatted("Name");
-
-    ImGui::TableSetColumnIndex(1);
-    ImGui::SetNextItemWidth(-FLT_MIN);
-
-    ImGui::TableNextRow();
-
-    ImGui::TableSetColumnIndex(0);
     ImGui::TextUnformatted("Duration");
 
     ImGui::TableSetColumnIndex(1);

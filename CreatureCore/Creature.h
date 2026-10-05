@@ -43,11 +43,12 @@ namespace Creature
     private:
 
         void SetName(const std::string& strName);
-
         MotionId AddMotion(CMotion&& motion);
         bool RemoveMotion(MotionId id);
         MotionId AddNewMotion(const std::string& strName);
-        MotionId AddMotionWithId(MotionId id, const std::string& strName);
+        MotionId AddMotionWithId(
+            MotionId id,
+            const std::string& strName);
         MotionId GenerateMotionId();
         void UpdateNextMotionId(MotionId id);
 

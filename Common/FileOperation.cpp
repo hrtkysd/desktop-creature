@@ -1,20 +1,52 @@
+#include "FileDialogFilter.h"
 #include "FileOperation.h"
+#include "StringConverter.h"
 
-#include <shobjidl.h>
+#include <ShObjIdl.h>
 #include <wrl/client.h>
 
 using Microsoft::WRL::ComPtr;
 
 namespace
 {
-    const COMDLG_FILTERSPEC kFilters[] =
+    class CComDialogFilters
     {
-        { L"Creature File", L"*.creature" },
-        { L"All Files",     L"*.*" }
+    public:
+        explicit CComDialogFilters(const std::vector<CFileDialogFilter>& vecFilters)
+        {
+            m_vecName.reserve(vecFilters.size());
+            m_vecPattern.reserve(vecFilters.size());
+
+            for (const auto& filter : vecFilters)
+            {
+                m_vecName.push_back(StringConverter::Utf8ToWide(filter.Name()));
+                m_vecPattern.push_back(StringConverter::Utf8ToWide(filter.Pattern()));
+            }
+
+            m_vecFilter.reserve(vecFilters.size());
+
+            for (auto i = 0ULL; i < vecFilters.size(); ++i)
+            {
+                m_vecFilter.push_back({ m_vecName.at(i).c_str(), m_vecPattern.at(i).c_str() });
+            }
+        }
+
+        bool Empty() const { return m_vecFilter.empty(); }
+
+        UINT Size() const { return static_cast<UINT>(m_vecFilter.size()); }
+
+        const COMDLG_FILTERSPEC* Data() const { return m_vecFilter.data(); }
+
+    private:
+        std::vector<std::wstring> m_vecName;
+        std::vector<std::wstring> m_vecPattern;
+        std::vector<COMDLG_FILTERSPEC> m_vecFilter;
     };
 }
 
-std::filesystem::path CFileOperation::ShowOpenCreatureDialog(HWND hWnd)
+std::filesystem::path CFileOperation::ShowOpenDialog(
+    HWND hWnd,
+    const std::vector<CFileDialogFilter>& vecFilter)
 {
     Microsoft::WRL::ComPtr<IFileOpenDialog> dialog;
 
@@ -26,11 +58,12 @@ std::filesystem::path CFileOperation::ShowOpenCreatureDialog(HWND hWnd)
 
     if (FAILED(hr)) return {};
 
-    dialog->SetFileTypes(
-        static_cast<UINT>(std::size(kFilters)),
-        kFilters);
-
-    dialog->SetFileTypeIndex(1);
+    const CComDialogFilters vecComFilter(vecFilter);
+    if (!vecComFilter.Empty())
+    {
+        dialog->SetFileTypes(vecComFilter.Size(), vecComFilter.Data());
+        dialog->SetFileTypeIndex(1);
+    }
 
     hr = dialog->Show(hWnd);
 
@@ -58,7 +91,11 @@ std::filesystem::path CFileOperation::ShowOpenCreatureDialog(HWND hWnd)
     return path;
 }
 
-std::filesystem::path CFileOperation::ShowSaveCreatureDialog(HWND hWnd)
+std::filesystem::path CFileOperation::ShowSaveDialog(
+    HWND hWnd,
+    std::string_view strDefaultExtension,
+    std::string_view strDefaultFileName,
+    const std::vector<CFileDialogFilter>& vecFilter)
 {
     ComPtr<IFileSaveDialog> dialog;
 
@@ -70,13 +107,17 @@ std::filesystem::path CFileOperation::ShowSaveCreatureDialog(HWND hWnd)
 
     if (FAILED(hr)) return {};
 
-    dialog->SetFileTypes(
-        static_cast<UINT>(std::size(kFilters)),
-        kFilters);
+    const CComDialogFilters vecComFilter(vecFilter);
+    if (!vecComFilter.Empty())
+    {
+        dialog->SetFileTypes(vecComFilter.Size(), vecComFilter.Data());
+        dialog->SetFileTypeIndex(1);
+    }
+    const auto strDefaultExtensionW = StringConverter::Utf8ToWide(strDefaultExtension);
+    dialog->SetDefaultExtension(strDefaultExtensionW.c_str());
 
-    dialog->SetFileTypeIndex(1);
-    dialog->SetDefaultExtension(L"creature");
-    dialog->SetFileName(L"creature.creature");
+    const auto strDefaultFileNameW = StringConverter::Utf8ToWide(strDefaultFileName);
+    dialog->SetFileName(strDefaultFileNameW.c_str());
 
     hr = dialog->Show(hWnd);
 

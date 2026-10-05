@@ -10,7 +10,7 @@ using namespace Creature::Animation;
 struct CMotion::MotionImpl
 {
     MotionId motionId = INVALID_MOTION_ID;
-    CAppearance appearance{};
+    CAppearance appearance;
     CSkeleton skeleton;
     CAnimation animation;
 

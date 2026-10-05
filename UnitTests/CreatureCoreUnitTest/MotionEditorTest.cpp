@@ -47,7 +47,7 @@ namespace Creature
         const auto partId = skeletonEditor.AddPart("Body");
         ASSERT_NE(partId, INVALID_PART_ID);
 
-        motionEditor->AppearanceEditor().SetTexture(partId, L"body.png");
+        motionEditor->AppearanceEditor().AddPart(partId, L"body.png");
 
         const CAnimationTrackKey trackKey
         {
@@ -127,8 +127,8 @@ namespace Creature
         ASSERT_NE(headId, INVALID_PART_ID);
 
         auto appearanceEditor = motionEditor->AppearanceEditor();
-        appearanceEditor.SetTexture(bodyId, L"assets/body.png");
-        appearanceEditor.SetTexture(headId, L"assets/head.png");
+        appearanceEditor.AddPart(bodyId, L"assets/body.png");
+        appearanceEditor.AddPart(headId, L"assets/head.png");
 
         const CAnimationTrackKey bodyTrackKey
         {
@@ -185,9 +185,9 @@ namespace Creature
         ASSERT_NE(earId, INVALID_PART_ID);
 
         auto appearanceEditor = motionEditor->AppearanceEditor();
-        appearanceEditor.SetTexture(headId, L"head.png");
-        appearanceEditor.SetTexture(eyesId, L"eyes.png");
-        appearanceEditor.SetTexture(earId, L"ear.png");
+        appearanceEditor.AddPart(headId, L"head.png");
+        appearanceEditor.AddPart(eyesId, L"eyes.png");
+        appearanceEditor.AddPart(earId, L"ear.png");
 
         const CAnimationTrackKey headTrack
         {
@@ -276,11 +276,11 @@ namespace Creature
             AnimationProperty::PositionX
         };
 
-        firstMotionEditor->AppearanceEditor().SetTexture(firstParentId, L"first-body.png");
-        firstMotionEditor->AppearanceEditor().SetTexture(firstChildId, L"first-head.png");
+        firstMotionEditor->AppearanceEditor().AddPart(firstParentId, L"first-body.png");
+        firstMotionEditor->AppearanceEditor().AddPart(firstChildId, L"first-head.png");
 
-        secondMotionEditor->AppearanceEditor().SetTexture(secondParentId, L"second-body.png");
-        secondMotionEditor->AppearanceEditor().SetTexture(secondChildId, L"second-head.png");
+        secondMotionEditor->AppearanceEditor().AddPart(secondParentId, L"second-body.png");
+        secondMotionEditor->AppearanceEditor().AddPart(secondChildId, L"second-head.png");
 
         ASSERT_TRUE(firstMotionEditor->AnimationEditor().AddTrack(CAnimationTrack{ firstTrack }));
         ASSERT_TRUE(secondMotionEditor->AnimationEditor().AddTrack(CAnimationTrack{ secondTrack }));
@@ -306,5 +306,99 @@ namespace Creature
         EXPECT_NE(secondMotion->GetAnimation().FindAnimationTrack(secondTrack), nullptr);
     }
 
+    TEST(MotionEditorTest, MoveAppearancePartForwardAndBackward)
+    {
+        CCreature creature;
+        CCreatureEditor editor(creature);
+
+        const auto motionId = editor.AddNewMotion("Idle");
+        ASSERT_NE(motionId, INVALID_MOTION_ID);
+
+        auto motionEditor = editor.MotionEditor(motionId);
+        ASSERT_TRUE(motionEditor.has_value());
+
+        auto skeletonEditor = motionEditor->SkeletonEditor();
+
+        const auto bodyId = skeletonEditor.AddPart("Body");
+        const auto headId = skeletonEditor.AddPart("Head", bodyId);
+        const auto eyesId = skeletonEditor.AddPart("Eyes", headId);
+
+        ASSERT_NE(bodyId, INVALID_PART_ID);
+        ASSERT_NE(headId, INVALID_PART_ID);
+        ASSERT_NE(eyesId, INVALID_PART_ID);
+
+        auto appearanceEditor = motionEditor->AppearanceEditor();
+
+        appearanceEditor.AddPart(bodyId, L"body.png");
+        appearanceEditor.AddPart(headId, L"head.png");
+        appearanceEditor.AddPart(eyesId, L"eyes.png");
+
+        const auto motion = creature.FindMotionById(motionId);
+        ASSERT_NE(motion, nullptr);
+
+        const auto& appearance = motion->GetAppearance();
+
+        ASSERT_EQ(appearance.Parts().size(), 3u);
+
+        EXPECT_EQ(appearance.Parts()[0].partId, bodyId);
+        EXPECT_EQ(appearance.Parts()[0].zOrder, 0u);
+        EXPECT_EQ(appearance.Parts()[1].partId, headId);
+        EXPECT_EQ(appearance.Parts()[1].zOrder, 1u);
+        EXPECT_EQ(appearance.Parts()[2].partId, eyesId);
+        EXPECT_EQ(appearance.Parts()[2].zOrder, 2u);
+
+        EXPECT_FALSE(appearance.CanMoveBackward(bodyId));
+        EXPECT_TRUE(appearance.CanMoveForward(bodyId));
+
+        EXPECT_TRUE(appearance.CanMoveBackward(headId));
+        EXPECT_TRUE(appearance.CanMoveForward(headId));
+
+        EXPECT_TRUE(appearance.CanMoveBackward(eyesId));
+        EXPECT_FALSE(appearance.CanMoveForward(eyesId));
+
+        ASSERT_TRUE(appearanceEditor.MoveForward(bodyId));
+
+        EXPECT_EQ(appearance.Parts()[0].partId, headId);
+        EXPECT_EQ(appearance.Parts()[0].zOrder, 0u);
+        EXPECT_EQ(appearance.Parts()[1].partId, bodyId);
+        EXPECT_EQ(appearance.Parts()[1].zOrder, 1u);
+        EXPECT_EQ(appearance.Parts()[2].partId, eyesId);
+        EXPECT_EQ(appearance.Parts()[2].zOrder, 2u);
+
+        ASSERT_TRUE(appearanceEditor.MoveBackward(bodyId));
+
+        EXPECT_EQ(appearance.Parts()[0].partId, bodyId);
+        EXPECT_EQ(appearance.Parts()[0].zOrder, 0u);
+        EXPECT_EQ(appearance.Parts()[1].partId, headId);
+        EXPECT_EQ(appearance.Parts()[1].zOrder, 1u);
+        EXPECT_EQ(appearance.Parts()[2].partId, eyesId);
+        EXPECT_EQ(appearance.Parts()[2].zOrder, 2u);
+
+        EXPECT_FALSE(appearanceEditor.MoveBackward(bodyId));
+        EXPECT_FALSE(appearanceEditor.MoveForward(eyesId));
+    }
+
+    TEST(MotionEditorTest, AppearanceRejectsMoveForUnknownPart)
+    {
+        CCreature creature;
+        CCreatureEditor editor(creature);
+
+        const auto motionId = editor.AddNewMotion("Idle");
+        ASSERT_NE(motionId, INVALID_MOTION_ID);
+
+        auto motionEditor = editor.MotionEditor(motionId);
+        ASSERT_TRUE(motionEditor.has_value());
+
+        auto appearanceEditor = motionEditor->AppearanceEditor();
+        const auto& appearance = appearanceEditor.GetAppearance();
+
+        constexpr PartId unknownPartId = 12345;
+
+        EXPECT_FALSE(appearance.CanMoveForward(unknownPartId));
+        EXPECT_FALSE(appearance.CanMoveBackward(unknownPartId));
+
+        EXPECT_FALSE(appearanceEditor.MoveForward(unknownPartId));
+        EXPECT_FALSE(appearanceEditor.MoveBackward(unknownPartId));
+    }
     // NOLINTEND(bugprone-unchecked-optional-access)
 }

@@ -1,17 +1,11 @@
 #include "pch.h"
 #include "AnimationEditor.h"
-#include "AnimationTrack.h"
-#include "AnimationTrackKey.h"
 #include "Application.h"
 #include "ApplicationInformation.h"
-#include "Appearance.h"
-#include "AppearanceEditor.h"
 #include "CreaturePose.h"
 #include "Motion.h"
 #include "MotionEditor.h"
 #include "RenderTargetScope.h"
-#include "SkeletonEditor.h"
-#include "Texture.h"
 
 // third party
 #include "imgui.h"
@@ -42,7 +36,7 @@ CApp::CApp()
     , m_labController(m_window, m_editorContext, m_documentController, m_editorController, m_creatureEditor)
     , m_menuBar(m_labController)
     , m_previewPanel(m_creatureEditor, m_editorContext)
-    , m_creatureTreePanel(m_creatureEditor, m_editorContext)
+    , m_creatureTreePanel(m_creatureEditor, m_labController, m_editorContext)
     , m_animationPanel(m_creatureEditor, m_animationPlayer, m_editorContext)
 {
 }
@@ -79,7 +73,13 @@ bool CApp::CreateMainWindow(
 
     if (!RegisterClassExW(&wc)) return false;
 
-    m_window.Create(hInstance, kWindowClassName, Information::ProductName, 1280, 800, this);
+    m_window.Create(
+        hInstance,
+        kWindowClassName,
+        Information::Product::ProductName,
+        1280,
+        800,
+        this);
 
     ShowWindow(m_window.Handle(), nCmdShow);
     UpdateWindow(m_window.Handle());
@@ -168,10 +168,32 @@ void CApp::Render()
     ImGui_ImplWin32_NewFrame();
     ImGui::NewFrame();
 
+    m_menuBar.Draw(m_documentContext, m_editorContext);
+
+    const bool hasDocument = m_documentContext.HasDocument();
+
+    if (hasDocument)
+    {
+        DrawWorkspaceUi();
+    }
+
+    ImGui::Render();
+
+    if (!m_graphicsRenderer.BeginFrame()) return;
+
+    if (hasDocument)
+    {
+        RenderPreview();
+    }
+
+    ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+    m_graphicsRenderer.Present();
+}
+
+void CApp::DrawWorkspaceUi()
+{
     const auto viewport = ImGui::GetMainViewport();
-
     const ImGuiID dockspaceId = ImGui::GetID("CreatureLabDockSpace");
-
     if (ImGui::DockBuilderGetNode(dockspaceId) == nullptr)
     {
         ImGui::DockBuilderRemoveNode(dockspaceId);
@@ -222,7 +244,6 @@ void CApp::Render()
         viewport,
         ImGuiDockNodeFlags_None);
 
-    m_menuBar.Draw(m_editorContext);
     m_creatureTreePanel.Draw();
 
     const auto motion = m_creature.FindMotionById(m_editorContext.GetMotionId());
@@ -236,7 +257,6 @@ void CApp::Render()
         m_animationPanel.Draw(animation, skeleton);
     }
 
-    if (!m_graphicsRenderer.BeginFrame()) return;
     if (!m_previewRenderTarget) return;
 
     const auto contentSize = m_previewPanel.GetPreviewContentSize();
@@ -260,25 +280,25 @@ void CApp::Render()
             *m_textureCache,
             *m_previewRenderTarget);
     }
-    ImGui::Render();
+}
 
-    {
-        CRenderTargetScope scope(
-            m_graphicsRenderer.GetContext(),
-            *m_previewRenderTarget,
-            { 0.0f, 0.0f, 0.0f, 0.0f });
+void CApp::RenderPreview()
+{
+    if (!m_previewRenderTarget) return;
 
-        m_graphicsRenderer.SetViewport(
-            m_previewRenderTarget->Width(),
-            m_previewRenderTarget->Height());
-        auto& spriteRenderer = m_graphicsRenderer.SpriteRenderer();
-        spriteRenderer.Begin();
-        m_previewPanel.RenderPreview(spriteRenderer);
-    }
+    CRenderTargetScope scope(
+        m_graphicsRenderer.GetContext(),
+        *m_previewRenderTarget,
+        { 0.0f, 0.0f, 0.0f, 0.0f });
 
-    ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+    m_graphicsRenderer.SetViewport(
+        m_previewRenderTarget->Width(),
+        m_previewRenderTarget->Height());
 
-    m_graphicsRenderer.Present();
+    auto& spriteRenderer = m_graphicsRenderer.SpriteRenderer();
+    spriteRenderer.Begin();
+
+    m_previewPanel.RenderPreview(spriteRenderer);
 }
 
 void CApp::Shutdown()
