@@ -2,8 +2,6 @@
 
 #include "PartId.h"
 
-#include <string>
-
 namespace Creature
 {
     namespace Animation
