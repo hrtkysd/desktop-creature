@@ -10,23 +10,6 @@
 using namespace Creature;
 using namespace Creature::IO;
 
-namespace
-{
-    const std::vector<CFileDialogFilter> kCreatureFilters =
-    {
-         CFileDialogFilter{ "Creature File", "*.creature" },
-         CFileDialogFilter{ "All Files", "*.*" }
-    };
-
-    const std::vector<CFileDialogFilter> kAppearanceFilters
-    {
-        CFileDialogFilter{ "Image Files", "*.png;*.jpg;*.jpeg;*.bmp" },
-        CFileDialogFilter{ "PNG Image", "*.png" },
-        CFileDialogFilter{ "JPEG Image", "*.jpg;*.jpeg" },
-        CFileDialogFilter{ "Bitmap Image", "*.bmp" }
-    };
-}
-
 CDocumentController::CDocumentController(
     CWindow& appWindow,
     CDocumentContext& context)
@@ -48,6 +31,11 @@ void CDocumentController::CreateNewDocument()
 
 std::optional<Creature::CCreature> CDocumentController::LoadCreature() const
 {
+    const std::vector<CFileDialogFilter> kCreatureFilters =
+    {
+         CFileDialogFilter{ "Creature File", "*.creature" },
+         CFileDialogFilter{ "All Files", "*.*" }
+    };
     const auto path = CFileOperation::ShowOpenDialog(m_appWindow.Handle(), kCreatureFilters);
     if (path.empty()) return {};
 
@@ -59,6 +47,11 @@ std::optional<Creature::CCreature> CDocumentController::LoadCreature() const
 
 bool CDocumentController::SaveCreature(const Creature::CCreature& creature)
 {
+    const std::vector<CFileDialogFilter> kCreatureFilters =
+    {
+         CFileDialogFilter{ "Creature File", "*.creature" },
+         CFileDialogFilter{ "All Files", "*.*" }
+    };
     auto path = CFileOperation::ShowSaveDialog(
         m_appWindow.Handle(),
         std::string{ Information::File::DefaultCreatureFileExtension },
@@ -72,5 +65,12 @@ bool CDocumentController::SaveCreature(const Creature::CCreature& creature)
 
 std::optional<std::filesystem::path> CDocumentController::LoadAppearance() const
 {
+    const std::vector<CFileDialogFilter> kAppearanceFilters
+    {
+        CFileDialogFilter{ "Image Files", "*.png;*.jpg;*.jpeg;*.bmp" },
+        CFileDialogFilter{ "PNG Image", "*.png" },
+        CFileDialogFilter{ "JPEG Image", "*.jpg;*.jpeg" },
+        CFileDialogFilter{ "Bitmap Image", "*.bmp" }
+    };
     return CFileOperation::ShowOpenDialog(m_appWindow.Handle(), kAppearanceFilters);
 }
