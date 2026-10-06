@@ -29,7 +29,7 @@ namespace Creature
         const Part* FindPartById(PartId id) const;
 
         PartId FindPartIdByName(const std::string_view name) const;
-        std::uint32_t FindPartIndexById(PartId id) const;
+        PartIndex FindPartIndexById(PartId id) const;
 
         bool HasChildren(Creature::PartId id) const;
 

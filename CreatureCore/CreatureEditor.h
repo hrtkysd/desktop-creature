@@ -10,7 +10,6 @@ namespace Creature
 {
     class CCreature;
 
-
     namespace Editor
     {
         class CCreatureEditor
